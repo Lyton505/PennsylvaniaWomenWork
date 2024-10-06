@@ -7,10 +7,12 @@ const Navbar = (): ReactElement => {
     <>
       <div className="Navbar">
         <div className="Navbar-body">
-          <div className="Navbar-body-logo">
-            <span className="Text-color--purple-1000">Flat</span>
-            <span className="Text-color--yellow-1000">Fare</span>
-          </div>
+          <div
+            onClick={() => {
+              navigate("/home")
+            }}
+            className="Navbar-body-logo"
+          ></div>
           <div className="Flex-row Margin-left--auto">
             <div
               className="Navbar-body-link Margin-right--20"

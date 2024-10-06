@@ -2,50 +2,50 @@
 // this is where we define our colors used in the app
 
 //add spaces so that the hex codes are lined up
-$fare-color-yellow:   #B9F63E;
-$fare-color-blue:     #96ACB4;
-$fare-color-green:    #4D936D;
-$fare-color-purple:   #C3BEE2;
-$fare-color-red:      #DB504A;
-$fare-color-light:    #ffffff;
-$fare-color-gray:     #415458;
-$fare-color-dark:     #15343C;
+$pww-color-yellow:   #B1CF24;
+$pww-color-teal:     #149BAF;
+$pww-color-blue:     #32559A;
+$pww-color-red:      #DB504A;
+$pww-color-green:    #4A9A4E;
+$pww-color-light:    #ffffff;
+$pww-color-gray:     #626262;
+$pww-color-dark:     #000000;
 
 // allow the colors to be used in inline styles
 $palette: (
-    "yellow":   $fare-color-yellow,
-    "blue":     $fare-color-blue,
-    "green":    $fare-color-green,
-    "red":      $fare-color-red,
-    "light":    $fare-color-light,
-    "purple":   $fare-color-purple,
-    "gray":     $fare-color-gray,
-    "dark":     $fare-color-dark
+    "yellow":   $pww-color-yellow,
+    "teal":     $pww-color-teal,
+    "blue":     $pww-color-blue,
+    "red":      $pww-color-red,
+    "green":    $pww-color-green,
+    "light":    $pww-color-light,
+    "gray":     $pww-color-gray,
+    "dark":     $pww-color-dark
 );
 
 // opacities
 $alphas: 25 50 100 150 200 300 400 500 600 700 800 900 1000;
 
 // this is where we define our colors used in the app
-@mixin fare-create-color($name, $baseColor, $alphas) {
-  --fare-color-#{$name}: #{red($baseColor)}, #{green($baseColor)}, #{blue($baseColor)};
+@mixin pww-create-color($name, $baseColor, $alphas) {
+  --pww-color-#{$name}: #{red($baseColor)}, #{green($baseColor)}, #{blue($baseColor)};
 
   @each $alpha in $alphas {
-    --fare-color-#{$name}-#{$alpha}: #{rgba($baseColor, math.div($alpha, 1000))};
+    --pww-color-#{$name}-#{$alpha}: #{rgba($baseColor, math.div($alpha, 1000))};
   }
 
-  --fare-color-#{$name}-1000-focus: #{lighten($baseColor, 20)};
+  --pww-color-#{$name}-1000-focus: #{lighten($baseColor, 20)};
 }
 
 // determines what color should go on which background for the max contrast
 @function core-max-contrast($color) {
-  @return if(lightness($color) > 50, var(--fare-color-dark-1000), var(--fare-color-light-1000));
-  // @return if(true, var(--fare-color-dark-1000), var(--fare-color-light-1000));
+  @return if(lightness($color) > 50, var(--pww-color-dark-1000), var(--pww-color-light-1000));
+  // @return if(true, var(--pww-color-dark-1000), var(--pww-color-light-1000));
 }
 
 :root {
   @each $name, $color in $palette {
-    @include fare-create-color($name, $color, $alphas);
+    @include pww-create-color($name, $color, $alphas);
   }
 }
 
@@ -60,19 +60,19 @@ $zIndex: -10 -5 0 5 10 50 100 1000;
 // initializes all the vairations of the variables
 :root {
   @each $fontSize in $fontSizes {
-    --fare-font-size-#{$fontSize}: #{$fontSize}px;
+    --pww-font-size-#{$fontSize}: #{$fontSize}px;
   }
 
   @each $borderRadius in $borderRadii {
-    --fare-border-radius-#{$borderRadius}: #{$borderRadius}px;
+    --pww-border-radius-#{$borderRadius}: #{$borderRadius}px;
   }
 
   @each $zIndex in $zIndex {
-    --fare-z-#{$zIndex}: #{$zIndex};
+    --pww-z-#{$zIndex}: #{$zIndex};
   }
 
-  --fare-shadow-dark: var(--fare-color-dark-50) 0px 7px 15px 0px;  
-  --fare-shadow-ambient: var(--fare-color-dark-100) 0px 15px 35px 0px;
+  --pww-shadow-dark: var(--pww-color-dark-50) 0px 7px 15px 0px;  
+  --pww-shadow-ambient: var(--pww-color-dark-100) 0px 15px 35px 0px;
 }
 
 // font weights

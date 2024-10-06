@@ -9,7 +9,7 @@
 
         // &-logo {
         //     display: block;
-        //     background-image: url('../assets/Hextronics-Logo-White.png');
+        //     background-image: url('../assets/pww-Logo-White.png');
         //     background-size: contain;
         //     background-repeat: no-repeat;
         //     height: 60px;
@@ -19,9 +19,9 @@
 
         &-content {
             padding: 56px 48px;
-            box-shadow: var(--hextronics-shadow-ambient); 
-            background-color: var(--hextronics-color-dark-1000);
-            border-radius: var(--hextronics-border-radius-8);    
+            box-shadow: var(--pww-shadow-ambient); 
+            background-color: var(--pww-color-dark-1000);
+            border-radius: var(--pww-border-radius-8);    
         }
     }
 }
@@ -41,7 +41,7 @@
         width: 100;
         display: flex;
         justify-content: center;
-        color: var(--hextronics-color-yellow-1000);
-        font-size: var(--hextronics-font-size-72);
+        color: var(--pww-color-yellow-1000);
+        font-size: var(--pww-font-size-72);
     }
 }
