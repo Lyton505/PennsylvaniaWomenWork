@@ -22,14 +22,14 @@ const Navbar = (): ReactElement => {
             >
               Home
             </div>
-            {/* <div
+            <div
               className="Navbar-body-link"
               onClick={() => {
-                navigate("/game")
+                navigate("/mentor")
               }}
             >
-              Game
-            </div> */}
+              Mentor
+            </div>
           </div>
         </div>
       </div>
