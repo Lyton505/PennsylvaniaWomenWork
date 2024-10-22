@@ -7,6 +7,9 @@
 /.pnp
 .pnp.js
 
+# generated files
+**/dist/
+
 # testing
 /coverage
 
