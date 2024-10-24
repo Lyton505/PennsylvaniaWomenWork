@@ -3,7 +3,7 @@ import express from "express"
 const router = express.Router()
 const axios = require("axios").default
 
-router.post("/create-group", async (req, res) => {
+router.post("/create-group", async (req: any, res: any) => {
   const { groupName, groupMembers } = req.body
 
   console.log("Received group data:", req.body)
