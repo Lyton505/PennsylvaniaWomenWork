@@ -1,8 +1,11 @@
 import user from "./user"
+// import workshops from "./workshops"
 
+
+// export { workshops }
 export { user }
 
-// import express, { Request, Response, Application } from "express"
+//import express, { Request, Response, Application } from "express"
 // import cors from "cors"
 // import dbConnect from "./config/dbConnect"
 // import mongoose from "mongoose"
@@ -38,3 +41,4 @@ export { user }
 // app.listen(port, () => {
 //   console.log(`Server running at http://localhost:${port}`)
 // })
+
