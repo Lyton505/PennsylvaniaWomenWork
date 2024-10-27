@@ -9,8 +9,8 @@ const CreateMeeting = () => {
         notes: "",
     }
     const validationSchema = Yup.object().shape({
-        name: Yup.string().required("Meeting is required"),
-        description: Yup.string().required("Notes are required"),
+        meeting: Yup.string().required("Please enter a meeting name"),
+        notes: Yup.string().required("Please enter meeting notes"),
     })
     const handleSubmit = (values: any) => {
         console.log(values)
@@ -27,13 +27,16 @@ const CreateMeeting = () => {
             {({ values, errors, touched, isSubmitting }) => (
                 <Form>
                     <div className="Form-group">
-                        <label htmlFor="name">Meeting</label>
+                        <label htmlFor="name">Meeting Name</label>
                         <Field 
                             type="text" 
                             name="meeting" 
-                            placeholder="Meeting" 
+                            placeholder="Meeting Name" 
                             className="Form-input-box"
                         />
+                        {errors.meeting && touched.meeting && (
+                      <div className="Form-error">{errors.meeting}</div>
+                    )}
                     </div>
                     <div className="Form-group">
                         <label htmlFor="notes">Notes</label>
@@ -43,6 +46,9 @@ const CreateMeeting = () => {
                             placeholder="Notes" 
                             className="Form-input-box"
                         />
+                        {errors.notes && touched.notes && (
+                      <div className="Form-error">{errors.notes}</div>
+                        )}
                     </div>
                     <button 
                         type="submit" 
