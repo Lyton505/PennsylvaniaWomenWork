@@ -5,12 +5,12 @@ import * as Yup from "yup"
 
 const CreateMeeting = () => {
     const initialValues = {
-        name: "",
-        description: "",
+        meeting: "",
+        notes: "",
     }
     const validationSchema = Yup.object().shape({
-        name: Yup.string().required("Name is required"),
-        description: Yup.string().required("Description is required"),
+        name: Yup.string().required("Meeting is required"),
+        description: Yup.string().required("Notes are required"),
     })
     const handleSubmit = (values: any) => {
         console.log(values)
@@ -27,20 +27,20 @@ const CreateMeeting = () => {
             {({ values, errors, touched, isSubmitting }) => (
                 <Form>
                     <div className="Form-group">
-                        <label htmlFor="name">Name</label>
+                        <label htmlFor="name">Meeting</label>
                         <Field 
                             type="text" 
-                            name="name" 
-                            placeholder="Name" 
+                            name="meeting" 
+                            placeholder="Meeting" 
                             className="Form-input-box"
                         />
                     </div>
                     <div className="Form-group">
-                        <label htmlFor="description">Description</label>
+                        <label htmlFor="notes">Notes</label>
                         <Field 
                             type="text" 
-                            name="description" 
-                            placeholder="Description" 
+                            name="notes" 
+                            placeholder="Notes" 
                             className="Form-input-box"
                         />
                     </div>
