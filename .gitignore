@@ -24,6 +24,8 @@
 .env.test.local
 .env.production.local
 
+/api/dist
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
