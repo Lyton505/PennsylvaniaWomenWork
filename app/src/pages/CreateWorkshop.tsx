@@ -34,6 +34,9 @@ const CreateWorkshop = () => {
                             placeholder="Name" 
                             className="Form-input-box"
                         />
+                        {errors.name && touched.name && (
+                            <div className="Form-error">{errors.name}</div>
+                        )}
                     </div>
                     <div className="Form-group">
                         <label htmlFor="description">Description</label>
@@ -43,6 +46,9 @@ const CreateWorkshop = () => {
                             placeholder="Description" 
                             className="Form-input-box"
                         />
+                        {errors.description && touched.description && (
+                            <div className="Form-error">{errors.description}</div>
+                        )}
                     </div>
                     <button 
                         type="submit" 
