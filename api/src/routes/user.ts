@@ -20,14 +20,14 @@ const userSchema = new mongoose.Schema({
   menteeInfo: [String],        // For mentors only
   meetingSchedule: [String],   // For mentees only
   mentorData: String,          // For mentees only
-  pairings: [[String]]         // For admins only, array of pairs of strings
+  //pairings: [[String]]         // For admins only, array of pairs of strings
 })
 
 const User = mongoose.model("User", userSchema)
 
 // Route to create a new user
 router.post("/create-user", async (req: any, res: any) => {
-  const { firstName, lastName, username, email, role, workshopIDs, menteeInfo, meetingSchedule, mentorData, pairings } = req.body;
+  const { firstName, lastName, username, email, role, workshopIDs, menteeInfo, meetingSchedule, mentorData } = req.body;
 
   if (!firstName || !lastName || !username || !email || !role) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -44,14 +44,14 @@ router.post("/create-user", async (req: any, res: any) => {
     menteeInfo: role === "mentor" ? menteeInfo : undefined,
     meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
     mentorData: role === "mentee" ? mentorData : undefined,
-    pairings: role === "admin" ? pairings : undefined
+    //pairings: role === "admin" ? pairings : undefined
   })
 
   try {
     const savedUser = await newUser.save();
     res.status(201).json({ message: "User created successfully", user: savedUser });
   } catch (error) {
-    res.status(500).json({ message: "Failed to create user", error });
+    res.status(400).json({ message: "Failed to create user", error });
   }
 })
 
