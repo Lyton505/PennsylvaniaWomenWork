@@ -1,9 +1,10 @@
 import user from "./user"
+import workshopid from "./workshopid"
 // import workshops from "./workshops"
 
 
 // export { workshops }
-export { user }
+export { user, workshopid }
 
 //import express, { Request, Response, Application } from "express"
 // import cors from "cors"
