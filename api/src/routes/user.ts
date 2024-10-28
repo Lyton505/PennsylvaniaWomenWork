@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
   menteeInfo: [String],        // For mentors only
   meetingSchedule: [String],   // For mentees only
   mentorData: String,          // For mentees only
-  //pairings: [[String]]         // For admins only, array of pairs of strings
 })
 
 const User = mongoose.model("User", userSchema)
@@ -44,7 +43,6 @@ router.post("/create-user", async (req: any, res: any) => {
     menteeInfo: role === "mentor" ? menteeInfo : undefined,
     meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
     mentorData: role === "mentee" ? mentorData : undefined,
-    //pairings: role === "admin" ? pairings : undefined
   })
 
   try {
@@ -55,40 +53,11 @@ router.post("/create-user", async (req: any, res: any) => {
   }
 })
 
+router.post("/test", async (req: any, res: any) => {
+  console.log("Received group data:")
+  const {name} = req.body;
+
+  return res.status(200).json(name)
+})
+
 export default router
-
-
-// import express from "express"
-//
-// const router = express.Router()
-// const axios = require("axios").default
-//
-// router.post("/create-group", async (req, res) => {
-//   const { groupName, groupMembers } = req.body
-//
-//   console.log("Received group data:", req.body)
-//
-//   //   Validate request body
-//   if (!groupName || !groupMembers) {
-//     return res.status(400).json({
-//       message: "Invalid data. Please provide group name and group members.",
-//     })
-//   }
-//
-//   // Log the received data for debugging
-//   console.log("Received group data:", {
-//     groupName,
-//     groupMembers,
-//   })
-//
-//   // Create a new group
-//   const response = await axios.post("http://localhost:3001/api/group", {
-//     groupName,
-//     groupMembers,
-//   })
-//
-//   return res.status(response.status).json(response.data)
-// })
-//
-// export default router
-
