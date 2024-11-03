@@ -21,6 +21,8 @@ const CreateWorkshop = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [success, setSuccess] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
+    const [fileTitles, setFileTitles] = useState<string[]>([])
+    const [fileAdded, setFileAdded] = useState(false)
 
     const fileUploadInitialValues = {
         title: "",
@@ -35,22 +37,24 @@ const CreateWorkshop = () => {
     
     const handleFileSumbit = async (values: any, { resetForm }: any) => {
         setIsLoading(true)
-        setErrorMessage("") // Clear error message at the start of submission
+        setErrorMessage("")
     
         try {
-            // Package the final data to submit
             const finalData = {
-            item: values.item,
+                title: values.title,
+                desc: values.desc,
+                file: values.file,
             }
-    
-          console.log("Submitting data:", finalData)
-          setSuccess(true)
-          setErrorMessage("") // Ensure error message is cleared on success
-          resetForm()
+            setFileTitles((prevTitles) => [...prevTitles, values.title]);
+            setFileAdded(true)
+            console.log("Submitting data:", finalData)
+            setSuccess(true)
+            setErrorMessage("")
+            resetForm()
         } catch (error) {
-          console.error("Error submitting:", error)
+            console.error("Error submitting:", error)
         } finally {
-          setIsLoading(false)
+            setIsLoading(false)
         }
     }
     return (
@@ -166,23 +170,32 @@ const CreateWorkshop = () => {
                             className="Form-input-box"
                         />
                     </div>
+                    { fileAdded && (<div>
+                        <h3>Uploaded Files:</h3>
+                        <ul>
+                        {fileTitles.map((title, index) => (
+                        <li key={index}>{title}</li>
+                        ))}
+                        </ul>
+                    </div>
+                    )}
+                    <div
+                        onClick={() => {
+                            setIsModal(true)
+                        }}
+                        className="Button Button-color--dark-1000 Margin-top--10"
+                    >
+                        Add New Files
+                    </div>
                     <button 
                         type="submit" 
-                        className="Button Button-color--dark-1000 Width--100"
+                        className="Button Button-color--dark-1000 Width--100 Margin-top--10"
                     >
                         Create Workshop
                     </button>
                 </Form>
             )}
         </Formik>
-        <div
-            onClick={() => {
-                setIsModal(true)
-            }}
-            className="Button Button-color--dark-1000 Margin-top--10"
-        >
-            Add New Files
-        </div>
       </>
     )
   }
