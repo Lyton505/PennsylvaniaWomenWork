@@ -26,7 +26,7 @@ const CreateWorkshop = () => {
         file: "",
     }
     const validationSchema2 = Yup.object().shape({
-        item: Yup.string().required("Please enter an item or activity"),
+        file: Yup.mixed().required("Please select a file")
     })
     
     const handleSubmit2 = async (values: any, { resetForm }: any) => {
@@ -100,7 +100,7 @@ const CreateWorkshop = () => {
 
                     {success && (
                         <div className="Form-success">
-                        Expense logged successfully!
+                        File uploaded successfully!
                         </div>
                     )}
                     </Form>
