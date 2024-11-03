@@ -23,9 +23,13 @@ const CreateWorkshop = () => {
     const [errorMessage, setErrorMessage] = useState("")
 
     const initialValues2 = {
+        title: "",
+        desc: "",        
         file: "",
     }
     const validationSchema2 = Yup.object().shape({
+        title: Yup.string().required("Title is required"),
+        desc: Yup.string().required("Description is required"),
         file: Yup.mixed().required("Please select a file")
     })
     
@@ -64,6 +68,32 @@ const CreateWorkshop = () => {
                 >
                 {({ values, errors, touched, isSubmitting }) => (
                     <Form>
+                    <div className="Form-group">
+                        <label htmlFor="title">Title</label>
+                        <Field
+                        className="Form-input-box"
+                        type="text"
+                        id="title"
+                        name="title"
+                        />
+                        {errors.title && touched.title && (
+                        <div className="Form-error">{errors.title}</div>
+                        )}
+                    </div>
+                    <div className="Form-group">
+                        <label htmlFor="desc">Description</label>
+                        <Field
+                        as="textarea"
+                        className="Form-input-box"
+                        type="text"
+                        id="desc"
+                        name="desc"
+                        rows="4"
+                        />
+                        {errors.desc && touched.desc && (
+                        <div className="Form-error">{errors.desc}</div>
+                        )}
+                    </div>
                     <div className="Form-group">
                         <label htmlFor="file">Files</label>
                         <Field
