@@ -22,18 +22,18 @@ const CreateWorkshop = () => {
     const [success, setSuccess] = useState(false)
     const [errorMessage, setErrorMessage] = useState("")
 
-    const initialValues2 = {
+    const fileUploadInitialValues = {
         title: "",
         desc: "",        
         file: "",
     }
-    const validationSchema2 = Yup.object().shape({
+    const fileValidation = Yup.object().shape({
         title: Yup.string().required("Title is required"),
         desc: Yup.string().required("Description is required"),
         file: Yup.mixed().required("Please select a file")
     })
     
-    const handleSubmit2 = async (values: any, { resetForm }: any) => {
+    const handleFileSumbit = async (values: any, { resetForm }: any) => {
         setIsLoading(true)
         setErrorMessage("") // Clear error message at the start of submission
     
@@ -62,9 +62,9 @@ const CreateWorkshop = () => {
             action={() => setIsModal(false)}
             body={
                 <Formik
-                initialValues={initialValues2}
-                validationSchema={validationSchema2}
-                onSubmit={handleSubmit2}
+                initialValues={fileUploadInitialValues}
+                validationSchema={fileValidation}
+                onSubmit={handleFileSumbit}
                 >
                 {({ values, errors, touched, isSubmitting }) => (
                     <Form>
