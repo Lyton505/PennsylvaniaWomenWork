@@ -1,6 +1,13 @@
 import user from "./user"
+import express from 'express';
+import workshopRoutes from './workshop';  // Import workshop routes
 
 export { user }
+
+const router = express.Router();
+router.use('/workshops', workshopRoutes);  // Use workshop routes
+
+export default router;
 
 // import express, { Request, Response, Application } from "express"
 // import cors from "cors"
