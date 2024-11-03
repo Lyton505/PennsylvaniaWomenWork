@@ -1,11 +1,11 @@
 import user from "./user"
-import workshopid from "./workshop"
-// import workshops from "./workshops"
+import express from "express"
+import workshop from "./workshop" // Import workshop routes
 
 // export { workshops }
-export { user, workshopid }
+export { user, workshop }
 
-//import express, { Request, Response, Application } from "express"
+// import express, { Request, Response, Application } from "express"
 // import cors from "cors"
 // import dbConnect from "./config/dbConnect"
 // import mongoose from "mongoose"

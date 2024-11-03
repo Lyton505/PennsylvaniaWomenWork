@@ -2,6 +2,8 @@ import express from "express"
 import mongoose from "mongoose"
 import dbConnect from "../config/db" // Import the dbConnect function
 
+import { createWorkshop, getWorkshop } from "../controllers/workshopController"
+
 const router = express.Router()
 
 // Call the dbConnect function to connect to MongoDB
@@ -40,4 +42,26 @@ router.post("/create-workshopID", async (req: any, res: any) => {
   }
 })
 
+router.post("/workshops", createWorkshop)
+// router.get('/workshops/:id', getWorkshop);
+router.get(
+  "/workshops/:id",
+  async (req: express.Request, res: express.Response) => {
+    await getWorkshop(req, res)
+  }
+)
+
+// POPULATE VERSION (if details of mentor/mentee objects are needed on the frontend like name or picture)
+
+// import express from 'express';
+// import { createWorkshop, getWorkshop } from '../controllers/workshopController';
+
+// const router = express.Router();
+
+// router.post('/workshops', createWorkshop);
+// router.get('/workshops/:id', getWorkshop);
+
+// export default router;
+
 export default router
+// NO POPULATE VERSION

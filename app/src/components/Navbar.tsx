@@ -38,6 +38,14 @@ const Navbar = (): ReactElement => {
             >
               Create Workshop
             </div>
+            <div
+              className="Navbar-body-link Margin-left--20"
+              onClick={() => {
+                navigate("/create-meeting")
+              }}
+            >
+              Create Meeting
+            </div>
           </div>
         </div>
       </div>
