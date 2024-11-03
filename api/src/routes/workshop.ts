@@ -15,20 +15,20 @@ const workshopIDSchema = new mongoose.Schema({
   s3ID: String,
 })
 
-const WorkshopID = mongoose.model("WorkshopID", workshopIDSchema)
+const Workshop = mongoose.model("WorkshopID", workshopIDSchema)
 
 // Route to create a new workshop
-router.post("/create-workshopID", async (req: any, res: any) => {
-  const { name, s3ID } = req.body
+router.post("/create-workshop", async (req: any, res: any) => {
+  const { name, s3id } = req.body
 
-  if (!name || !s3ID) {
+  if (!name || !s3id) {
     return res.status(400).json({ message: "Missing required fields" })
   }
 
   // Create a new workshop
-  const newWorkshop = new WorkshopID({
+  const newWorkshop = new Workshop({
     name,
-    s3ID,
+    s3id,
   })
 
   try {
@@ -38,11 +38,11 @@ router.post("/create-workshopID", async (req: any, res: any) => {
       WorkshopID: savedWorkshop,
     })
   } catch (error) {
-    res.status(400).json({ message: "Failed to create workshop", error })
+    res.status(401).json({ message: "Failed to create workshop", error })
   }
 })
 
-router.post("/workshops", createWorkshop)
+// router.post("/workshops", createWorkshop)
 // router.get('/workshops/:id', getWorkshop);
 router.get(
   "/workshops/:id",
