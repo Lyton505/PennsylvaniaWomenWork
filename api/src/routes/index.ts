@@ -1,7 +1,6 @@
 import user from "./user"
-import workshopid from "./workshopid"
+import workshopid from "./workshop"
 // import workshops from "./workshops"
-
 
 // export { workshops }
 export { user, workshopid }
@@ -42,4 +41,3 @@ export { user, workshopid }
 // app.listen(port, () => {
 //   console.log(`Server running at http://localhost:${port}`)
 // })
-

@@ -14,4 +14,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use("/user", routes.user)
 app.use("/workshopid", routes.workshopid)
 
+connectDB()
+
 app.listen(process.env.PORT || 8000, () => console.log("Server running..."))
