@@ -1,11 +1,11 @@
-import express from "express"
-import mongoose from "mongoose"
-import dbConnect from "../config/db"
+import express from "express";
+import mongoose from "mongoose";
+import dbConnect from "../config/db";
 
-const router = express.Router()
+const router = express.Router();
 
 // Call the dbConnect function to connect to MongoDB
-dbConnect()
+dbConnect();
 
 // User schema definition
 const userSchema = new mongoose.Schema({
@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema({
   menteeInfo: [String], // For mentors only
   meetingSchedule: [String], // For mentees only
   mentorData: String, // For mentees only
-})
+});
 
-const User = mongoose.model("User", userSchema)
+const User = mongoose.model("User", userSchema);
 
 // Route to create a new user
 router.post("/create-user", async (req: any, res: any) => {
@@ -34,10 +34,10 @@ router.post("/create-user", async (req: any, res: any) => {
     menteeInfo,
     meetingSchedule,
     mentorData,
-  } = req.body
+  } = req.body;
 
   if (!firstName || !lastName || !username || !email || !role) {
-    return res.status(400).json({ message: "Missing required fields" })
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   // Create a new user based on role
@@ -51,24 +51,24 @@ router.post("/create-user", async (req: any, res: any) => {
     menteeInfo: role === "mentor" ? menteeInfo : undefined,
     meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
     mentorData: role === "mentee" ? mentorData : undefined,
-  })
+  });
 
   try {
-    const savedUser = await newUser.save()
+    const savedUser = await newUser.save();
     res
       .status(201)
-      .json({ message: "User created successfully", user: savedUser })
+      .json({ message: "User created successfully", user: savedUser });
   } catch (error) {
-    res.status(400).json({ message: "Failed to create user", error })
+    res.status(400).json({ message: "Failed to create user", error });
   }
-})
+});
 
 // Test route to check if the API is working
 router.post("/test", async (req: any, res: any) => {
-  console.log("Received group data:")
-  const { name } = req.body
+  console.log("Received group data:");
+  const { name } = req.body;
 
-  return res.status(200).json({ name })
-})
+  return res.status(200).json({ name });
+});
 
-export default router
+export default router;

@@ -1,9 +1,9 @@
-import user from "./user"
-import express from "express"
-import workshop from "./workshop" // Import workshop routes
+import user from "./user";
+import express from "express";
+import workshop from "./workshop"; // Import workshop routes
 
 // export { workshops }
-export { user, workshop }
+export { user, workshop };
 
 // import express, { Request, Response, Application } from "express"
 // import cors from "cors"
