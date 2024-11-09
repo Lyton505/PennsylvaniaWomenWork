@@ -1,6 +1,10 @@
 import express from "express";
 import bodyParser from "body-parser";
 import connectDB from "./config/db";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import * as routes from "./routes/index";
 
