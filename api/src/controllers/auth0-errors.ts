@@ -8,7 +8,7 @@ export const errorHandler = (
   error: any,
   request: Request,
   response: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.log("Auth Error");
 
