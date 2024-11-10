@@ -1,8 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db";
+import { validateAccessToken } from "../controllers/auth0-middleware";
 
 const router = express.Router();
+
+router.use(validateAccessToken);
 
 // Call the dbConnect function to connect to MongoDB
 dbConnect();
