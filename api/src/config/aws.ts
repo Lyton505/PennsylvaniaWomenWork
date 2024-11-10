@@ -1,6 +1,6 @@
-require("dotenv").config();
-const AWS = require("aws-sdk");
-const express = require("express");
+require('dotenv').config();
+const AWS = require('aws-sdk');
+const express = require('express');
 const app = express();
 
 // Configure AWS SDK
@@ -11,7 +11,7 @@ const s3 = new AWS.S3({
 });
 
 // Route to list all files in the S3 bucket
-app.get("/files", (req, res) => {
+app.get('/files', (req, res) => {
   const params = {
     Bucket: process.env.S3_BUCKET_NAME,
   };
@@ -25,7 +25,7 @@ app.get("/files", (req, res) => {
     const fileUrls = data.Contents.map((file) => {
       return {
         key: file.Key,
-        url: s3.getSignedUrl("getObject", {
+        url: s3.getSignedUrl('getObject', {
           Bucket: process.env.S3_BUCKET_NAME,
           Key: file.Key,
           Expires: 60 * 60, // Link expires in 1 hour
@@ -39,5 +39,5 @@ app.get("/files", (req, res) => {
 
 // Start server
 app.listen(3001, () => {
-  console.log("Server started on port 3001");
+  console.log('Server started on port 3001');
 });
