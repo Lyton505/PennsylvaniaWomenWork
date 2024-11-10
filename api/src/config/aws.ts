@@ -20,7 +20,7 @@ app.get('/files', (req, res) => {
     if (error) {
       return res.status(500).send(error);
     }
-    
+
     // Map each file to its URL and return the list
     const fileUrls = data.Contents.map((file) => {
       return {
