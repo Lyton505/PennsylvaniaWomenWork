@@ -52,7 +52,7 @@ router.get(
   "/workshops/:id",
   async (req: express.Request, res: express.Response) => {
     await getWorkshop(req, res);
-  }
+  },
 );
 
 router.post("/testId/:id", async (req: any, res: any) => {
