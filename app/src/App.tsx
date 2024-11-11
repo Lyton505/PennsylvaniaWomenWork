@@ -1,5 +1,5 @@
 import React, { type ReactElement } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import MentorDashboard from "./pages/MentorDashboard";
 import CreateWorkshop from "./pages/CreateWorkshop";
