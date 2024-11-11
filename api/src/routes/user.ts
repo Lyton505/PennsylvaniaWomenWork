@@ -1,11 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db";
-import { validateAccessToken } from "../controllers/auth0-middleware";
+// import { validateAccessToken } from "../controllers/auth0-middleware";
 
 const router = express.Router();
 
-router.use(validateAccessToken);
+// TODO: Add auth0 middleware
+// router.use(validateAccessToken);
 
 // Call the dbConnect function to connect to MongoDB
 dbConnect();
@@ -69,9 +70,15 @@ router.post("/create-user", async (req: any, res: any) => {
 // Test route to check if the API is working
 router.post("/test", async (req: any, res: any) => {
   console.log("Received group data:");
-  const { name } = req.body;
 
-  return res.status(200).json({ name });
+  let name;
+  if (req.body.name === undefined) {
+    name = "empty";
+  } else {
+    ({ name } = req.body);
+  }
+
+  return res.status(200).json(`Your name is ${name}`);
 });
 
 export default router;
