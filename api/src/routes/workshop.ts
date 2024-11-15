@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db"; // Import the dbConnect function
 
-const router = express.Router()
+const router = express.Router();
 
 // Call the dbConnect function to connect to MongoDB
 dbConnect();
@@ -12,32 +12,31 @@ const workshopSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   s3id: { type: String, required: false },
-})
+});
 
-const Workshop = mongoose.model("Workshop", workshopSchema)
+const Workshop = mongoose.model("Workshop", workshopSchema);
 
 // Route to create a new workshop
 router.post("/create-workshop", async (req: any, res: any) => {
-  const { name, description, s3id } = req.body
+  const { name, description, s3id } = req.body;
 
-  if (!name || !description ) {
-    return res.status(400).json({ message: "Missing required fields" })
+  if (!name || !description) {
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
     // Create a new workshop with
-    const newWorkshop = new Workshop({ name, description, s3id })
-    const savedWorkshop = await newWorkshop.save()
+    const newWorkshop = new Workshop({ name, description, s3id });
+    const savedWorkshop = await newWorkshop.save();
 
     // Success:
     res.status(201).json({
       message: "Workshop created successfully",
       workshop: savedWorkshop,
-    })
-
+    });
   } catch (error) {
-    console.error("Error saving workshop:", error)
-    res.status(500).json({ message: "Failed to create workshop", error })
+    console.error("Error saving workshop:", error);
+    res.status(500).json({ message: "Failed to create workshop", error });
   }
 });
 
@@ -48,5 +47,4 @@ router.post("/create-workshop", async (req: any, res: any) => {
 //     }
 // )
 
-export default router
-
+export default router;

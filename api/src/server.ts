@@ -8,7 +8,7 @@ import connectDB from "./config/db";
 
 var cors = require("cors");
 
-const app = express()
+const app = express();
 app.use(cors({ origin: "http://localhost:3000" })); // Connect to the frontend PORT 3000
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,7 +19,4 @@ import * as routes from "./routes/index";
 app.use("/user", routes.user);
 app.use("/api", routes.workshop); // New workshop route
 
-
-
 app.listen(process.env.PORT || 8000, () => console.log("Server running..."));
-
