@@ -21,12 +21,25 @@
             width: 125px;
             height: 75px; /* Adjust height based on the image’s aspect ratio */
         }
+        &-home {
+            font-size: var(--pww-font-size-30);
+            font-weight: 900;
+            background-image: url('../assets/home.png');
+            background-size: contain; /* Ensure the entire logo fits within the defined area */
+            background-repeat: no-repeat; /* Prevent repeating */
+            background-position: center; /* Center the logo within its container */
+            width: 50px;  // Reduced from 125px to be more proportional
+            height: 50px; // Reduced from 70px to match navbar height
+            margin-right: 20px; 
+        }
 
         &-link {
             color: var(--pww-color-dark-1000);
             cursor: pointer;
             font-size: var(--pww-font-size-16);
-
+            display: flex; // Add this
+            align-items: center; // Add this
+            height: 50px; // Match the height of the home icon
             &:hover {
                 color: var(--pww-color-teal-1000);
             }
