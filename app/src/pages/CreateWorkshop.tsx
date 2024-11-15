@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Navbar from "../components/Navbar";
+import { api } from "../api";
 
 const initialValues = {
     name: "",
@@ -19,28 +20,15 @@ const CreateWorkshop = () => {
     const handleSubmit = async (values: any, { setSubmitting, resetForm }: any) => {
         setSubmitting(true)
         try {
-            // Make a POST request to the backend API
-            const response = await fetch("http://localhost:8000/api/create-workshop", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: values.name,
-                    description: values.description,
-                    s3id: "example-s3-id", // TODO: Placeholder for S3 ID until set up
-                }),
-            })
+            const payload = {
+                name: values.name,
+                description: values.description,
+                s3id: "example-s3-id", // TODO: Placeholder for S3 ID until set up
+            };
 
-            // Parse the response
-            const data = await response.json()
+            await api.post("/api/create-workshop", payload);
+            // api.ts deals with error responses !
 
-            if (response.ok) {
-                alert("Workshop created successfully!")
-                resetForm() // Reset the form after a successful submission
-            } else {
-                alert(`Error: ${data.message}`)
-            }
         } catch (error) {
             console.error("Error creating workshop:", error)
             alert("Failed to create workshop. Please try again.")
