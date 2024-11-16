@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db"; // Import the dbConnect function
 
-import { createWorkshop, getWorkshop } from "../controllers/workshopController";
+import { createWorkshop, getWorkshop, getWorkshopsByUserId } from "../controllers/workshopController";
 
 const router = express.Router();
 
@@ -50,6 +50,11 @@ router.get(
     await getWorkshop(req, res);
   },
 );
+
+// Route to get workshops by user ID
+router.get("/workshops/user/:userId", async (req: express.Request, res: express.Response) => {
+  await getWorkshopsByUserId(req, res);
+});
 
 // POPULATE VERSION (if details of mentor/mentee objects are needed on the frontend like name or picture)
 
