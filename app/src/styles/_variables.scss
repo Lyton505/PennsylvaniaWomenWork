@@ -34,7 +34,8 @@ $alphas: 25 50 100 150 200 300 400 500 600 700 800 900 1000;
 
 // this is where we define our colors used in the app
 @mixin pww-create-color($name, $baseColor, $alphas) {
-  --pww-color-#{$name}: #{red($baseColor)}, #{green($baseColor)}, #{blue($baseColor)};
+  --pww-color-#{$name}: #{red($baseColor)}, #{green($baseColor)},
+    #{blue($baseColor)};
 
   @each $alpha in $alphas {
     --pww-color-#{$name}-#{$alpha}: #{rgba($baseColor, math.div($alpha, 1000))};
@@ -45,7 +46,11 @@ $alphas: 25 50 100 150 200 300 400 500 600 700 800 900 1000;
 
 // determines what color should go on which background for the max contrast
 @function core-max-contrast($color) {
-  @return if(lightness($color) > 50, var(--pww-color-dark-1000), var(--pww-color-light-1000));
+  @return if(
+    lightness($color) > 50,
+    var(--pww-color-dark-1000),
+    var(--pww-color-light-1000)
+  );
   // @return if(true, var(--pww-color-dark-1000), var(--pww-color-light-1000));
 }
 
@@ -78,7 +83,7 @@ $zIndex: -10 -5 0 5 10 50 100 1000;
     --pww-z-#{$zIndex}: #{$zIndex};
   }
 
-  --pww-shadow-dark: var(--pww-color-dark-50) 0px 7px 15px 0px;  
+  --pww-shadow-dark: var(--pww-color-dark-50) 0px 7px 15px 0px;
   --pww-shadow-ambient: var(--pww-color-dark-100) 0px 15px 35px 0px;
 }
 
@@ -87,30 +92,34 @@ $weights: 25 50 100 200 300 400 500 600 700 800 900 !default;
 
 // defines more variables for the app
 @mixin root-palette($palette) {
-    @each $name, $color in $palette {
-      --#{$name}: #{red($color)}, #{green($color)}, #{blue($color)};
-      --#{$name}-dark: #{red(saturate($color, 20))}, #{green(saturate($color, 20))}, #{blue(saturate($color, 20))};
-      --#{$name}-light: #{red(lighten($color, 20))}, #{green(lighten($color, 20))}, #{blue(lighten($color, 20))};
-    }
+  @each $name, $color in $palette {
+    --#{$name}: #{red($color)}, #{green($color)}, #{blue($color)};
+    --#{$name}-dark: #{red(saturate($color, 20))},
+      #{green(saturate($color, 20))}, #{blue(saturate($color, 20))};
+    --#{$name}-light: #{red(lighten($color, 20))}, #{green(lighten($color, 20))},
+      #{blue(lighten($color, 20))};
   }
-  
-  @mixin root-property($property, $base, $factors) {
-    @for $i from 1 through length($factors) {
-      --#{$property}-#{$i - 1}: #{$base * nth($factors, $i)};
-    }
-  }
-  
-  @mixin root-color($name, $color) {
-    @each $weight in $weights {
-      --color-#{$name}-#{$weight}: #{lighten($color, math.div((1000 - $weight), 10))};
-    }
-  }
-  
-  @mixin utility($palette, $prefix, $attribute) {
-    @each $name, $color in $palette {
-      .#{$prefix}-#{$name} {
-        #{$attribute}: #{$color};
-      }
-    }
-  }
+}
 
+@mixin root-property($property, $base, $factors) {
+  @for $i from 1 through length($factors) {
+    --#{$property}-#{$i - 1}: #{$base * nth($factors, $i)};
+  }
+}
+
+@mixin root-color($name, $color) {
+  @each $weight in $weights {
+    --color-#{$name}-#{$weight}: #{lighten(
+        $color,
+        math.div((1000 - $weight), 10)
+      )};
+  }
+}
+
+@mixin utility($palette, $prefix, $attribute) {
+  @each $name, $color in $palette {
+    .#{$prefix}-#{$name} {
+      #{$attribute}: #{$color};
+    }
+  }
+}
