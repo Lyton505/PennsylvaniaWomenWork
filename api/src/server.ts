@@ -1,11 +1,14 @@
 import dotenv from "dotenv";
+import path from "path";
+
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import express from "express";
 import bodyParser from "body-parser";
 import connectDB from "./config/db";
+import { errorHandler } from "./controllers/auth0-errors";
+import { notFoundHandler } from "./controllers/auth0-notFound";
 import * as routes from "./routes/index";
-import path from "path";
 
 var cors = require("cors");
 
@@ -18,6 +21,9 @@ app.use("/user", routes.user);
 app.use("/workshop", routes.workshop);
 
 connectDB();
+
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 app.listen(process.env.PORT || 8000, () =>
   console.log(`Server running on port ${process.env.PORT || 8000}`),

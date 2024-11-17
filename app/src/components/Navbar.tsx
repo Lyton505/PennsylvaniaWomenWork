@@ -1,8 +1,14 @@
 import react, { type ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
+import { LoginButton } from "./mock-login-button";
+import { SignupButton } from "./mock-sign-up";
+import { LogoutButton } from "./mock-logout-button";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = (): ReactElement => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth0();
+
   return (
     <>
       <div className="Navbar">
@@ -53,6 +59,15 @@ const Navbar = (): ReactElement => {
             >
               Create Meeting
             </div>
+          </div>
+          <div className="Flex-row">
+            {!isAuthenticated && (
+              <>
+                <LoginButton />
+                <SignupButton />
+              </>
+            )}
+            {isAuthenticated && <LogoutButton />}
           </div>
         </div>
       </div>
