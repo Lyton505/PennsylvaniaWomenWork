@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 // interface
 interface IWorkshop extends Document {
   mentor: Schema.Types.ObjectId; // TODO: add mentor type
@@ -11,8 +11,8 @@ interface IWorkshop extends Document {
 
 // workshop schema
 const WorkshopSchema: Schema<IWorkshop> = new Schema({
-  mentor: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  mentee: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  mentor: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  mentee: { type: Schema.Types.ObjectId, ref: "User", required: true },
   textContent: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
@@ -26,5 +26,5 @@ WorkshopSchema.methods.updateContent = async function (
 };
 
 // mongoose model
-const Workshop = mongoose.model<IWorkshop>('Workshop', WorkshopSchema);
+const Workshop = mongoose.model<IWorkshop>("Workshop", WorkshopSchema);
 export { Workshop, IWorkshop };
