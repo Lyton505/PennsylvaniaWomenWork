@@ -15,13 +15,12 @@ const Navbar = (): ReactElement => {
           ></div>
           <div className="Flex-row Margin-left--auto">
             <div
-              className="Navbar-body-link Margin-right--20"
+              //className="Navbar-body-link Margin-right--20"
               onClick={() => {
                 navigate("/home");
               }}
-            >
-              Home
-            </div>
+              className="Navbar-body-home"
+            ></div>
             <div
               className="Navbar-body-link"
               onClick={() => {

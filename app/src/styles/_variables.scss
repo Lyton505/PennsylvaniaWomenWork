@@ -3,12 +3,17 @@
 
 //add spaces so that the hex codes are lined up
 $pww-color-yellow: #b1cf24;
-$pww-color-teal: #149baf;
-$pww-color-blue: #32559a;
+//$pww-color-teal: #149baf;
+$pww-color-teal:     #0096C0;
+//$pww-color-blue: #32559a;
+$pww-color-blue:     #4C65A6;
 $pww-color-red: #db504a;
-$pww-color-green: #4a9a4e;
+//$pww-color-green: #4a9a4e;
+$pww-color-green:    #BFD71B;
 $pww-color-light: #ffffff;
-$pww-color-gray: #626262;
+$pww-color-neutral:    #f6f4ef;
+//$pww-color-gray: #626262;
+$pww-color-gray:     #545454;
 $pww-color-dark: #000000;
 
 // allow the colors to be used in inline styles
@@ -19,6 +24,7 @@ $palette: (
   "red": $pww-color-red,
   "green": $pww-color-green,
   "light": $pww-color-light,
+  "neutral":  $pww-color-neutral,
   "gray": $pww-color-gray,
   "dark": $pww-color-dark,
 );
