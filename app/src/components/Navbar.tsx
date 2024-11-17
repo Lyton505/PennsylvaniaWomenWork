@@ -15,7 +15,11 @@ const Navbar = (): ReactElement => {
           ></div>
           <div className="Flex-row Margin-left--auto">
             <div
+<<<<<<< HEAD
               //className="Navbar-body-link Margin-right--20"
+=======
+              // className="Navbar-body-link Margin-right--20"
+>>>>>>> 95b86b1204320b9b921bba8d9bc4c56c24148501
               onClick={() => {
                 navigate("/home");
               }}
@@ -32,7 +36,15 @@ const Navbar = (): ReactElement => {
             <div
               className="Navbar-body-link Margin-left--20"
               onClick={() => {
-                navigate("/create-workshop");
+                navigate("/mentee")
+              }}
+            >
+              Mentee
+            </div>
+            <div
+              className="Navbar-body-link Margin-left--20"
+              onClick={() => {
+                navigate("/create-workshop")
               }}
             >
               Create Workshop

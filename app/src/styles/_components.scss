@@ -5,23 +5,40 @@
 
   &-body {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    background-color: var(--pww-color-light-1000);
-    padding: 10px 32px;
-    box-shadow: var(--pww-shadow-dark);
+    flex-direction: column;
+    z-index: var(--pww-z-50);
 
-    &-logo {
-      font-size: var(--pww-font-size-30);
-      font-weight: 900;
-      background-image: url("../assets/logo.png");
-      background-size: contain; /* Ensure the entire logo fits within the defined area */
-      background-repeat: no-repeat; /* Prevent repeating */
-      background-position: center; /* Center the logo within its container */
-      width: 125px;
-      height: 75px; /* Adjust height based on the image’s aspect ratio */
-    }
+    &-body {    
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--pww-color-light-1000);
+        padding: 10px 32px;
+        box-shadow: var(--pww-shadow-dark);
+    
+        &-logo {
+            font-size: var(--pww-font-size-30);
+            font-weight: 900;
+            background-image: url('../assets/logo.png');
+            background-size: contain; /* Ensure the entire logo fits within the defined area */
+            background-repeat: no-repeat; /* Prevent repeating */
+            background-position: center; /* Center the logo within its container */
+            width: 125px;
+            height: 75px; /* Adjust height based on the image’s aspect ratio */
+        }
+        &-home {
+            font-size: var(--pww-font-size-30);
+            font-weight: 900;
+            background-image: url('../assets/home.png');
+            background-size: contain; /* Ensure the entire logo fits within the defined area */
+            background-repeat: no-repeat; /* Prevent repeating */
+            background-position: center; /* Center the logo within its container */
+            width: 50px;  // Reduced from 125px to be more proportional
+            height: 50px; // Reduced from 70px to match navbar height
+            margin-right: 20px; 
+        }
 
+<<<<<<< HEAD
     &-home {
       font-size: var(--pww-font-size-30);
       font-weight: 900;
@@ -42,6 +59,19 @@
       &:hover {
         color: var(--pww-color-teal-1000);
       }
+=======
+        &-link {
+            color: var(--pww-color-dark-1000);
+            cursor: pointer;
+            font-size: var(--pww-font-size-16);
+            display: flex; // Add this
+            align-items: center; // Add this
+            height: 50px; // Match the height of the home icon
+            &:hover {
+                color: var(--pww-color-teal-1000);
+            }
+        }
+>>>>>>> 95b86b1204320b9b921bba8d9bc4c56c24148501
     }
   }
 }
