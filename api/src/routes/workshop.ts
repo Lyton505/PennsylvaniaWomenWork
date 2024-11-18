@@ -1,10 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db"; // Import the dbConnect function
+// import { validateAccessToken } from "../controllers/auth0-middleware";
 
 import { createWorkshop, getWorkshop } from "../controllers/workshopController";
 
 const router = express.Router();
+
+// TODO: Add auth0 middleware
+// router.use(validateAccessToken);
 
 // Call the dbConnect function to connect to MongoDB
 dbConnect();
@@ -50,6 +54,12 @@ router.get(
     await getWorkshop(req, res);
   },
 );
+
+router.post("/testId/:id", async (req: any, res: any) => {
+  res
+    .status(200)
+    .json({ message: "Workshop test successful", id: req.params.id });
+});
 
 // POPULATE VERSION (if details of mentor/mentee objects are needed on the frontend like name or picture)
 
