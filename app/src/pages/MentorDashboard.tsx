@@ -19,7 +19,7 @@ const MentorDashboard = () => {
             <div className="Card Card--noPadding Card-hover Margin-right--10" style={{ width: "215px"}}>
               <div className="Background-color--teal-1000 Padding--20 Border-radius-topLeft--8 Border-radius-topRight--8 Align-items--center Justify-content--center" style={{ height: "96px" }}></div>
               <div className="Padding--10" style={{ height: "75px" }}>
-                <h3 className="Text-fontSize--20 Text-color--gray-600">Jane Doe</h3>
+                <h3 className="Text-fontSize--20 Text-color--gray-600">JaneDoe</h3>
               </div>
             </div>
 
