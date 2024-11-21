@@ -20,7 +20,6 @@ app.use("/workshop", routes.workshop);
 
 connectDB();
 
-
 app.use("/api", router); // connect routes (prefix as api), what is the lin 7 logic for?: import * as routes from "./routes/index"
 
 app.listen(process.env.PORT || 8000, () =>

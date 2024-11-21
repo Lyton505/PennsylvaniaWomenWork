@@ -10,7 +10,9 @@ router.get("/:menteeId/workshops", async (req, res) => {
     const workshops = await Workshop.find({ mentee: menteeId });
     res.status(200).json(workshops);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving workshops for mentee", error });
+    res
+      .status(500)
+      .json({ message: "Error retrieving workshops for mentee", error });
   }
 });
 

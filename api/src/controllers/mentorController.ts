@@ -2,7 +2,10 @@ import { Request, Response } from "express";
 import { Mentor } from "../model/Mentor";
 
 // Get all mentees and their workshops for a given mentor
-export const getMenteesForMentor = async (req: Request, res: Response): Promise<void> => {
+export const getMenteesForMentor = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const { mentorId } = req.params;
 
