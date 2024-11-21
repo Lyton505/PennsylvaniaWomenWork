@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Mentor } from "../model/Mentor";
 
 // Get all mentees and their workshops for a given mentor
-export const getMenteesForMentor = async (req: Request, res: Response) => {
+export const getMenteesForMentor = async (req: Request, res: Response): Promise<void> => {
   try {
     const { mentorId } = req.params;
 
@@ -10,20 +10,20 @@ export const getMenteesForMentor = async (req: Request, res: Response) => {
     const mentor = await Mentor.findById(mentorId)
       .populate({
         path: "mentees",
-        populate: { path: "workshops" }, // Include workshops for each mentee
+        populate: { path: "workshops" }, // workshops for each mentee
       })
-      .populate("workshops"); // Include workshops for the mentor
+      .populate("workshops"); // workshops for the mentor
 
     if (!mentor) {
-      return res.status(404).json({ message: "Mentor not found" });
+      return;
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       mentees: mentor.mentees,
       workshops: mentor.workshops,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "An error occurred", error });
+    res.status(500).json({ message: "An error occurred", error });
   }
 };
