@@ -1,8 +1,12 @@
 import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db"; // Import the dbConnect function
+// import { validateAccessToken } from "../controllers/auth0-middleware";
 
 const router = express.Router();
+
+// TODO: Add auth0 middleware
+// router.use(validateAccessToken);
 
 // Call the dbConnect function to connect to MongoDB
 dbConnect();
@@ -39,12 +43,5 @@ router.post("/create-workshop", async (req: any, res: any) => {
     res.status(500).json({ message: "Failed to create workshop", error });
   }
 });
-
-// router.get(
-//     "/workshops/:id",
-//     async (req: express.Request, res: express.Response) => {
-//       await getWorkshop(req, res)
-//     }
-// )
 
 export default router;
