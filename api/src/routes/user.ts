@@ -145,13 +145,13 @@ router.post("/add-meeting", async (req, res) => {
     await user.save();
 
     console.log("Meeting added successfully for username:", username);
-    return res.status(200).json({ message: "Meeting added successfully", user });
+    return res
+      .status(200)
+      .json({ message: "Meeting added successfully", user });
   } catch (error) {
     console.error("Error adding meeting:", error);
     return res.status(500).json({ message: "Error adding meeting", error });
   }
 });
-
-
 
 export default router;
