@@ -38,7 +38,7 @@ const Navbar = (): ReactElement => {
             <div
               className="Navbar-body-link Margin-left--20"
               onClick={() => {
-                navigate("/mentee")
+                navigate("/mentee");
               }}
             >
               Mentee
@@ -46,7 +46,7 @@ const Navbar = (): ReactElement => {
             <div
               className="Navbar-body-link Margin-left--20"
               onClick={() => {
-                navigate("/create-workshop")
+                navigate("/create-workshop");
               }}
             >
               Create Workshop
