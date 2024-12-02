@@ -1,20 +1,48 @@
-import React, { useState } from "react";
-import { Formik, Form, Field, FieldArray } from "formik";
+import React from "react";
+import { Formik, Form, Field } from "formik";
 import Navbar from "../components/Navbar";
 import * as Yup from "yup";
+import { api } from "../api"; // Ensure this points to your configured API instance
+
+const initialValues = {
+  meeting: "",
+  notes: "",
+};
+
+// Validation schema using Yup
+const validationSchema = Yup.object().shape({
+  meeting: Yup.string().required("Meeting name is required"),
+  notes: Yup.string().required("Meeting notes are required"),
+});
 
 const CreateMeeting = () => {
-  const initialValues = {
-    meeting: "",
-    notes: "",
+  const handleSubmit = async (
+    values: any,
+    { setSubmitting, resetForm }: any,
+  ) => {
+    setSubmitting(true);
+    try {
+      const payload = {
+        username: "sample-username", // TODO: Replace with the logged-in user's username
+        meeting: values.meeting,
+        notes: values.notes,
+      };
+
+      console.log("Submitting payload:", payload); // Debugging log
+
+      await api.post("/user/add-meeting", payload);
+
+      alert("Meeting added successfully!");
+
+      resetForm(); // Clear the form after successful submission
+    } catch (error) {
+      console.error("Error adding meeting:", error);
+      alert("Failed to add meeting. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
-  const validationSchema = Yup.object().shape({
-    meeting: Yup.string().required("Please enter a meeting name"),
-    notes: Yup.string().required("Please enter meeting notes"),
-  });
-  const handleSubmit = (values: any) => {
-    console.log(values);
-  };
+
   return (
     <>
       <Navbar />
@@ -24,10 +52,10 @@ const CreateMeeting = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ values, errors, touched, isSubmitting }) => (
+        {({ errors, touched, isSubmitting }) => (
           <Form>
             <div className="Form-group">
-              <label htmlFor="name">Meeting Name</label>
+              <label htmlFor="meeting">Meeting Name</label>
               <Field
                 type="text"
                 name="meeting"
@@ -38,6 +66,7 @@ const CreateMeeting = () => {
                 <div className="Form-error">{errors.meeting}</div>
               )}
             </div>
+
             <div className="Form-group">
               <label htmlFor="notes">Notes</label>
               <Field
@@ -50,11 +79,13 @@ const CreateMeeting = () => {
                 <div className="Form-error">{errors.notes}</div>
               )}
             </div>
+
             <button
               type="submit"
               className="Button Button-color--dark-1000 Width--100"
+              disabled={isSubmitting}
             >
-              Create Meeting
+              {isSubmitting ? "Submitting..." : "Create Meeting"}
             </button>
           </Form>
         )}
