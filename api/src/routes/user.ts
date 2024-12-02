@@ -23,6 +23,13 @@ const userSchema = new mongoose.Schema({
   menteeInfo: [String], // For mentors only
   meetingSchedule: [String], // For mentees only
   mentorData: String, // For mentees only
+  meetings: [
+    {
+      name: String, // title ??
+      notes: String,
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
@@ -39,6 +46,7 @@ router.post("/create-user", async (req: any, res: any) => {
     menteeInfo,
     meetingSchedule,
     mentorData,
+    meetings,
   } = req.body;
 
   if (!firstName || !lastName || !username || !email || !role) {
@@ -56,6 +64,7 @@ router.post("/create-user", async (req: any, res: any) => {
     menteeInfo: role === "mentor" ? menteeInfo : undefined,
     meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
     mentorData: role === "mentee" ? mentorData : undefined,
+    meetings: meetings || [],
   });
 
   try {
@@ -91,14 +100,19 @@ router.post("/send-email", async (req: any, res: any) => {
       throw new Error("SendGrid API key or test email is missing");
     }
 
-    const { email, name } = req.body;
+    const { email, name, role } = req.body;
 
     sgMail.setApiKey(SENDGRID_API_KEY);
+
+    const templateId =
+      role.toLowerCase().trim() === "mentor"
+        ? "d-1694192e437348e2a0517103acae3f00"
+        : "d-7e26b82cf8624bafa4077b6ed73b52bf";
 
     await sgMail.send({
       to: email,
       from: SEND_GRID_TEST_EMAIL,
-      templateId: "d-7e26b82cf8624bafa4077b6ed73b52bf",
+      templateId: templateId,
       dynamicTemplateData: {
         name: name,
       },
@@ -107,6 +121,41 @@ router.post("/send-email", async (req: any, res: any) => {
     return res.status(200).json({ message: "Email successfully sent" });
   } catch (err) {
     return res.status(400).json({ message: "Email sending failed" });
+  }
+});
+
+// Route to add a meeting
+router.post("/add-meeting", async (req, res) => {
+  const { username, meeting, notes } = req.body;
+
+  // Validate required fields
+  if (!username || !meeting || !notes) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    // Find the user by username
+    console.log("Searching for user with username:", username);
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      console.error(`User not found for username: ${username}`);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Add the meeting to the user's meetings array
+    user.meetings.push({ name: meeting, notes });
+
+    // Save the updated user document
+    await user.save();
+
+    console.log("Meeting added successfully for username:", username);
+    return res
+      .status(200)
+      .json({ message: "Meeting added successfully", user });
+  } catch (error) {
+    console.error("Error adding meeting:", error);
+    return res.status(500).json({ message: "Error adding meeting", error });
   }
 });
 
