@@ -5,7 +5,7 @@ import User from "../model/User";
 // Get all mentees and their workshops for a given mentor
 export const getMenteesForMentor = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const { mentorId } = req.params;

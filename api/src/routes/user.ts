@@ -7,7 +7,7 @@ import User from "../model/User";
 const router = express.Router();
 
 // Call the dbConnect function to connect to MongoDB
-dbConnect();  
+dbConnect();
 
 // Route to create a new user
 router.post("/create-user", async (req: any, res: any) => {
