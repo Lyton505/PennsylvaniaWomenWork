@@ -2,26 +2,12 @@ import express from "express";
 import mongoose from "mongoose";
 import dbConnect from "../config/db";
 import sgMail from "@sendgrid/mail";
+import User from "../model/User";
 
 const router = express.Router();
 
 // Call the dbConnect function to connect to MongoDB
-dbConnect();
-
-// User schema definition
-const userSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  username: String,
-  email: String,
-  role: { type: String, enum: ["mentor", "mentee", "admin"], required: true },
-  workshopIDs: [String], // For mentors only
-  menteeInfo: [String], // For mentors only
-  meetingSchedule: [String], // For mentees only
-  mentorData: String, // For mentees only
-});
-
-const User = mongoose.model("User", userSchema);
+dbConnect();  
 
 // Route to create a new user
 router.post("/create-user", async (req: any, res: any) => {
