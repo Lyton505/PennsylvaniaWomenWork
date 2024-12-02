@@ -100,14 +100,19 @@ router.post("/send-email", async (req: any, res: any) => {
       throw new Error("SendGrid API key or test email is missing");
     }
 
-    const { email, name } = req.body;
+    const { email, name, role } = req.body;
 
     sgMail.setApiKey(SENDGRID_API_KEY);
+
+    const templateId =
+      role.toLowerCase().trim() === "mentor"
+        ? "d-1694192e437348e2a0517103acae3f00"
+        : "d-7e26b82cf8624bafa4077b6ed73b52bf";
 
     await sgMail.send({
       to: email,
       from: SEND_GRID_TEST_EMAIL,
-      templateId: "d-7e26b82cf8624bafa4077b6ed73b52bf",
+      templateId: templateId,
       dynamicTemplateData: {
         name: name,
       },
