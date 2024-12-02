@@ -21,7 +21,6 @@ const Navbar = (): ReactElement => {
           ></div>
           <div className="Flex-row Margin-left--auto">
             <div
-              //className="Navbar-body-link Margin-right--20"
               onClick={() => {
                 navigate("/home");
               }}
