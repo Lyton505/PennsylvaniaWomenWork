@@ -38,7 +38,6 @@
             margin-right: 20px; 
         }
 
-<<<<<<< HEAD
     &-home {
       font-size: var(--pww-font-size-30);
       font-weight: 900;
@@ -59,19 +58,6 @@
       &:hover {
         color: var(--pww-color-teal-1000);
       }
-=======
-        &-link {
-            color: var(--pww-color-dark-1000);
-            cursor: pointer;
-            font-size: var(--pww-font-size-16);
-            display: flex; // Add this
-            align-items: center; // Add this
-            height: 50px; // Match the height of the home icon
-            &:hover {
-                color: var(--pww-color-teal-1000);
-            }
-        }
->>>>>>> 95b86b1204320b9b921bba8d9bc4c56c24148501
     }
   }
 }
@@ -162,4 +148,5 @@
       }
     }
   }
+}
 }
