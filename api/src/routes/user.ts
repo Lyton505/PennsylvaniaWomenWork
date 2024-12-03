@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dbConnect from "../config/db";
 import sgMail from "@sendgrid/mail";
 import User from "../model/User";
+// import { validateAccessToken } from "../controllers/auth0-middleware";
 
 const router = express.Router();
 
