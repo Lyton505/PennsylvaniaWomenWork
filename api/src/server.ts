@@ -12,16 +12,14 @@ import router from "./routes";
 var cors = require("cors");
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000" })); // Connect to the frontend PORT 3000
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use("/user", routes.user);
-app.use("/workshop", routes.workshop);
 
 connectDB();
 
 app.use("/user", routes.user);
 app.use("/api", router);
+app.use("/workshop", routes.workshop);
 
 app.listen(process.env.PORT || 8000, () => console.log("Server running..."));
