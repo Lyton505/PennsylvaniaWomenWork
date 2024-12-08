@@ -110,11 +110,6 @@ const MenteeDashboard = () => {
               </div>
             </div>
           </div>
-          
-
-
-
-          
         </div>
       </div>
     </>
