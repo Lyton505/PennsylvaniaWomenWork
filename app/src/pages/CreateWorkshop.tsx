@@ -2,23 +2,41 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Navbar from "../components/Navbar";
+import { api } from "../api";
+
+const initialValues = {
+  name: "",
+  description: "",
+};
+
+// Validation schema using Yup
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  description: Yup.string().required("Description is required"),
+});
 
 const CreateWorkshop = () => {
-  // Initial form values
-  const initialValues = {
-    name: "",
-    description: "",
-  };
-
-  // Validation schema using Yup
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
-    description: Yup.string().required("Description is required"),
-  });
-
   // Handle form submission
-  const handleSubmit = (values: any) => {
-    console.log(values);
+  const handleSubmit = async (
+    values: any,
+    { setSubmitting, resetForm }: any,
+  ) => {
+    setSubmitting(true);
+    try {
+      const payload = {
+        name: values.name,
+        description: values.description,
+        s3id: "example-s3-id", // TODO: Placeholder for S3 ID until set up
+      };
+
+      await api.post("/api/create-workshop", payload);
+      // api.ts deals with error responses !
+    } catch (error) {
+      console.error("Error creating workshop:", error);
+      alert("Failed to create workshop. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
