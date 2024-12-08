@@ -1,7 +1,7 @@
 // NO POPULATE VERSION
 
-import { Request, Response } from "express";
-import { Workshop } from "../model/Workshop";
+import { Request, Response } from 'express';
+import { Workshop } from '../model/Workshop';
 
 export const createWorkshop = async (req: Request, res: Response) => {
   try {
@@ -16,7 +16,7 @@ export const createWorkshop = async (req: Request, res: Response) => {
     const savedWorkshop = await newWorkshop.save();
     res.status(201).json(savedWorkshop);
   } catch (error) {
-    res.status(500).json({ message: "Error creating workshop", error });
+    res.status(500).json({ message: 'Error creating workshop', error });
   }
 };
 
@@ -27,12 +27,12 @@ export const getWorkshop = async (req: Request, res: Response) => {
     const workshop = await Workshop.findById(id);
 
     if (!workshop) {
-      return res.status(404).json({ message: "Workshop not found" });
+      return res.status(404).json({ message: 'Workshop not found' });
     }
 
     res.status(200).json(workshop);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving workshop", error });
+    res.status(500).json({ message: 'Error retrieving workshop', error });
   }
 };
 
@@ -47,12 +47,12 @@ export const getWorkshopsByUserId = async (req: Request, res: Response) => {
     if (workshops.length === 0) {
       return res
         .status(404)
-        .json({ message: "No workshops found for this user" });
+        .json({ message: 'No workshops found for this user' });
     }
 
     res.status(200).json(workshops);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving workshops", error });
+    res.status(500).json({ message: 'Error retrieving workshops', error });
   }
 };
 
