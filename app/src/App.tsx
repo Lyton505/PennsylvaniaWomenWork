@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import MentorDashboard from "./pages/MentorDashboard";
 import CreateWorkshop from "./pages/CreateWorkshop";
 import CreateMeeting from "./pages/CreateMeeting";
+import MenteeInformation from "./pages/MenteeInformation";
 import AuthCallback from "./pages/auth-callback";
 
 function App(): ReactElement {
@@ -15,6 +16,7 @@ function App(): ReactElement {
         <Route path="/mentor" element={<MentorDashboard />} />
         <Route path="/create-workshop" element={<CreateWorkshop />} />
         <Route path="/create-meeting" element={<CreateMeeting />} />
+        <Route path="/mentor/mentee-information" element={<MenteeInformation />} />
         <Route path="/callback" element={<AuthCallback />} />
       </Routes>
     </div>
