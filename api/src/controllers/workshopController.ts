@@ -36,6 +36,26 @@ export const getWorkshop = async (req: Request, res: Response) => {
   }
 };
 
+export const getWorkshopsByUserId = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const workshops = await Workshop.find({
+      $or: [{ mentor: userId }, { mentee: userId }],
+    });
+
+    if (workshops.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No workshops found for this user" });
+    }
+
+    res.status(200).json(workshops);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving workshops", error });
+  }
+};
+
 // POPULATE VERSION (if details of mentor/mentee objects are needed on the frontend like name or picture)
 
 // import { Request, Response } from 'express';
