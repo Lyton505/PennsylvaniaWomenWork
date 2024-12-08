@@ -45,7 +45,9 @@ export const getWorkshopsByUserId = async (req: Request, res: Response) => {
     });
 
     if (workshops.length === 0) {
-      return res.status(404).json({ message: "No workshops found for this user" });
+      return res
+        .status(404)
+        .json({ message: "No workshops found for this user" });
     }
 
     res.status(200).json(workshops);
