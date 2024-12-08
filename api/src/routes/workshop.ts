@@ -1,12 +1,12 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dbConnect from '../config/db'; // Import the dbConnect function
+import express from "express";
+import mongoose from "mongoose";
+import dbConnect from "../config/db"; // Import the dbConnect function
 
 import {
   createWorkshop,
   getWorkshop,
   getWorkshopsByUserId,
-} from '../controllers/workshopController';
+} from "../controllers/workshopController";
 
 const router = express.Router();
 
@@ -19,14 +19,14 @@ const workshopIDSchema = new mongoose.Schema({
   s3ID: String,
 });
 
-const Workshop = mongoose.model('WorkshopID', workshopIDSchema);
+const Workshop = mongoose.model("WorkshopID", workshopIDSchema);
 
 // Route to create a new workshop
-router.post('/create-workshop', async (req: any, res: any) => {
+router.post("/create-workshop", async (req: any, res: any) => {
   const { name, s3id } = req.body;
 
   if (!name || !s3id) {
-    return res.status(400).json({ message: 'Missing required fields' });
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   // Create a new workshop
@@ -38,18 +38,18 @@ router.post('/create-workshop', async (req: any, res: any) => {
   try {
     const savedWorkshop = await newWorkshop.save();
     res.status(201).json({
-      message: 'Workshop created successfully',
+      message: "Workshop created successfully",
       WorkshopID: savedWorkshop,
     });
   } catch (error) {
-    res.status(401).json({ message: 'Failed to create workshop', error });
+    res.status(401).json({ message: "Failed to create workshop", error });
   }
 });
 
 // router.post("/workshops", createWorkshop)
 // router.get('/workshops/:id', getWorkshop);
 router.get(
-  '/workshops/:id',
+  "/workshops/:id",
   async (req: express.Request, res: express.Response) => {
     await getWorkshop(req, res);
   },
@@ -57,7 +57,7 @@ router.get(
 
 // Route to get workshops by user ID
 router.get(
-  '/workshops/user/:userId',
+  "/workshops/user/:userId",
   async (req: express.Request, res: express.Response) => {
     await getWorkshopsByUserId(req, res);
   },
