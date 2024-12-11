@@ -6,6 +6,8 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 import express from "express";
 import bodyParser from "body-parser";
 import connectDB from "./config/db";
+import * as routes from "./routes/index";
+import router from "./routes";
 
 var cors = require("cors");
 
@@ -16,8 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 connectDB();
 
-import * as routes from "./routes/index";
 app.use("/user", routes.user);
-app.use("/api", routes.workshop); // New workshop route
+app.use("/api", router);
+app.use("/workshop", routes.workshop);
 
 app.listen(process.env.PORT || 8000, () => console.log("Server running..."));
