@@ -146,12 +146,12 @@ const MentorDashboard = () => {
               </div>
             </div>
             <div className = "Flex-row Justify-content--left">
-              <div className = "Button--large Button--rounded Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
+              <div className = "Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
               onClick={() => {
                 navigate("/create-workshop");
               }}>
-                Add New Files: 
-              </div>
+                Add New Files 
+              </div> 
             </div>
           </div>
         )}
