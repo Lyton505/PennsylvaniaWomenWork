@@ -33,7 +33,7 @@ export const updateUser = async (req: Request, res: Response) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: updateData },
-      { new: true, runValidators: true } // Return updated document and validate
+      { new: true, runValidators: true }, // Return updated document and validate
     );
 
     if (!updatedUser) {
