@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dbConnect from "../config/db";
 import sgMail from "@sendgrid/mail";
 import User from "../model/User";
+import { updateUser } from "../controllers/userController";
 // import { validateAccessToken } from "../controllers/auth0-middleware";
 
 const router = express.Router();
@@ -137,5 +138,8 @@ router.post("/add-meeting", async (req, res) => {
     return res.status(500).json({ message: "Error adding meeting", error });
   }
 });
+
+// Route to change a user's information
+router.put("/:userId", updateUser);
 
 export default router;
