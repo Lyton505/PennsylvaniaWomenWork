@@ -23,7 +23,8 @@ const workshopSchema = new mongoose.Schema({
   s3id: { type: String, required: false },
 });
 
-const Workshop = mongoose.models.Workshop || mongoose.model("Workshop", workshopSchema);
+const Workshop =
+  mongoose.models.Workshop || mongoose.model("Workshop", workshopSchema);
 
 // Route to create a new workshop
 router.post("/create-workshop", async (req: any, res: any) => {
