@@ -11,6 +11,13 @@ const userSchema = new mongoose.Schema({
   menteeInfo: [String], // For mentors only
   meetingSchedule: [String], // For mentees only
   mentorData: String, // For mentees only
+  meetings: [
+    {
+      name: String, // title
+      notes: String,
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
