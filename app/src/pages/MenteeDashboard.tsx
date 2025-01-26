@@ -1,7 +1,56 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 
+interface Event {
+  id: number;
+  day: string;
+  date: string;
+  month: string;
+  title: string;
+  description: string;
+  fullDescription: string;
+}
+
 const MenteeDashboard = () => {
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+
+  const events: Event[] = [
+    {
+      id: 1,
+      day: "wed",
+      date: "25",
+      month: "June",
+      title: "Mock Interview Session",
+      description: "Practice your interview skills with an industry professional",
+      fullDescription: "Join us for a comprehensive mock interview session where industry professionals will provide real-world interview scenarios and valuable feedback. You'll get hands-on experience with common interview questions and learn techniques to improve your performance."
+    },
+    {
+      id: 2,
+      day: "fri",
+      date: "27",
+      month: "June",
+      title: "Resume Workshop",
+      description: "Develop your resume with a senior employee",
+      fullDescription: "Work directly with senior employees to craft a compelling resume. Learn about industry best practices, how to highlight your achievements, and get personalized feedback on your current resume. Bring your laptop and current resume for hands-on improvements."
+    },
+    {
+      id: 3,
+      day: "mon",
+      date: "1",
+      month: "July",
+      title: "Networking Event",
+      description: "Connect with industry professionals",
+      fullDescription: "Join us for an evening of networking with senior members in your desired field."
+    }
+  ];
+  const eventsByMonth: { [key: string]: Event[] } = events.reduce((acc, event) => {
+    if (!acc[event.month]) {
+      acc[event.month] = [];
+    }
+    acc[event.month].push(event);
+    return acc;
+  }, {} as { [key: string]: Event[] });
   return (
     <>
       <Navbar />
@@ -73,45 +122,63 @@ const MenteeDashboard = () => {
           <div className="Block-header Text-color--gray-1000 Margin-bottom--20" style={{ borderBottom: '1px solid #e0e0e0', paddingBottom: '10px',textAlign:"center" }}>
             Upcoming Events!
           </div>
-          <div className="Block-subtitle Margin-top--40" style={{borderBottom: '1px solid #e0e0e0', width: "50%"}}>
-            June
-          </div>
 
-          <div className="Margin-top--20">
-            <div className="Flex-row Margin-bottom--10">
-              <div className="Margin-right--40" style={{ textAlign: 'center', width: '40px' }}>
-                <div className="Text-color--gray-800">wed</div>
-                <div className="Text-fontSize--30 Text-color--gray-1000">25</div>
+          {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+            <div key={month}>
+              <div className="Block-subtitle Margin-top--40" 
+                   style={{borderBottom: '1px solid #e0e0e0', width: "50%"}}>
+                {month}
               </div>
-              <div>
-                <div className="Text-fontSize--16 Text-color--gray-1000">
-                  Mock Interview Session
+              
+              {monthEvents.map((event) => (
+                <div className="Margin-top--20" 
+                     key={event.id} 
+                     onClick={() => setSelectedEvent(event)} 
+                     style={{ cursor: 'pointer' }}>
+                  <div className="Flex-row Margin-bottom--10">
+                    <div className="Margin-right--40" style={{ textAlign: 'center', width: '40px' }}>
+                      <div className="Text-color--gray-800">{event.day}</div>
+                      <div className="Text-fontSize--30 Text-color--gray-1000">{event.date}</div>
+                    </div>
+                    <div>
+                      <div className="Text-fontSize--16 Text-color--gray-1000">
+                        {event.title}
+                      </div>
+                      <div className="Text-fontSize--14 Text-color--gray-800">
+                        {event.description}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="Text-fontSize--14 Text-color--gray-800">
-                  Practice your interview skills with an industry professional
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          ))}
 
-          <div className="Margin-top--20">
-            <div className="Flex-row Margin-bottom--10">
-              <div className="Margin-right--40" style={{ textAlign: 'center', width: '40px' }}>
-                <div className="Text-color--gray-800">wed</div>
-                <div className="Text-fontSize--30 Text-color--gray-1000">25</div>
+        </div>
+      </div>
+
+
+      {selectedEvent && (
+        <div className="PopUp--overlay" onClick={() => setSelectedEvent(null)}>
+          <div className="PopUp--content" onClick={e => e.stopPropagation()}>
+            <div className="PopUp--close" onClick={() => setSelectedEvent(null)}>
+              ✕
+            </div>
+            <div className="PopUp--title">
+              {selectedEvent.title}
+            </div>
+            <div className="PopUp--body">
+              <div className="Margin-bottom--10">
+                {selectedEvent.day.toUpperCase()}, {selectedEvent.month} {selectedEvent.date}
               </div>
               <div>
-                <div className="Text-fontSize--16 Text-color--gray-1000">
-                  Resume Workshop
-                </div>
-                <div className="Text-fontSize--14 Text-color--gray-800">
-                  Develop your resume with a senior employee
-                </div>
+                {selectedEvent.fullDescription}
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
+
     </>
   );
 };
