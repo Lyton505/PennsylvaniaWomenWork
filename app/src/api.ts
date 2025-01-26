@@ -4,7 +4,11 @@ export const api: any = {
 
     return await fetch(url, {
       method: "GET",
-      headers: { "Access-Control-Allow-Origin": "*", mode: "no-cors" },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        mode: "no-cors",
+        "Content-Type": "application/json",
+      },
     })
       .then(async (res) => {
         if (!res.ok) {
