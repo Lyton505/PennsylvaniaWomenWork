@@ -1,19 +1,39 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../components/Navbar";
-import Image from "../assets/image.jpg";
+
+interface Mentee {
+  name: string;
+  role: string;
+  description: string;
+  workshops: string[];
+}
 
 const MenteeInformation = () => {
   const navigate = useNavigate();
+
+  const { mentorId } = useParams();
+  const [menteeData, setMenteeData] = useState(null);
   const [activeTab, setActiveTab] = useState("Workshops");
 
-  const menteeData = {
-    name: "Chloe Kim",
-    role: "Marketing",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. In lectus et et pellentesque a mattis. Sapien morbi congue nulla diam sit non at. Arcu platea semper fermentum at fusce. Eu sem varius molestie elit venenatis. Nulla est sollicitudin.",
-    workshops: ["Resume Prep", "Career Advancement", "Resume Workshop"],
-  };
+  useEffect(() => {
+    // Fetch mentee data from backend
+    const fetchMenteeData = async () => {
+      try {
+        const response = await axios.get(`/api/src/routes/mentor`);
+        setMenteeData(response.data); // Assume response.data contains mentee info
+      } catch (error) {
+        console.error("Error fetching mentee data:", error);
+      }
+    };
+
+    fetchMenteeData();
+  }, [mentorId]);
+
+  if (!menteeData) {
+    return <div>Loading...</div>; // Display a loading state while data is fetched
+  }
 
   return (
     <>
@@ -22,17 +42,11 @@ const MenteeInformation = () => {
         <div className="Block Width--80 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh">
           <div className="Width--60">
             <div className="Flex-row Margin-bottom--40 Margin-left--60 Margin-right--100 Margin-top--30">
-              <img
-                src={Image}
-                alt="Profile"
-                className="Border--rounded"
-                style={{ width: "120px", height: "120px" }}
-              />
               <div>
-                <div className="Text-fontSize--22 Text-color--gray-1000 Margin-left--16 Margin-bottom--6 Margin-top--40 Padding-left--70">
+                <div className="Text-fontSize--22 Text-color--gray-1000 Margin-bottom--6 Margin-top--40 Padding-left--70">
                   {menteeData.name}
                 </div>
-                <div className="Text-fontSize--15 Text-color--gray-600 Margin-left--16 Margin-top--7">
+                <div className="Text-fontSize--15 Text-color--gray-600 Margin-top--7">
                   {menteeData.role}
                 </div>
               </div>
@@ -145,13 +159,14 @@ const MenteeInformation = () => {
                         </div>
                       </div>
                       <div className="Flex-row Margin-bottom--10 Margin-left--60">
-                        <div className="Button Button-color--teal-1000 Border-radius--4 Text-color--white Margin-top--32 Margin-left--80"
-                        onClick={() => {
-                          navigate("/create-meeting");
-                        }}>
+                        <div
+                          className="Button Button-color--teal-1000 Border-radius--4 Text-color--white Margin-top--32 Margin-left--80"
+                          onClick={() => {
+                            navigate("/create-meeting");
+                          }}
+                        >
                           Add New Meeting Notes
                         </div>
-                        
                       </div>
                     </div>
 

@@ -7,6 +7,7 @@ import ConfirmLogout from "./pages/ConfirmLogout";
 import CreateWorkshop from "./pages/CreateWorkshop";
 import CreateMeeting from "./pages/CreateMeeting";
 import MenteeInformation from "./pages/MenteeInformation";
+import WorkshopInformation from "./pages/WorkshopInformation";
 import AuthCallback from "./pages/auth-callback";
 import LoginRedirect from "./pages/LoginRedirect";
 
@@ -23,6 +24,7 @@ function App(): ReactElement {
         <Route path="/create-workshop" element={<CreateWorkshop />} />
         <Route path="/create-meeting" element={<CreateMeeting />} />
         <Route path="/mentor/mentee-information" element={<MenteeInformation />} />
+        <Route path="/mentor/workshop-information" element={<WorkshopInformation />} />
         <Route path="/callback" element={<AuthCallback />} />
       </Routes>
     </div>

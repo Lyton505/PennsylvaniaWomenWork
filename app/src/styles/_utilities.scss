@@ -113,6 +113,10 @@
   line-height: 26px;
 }
 
+.Text--underline {
+  border-bottom: 2px solid var(--pww-color-gray-400);
+}
+
 .Justify-content--spaceBetween {
   justify-content: space-between;
 }

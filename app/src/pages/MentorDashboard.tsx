@@ -39,6 +39,10 @@ const MentorDashboard = () => {
     navigate(`/mentor/mentee-information/`);
   };
 
+  const handleClickWorkshop = (id: number) => {
+    navigate(`/mentor/workshop-information/`);
+  };
+
   return (
     <>
       <Navbar />
@@ -100,7 +104,7 @@ const MentorDashboard = () => {
                 <div
                   className="Card Card--noPadding Card-hover Margin-right--10"
                   style={{ width: "215px" }}
-                  onClick={() => handleClick(item.id)}
+                  onClick={() => handleClickWorkshop(item.id)}
                 >
                   <div
                     className="Background-color--teal-1000 Padding--20 Border-radius-topLeft--8 Border-radius-topRight--8 Align-items--center Justify-content--center"
