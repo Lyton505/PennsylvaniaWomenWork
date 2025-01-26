@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Event } from "../model/Event";
+import mongoose from "mongoose";
 
 export const createEvent = async (req: Request, res: Response) => {
   try {
@@ -28,7 +29,9 @@ export const getEventsByUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
 
-    const events = await Event.find({ user: userId });
+    const events = await Event.find({
+      users: new mongoose.Types.ObjectId(userId),
+    });
 
     if (!events.length) {
       return res.status(404).json({ message: "No events found for this user" });
