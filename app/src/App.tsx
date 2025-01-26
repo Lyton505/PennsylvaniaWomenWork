@@ -36,10 +36,13 @@ function App(): ReactElement {
           path="/mentor/mentee-information"
           element={<MenteeInformation />}
         />
+<<<<<<< HEAD
         <Route
           path="/mentor/workshop-information"
           element={<WorkshopInformation />}
         />
+=======
+>>>>>>> c109fa7214a17e1671d67a25f9a2c9a0b0f0a359
         <Route path="/callback" element={<AuthCallback />} />
       </Routes>
       <div
