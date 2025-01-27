@@ -1,0 +1,46 @@
+.Event {
+    padding: 0 10px;
+
+    &-month {
+        font-weight: bold;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--pww-color-gray-200);
+        padding: 10px 0;
+        color: var(--pww-color-blue-1000);
+        margin-bottom: 20px;
+    }
+
+    &-item {
+        display: flex;
+        flex-direction: row;
+        cursor: pointer;
+        align-items: center;
+        margin-bottom: 10px;
+
+    }
+}
+
+.Workshop-card {
+    background-color: var(--pww-color-light-1000);
+    border-radius: var(--pww-border-radius-8);
+    box-shadow: var(--pww-shadow-dark);
+    border: 1px solid var(--pww-color-gray-200);
+    transition: 0.3s;
+    height: 200px;
+    color: var(--pww-color-gray-800);
+    overflow: hidden;
+    cursor: pointer;
+
+
+    &-color {
+        height: 75px;
+    }
+
+    &-name {
+        font-size: var(--pww-font-size-20);
+        margin-bottom: 10px;
+        padding: 10px 0;
+        font-weight: 800;
+        border-bottom: 1px solid var(--pww-color-gray-200);
+    }
+}

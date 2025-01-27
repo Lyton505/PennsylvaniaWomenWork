@@ -11,7 +11,6 @@
         background-color: var(--pww-color-light-1000);
         padding: 10px 32px;
         box-shadow: var(--pww-shadow-dark);
-        color: var(--pww-color-gray-800);
     }
   
     &-body-logo {
@@ -32,13 +31,17 @@
     }
   
     &-body-link {
-        color: var(--pww-color-dark-1000);
         cursor: pointer;
         font-size: var(--pww-font-size-16);
   
         &:hover {
             color: var(--pww-color-teal-1000);
         }
+    }
+    &-active {
+        color: var(--pww-color-teal-1000);
+        font-weight: bold;
+        border-bottom: 2px solid var(--pww-color-teal-1000); // Underline for active tab
     }
   }
 
