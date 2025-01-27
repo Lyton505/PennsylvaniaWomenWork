@@ -1,56 +1,64 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import pdf from "../assets/pdf.jpg";
-import docx from "../assets/docx.png";
-import video from "../assets/video.png";
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import Navbar from "../components/Navbar"
+import pdf from "../assets/pdf.jpg"
+import docx from "../assets/docx.png"
+import video from "../assets/video.png"
+
+// 🔹 Define Fake Data
+const fakeFiles = [
+  {
+    id: 1,
+    name: "Resume_Prep.pdf",
+    type: "pdf",
+    icon: pdf,
+  },
+  {
+    id: 2,
+    name: "Workshop_Intro.mp4",
+    type: "video",
+    icon: video,
+  },
+  {
+    id: 3,
+    name: "Cover_Letter.docx",
+    type: "docx",
+    icon: docx,
+  },
+]
 
 const WorkshopInformation = () => {
   return (
     <>
       <Navbar />
-
-      <div className="Block Width--90 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh">
-        <div className="Flex-row--subtitle">
-          <div className="Text--underline Text-fontSize--20 Padding-bottom--8 Margin-right--32 Text-color--teal-1000">
+      <div className="WorkshopInfo">
+        <div className="Block">
+          <div className="Block-header Flex-row">
             Workshop Information
-          </div>
-          <div className="Button Border-radius--4 Text-fontSize--12 Button-color--teal-1000">
-            Add New Files
-          </div>
-        </div>
-        <div className="Flex-grid Margin-right--30 Margin-left--30">
-          <div className="Course--card Card-hover">
-            <img src={pdf} style={{ width: "50%", height: "50%" }} />
-            <div>
-              <h3 className="Text-fontSize--16 Text-color--gray-800">
-                Resume_Prep.pdf
-              </h3>
+            <div className="Button Button-color--blue-1000 Margin-left--auto">
+              Add New Files
             </div>
           </div>
+          <div className="Block-subtitle">Add New Files</div>
 
-          <div className="Course--card Card-hover">
-            <img src={docx} style={{ width: "50%", height: "50%" }} />
-            <div>
-              <h3 className="Text-fontSize--16 Text-color--gray-800">
-                Resume_Template.docx
-              </h3>
-            </div>
-          </div>
-
-          <div className="Course--card Card-hover">
-            <img src={video} style={{ width: "50%", height: "50%" }} />
-
-            <div>
-              <h3 className="Text-fontSize--16 Text-color--gray-800">
-                Resume_Prep.mp4
-              </h3>
-            </div>
+          <div className="row gx-3 gy-3">
+            {fakeFiles.map((file) => (
+              <div key={file.id} className="col-lg-2">
+                <div className="Card">
+                  {" "}
+                  {/* Ensure Card is inside col-lg-2 */}
+                  <div className="WorkshopInfo-image">
+                    <img src={file.icon} alt={file.type} />
+                  </div>
+                  <div className="WorkshopInfo-title">{file.name}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default WorkshopInformation;
+export default WorkshopInformation
