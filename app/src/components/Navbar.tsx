@@ -1,91 +1,68 @@
-import react, { type ReactElement } from "react";
-import { useNavigate } from "react-router-dom";
-import { LoginButton } from "./mock-login-button";
-import { SignupButton } from "./mock-sign-up";
-import { LogoutButton } from "./mock-logout-button";
-import { useAuth0 } from "@auth0/auth0-react";
-import Icon from '../components/Icon';
-import logo from "../assets/logo.png";
-
+import React, { type ReactElement } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { useAuth0 } from "@auth0/auth0-react"
 
 const Navbar = (): ReactElement => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth0();
+  const navigate = useNavigate()
+  const location = useLocation() // Get current route
+  const { isAuthenticated, logout } = useAuth0()
 
   return (
-    <>
-      <div className="Navbar">
-      <div className="Navbar-block Width--100 Height--40">
-        <div className="Navbar-body">
-          <div className="Flex-row Margin-left--60 Margin-top--20 Margin-bottom--20" style={{ alignItems: 'center' }}>
-            <div className = "Logo">
-              <img className = "Image-navbar " src={logo}></img>
-            </div>
-            <div className = "Flex-row" style={{ marginLeft: 'auto', marginRight: '60px', alignItems: 'center'}}>
-            <div
-            className = "Button--borderless Text-color--gray-800"
-              onClick={() => {
-                navigate("/home");
-              }}>
-              <Icon glyph="home" size="xl" />
-            </div>
-            <div
-              className="Navbar-body-link Margin-left--20 Text-color--gray-800"
-              onClick={() => {
-                navigate("/mentor");
-              }}
-            >
-              Mentor
-            </div>
-            <div
-              className="Navbar-body-link Margin-left--20 Text-color--gray-800"
-              onClick={() => {
-                navigate("/mentee");
-              }}
-            >
-              Mentee
-            </div>
-            <div
-              className="Navbar-body-link Margin-left--20 Text-color--gray-800"
-              onClick={() => {
-                navigate("/create-workshop");
-              }}
-            >
-              Create Workshop
-            </div>
-            <div
-              className="Navbar-body-link Margin-left--20 Text-color--gray-800"
-              onClick={() => {
-                navigate("/create-meeting");
-              }}
-            >
-              Create Meeting
-            </div>
+    <div className="Navbar">
+      <div className="Navbar-body">
+        <div
+          className="Navbar-body-logo"
+          onClick={() => navigate("/home")}
+        ></div>
 
+        <div className="Navbar-left">
+          {[
+            { path: "/mentor", label: "Mentor" },
+            { path: "/mentee", label: "Mentee" },
+            { path: "/create-workshop", label: "Create Workshop" },
+            { path: "/create-meeting", label: "Create Meeting" },
+            { path: "/profile", label: "Profile" },
+          ].map((tab) => (
             <div
-              className="Navbar-body-link Margin-left--20 Text-color--gray-800"
-              
+              key={tab.path}
+              className={`Navbar-body-link ${location.pathname === tab.path ? "Navbar-active" : ""}`}
+              onClick={() => navigate(tab.path)}
             >
-              <Icon glyph="grip-lines-vertical" size="xl" />
+              {tab.label}
             </div>
-          
-          <div className="buttons Margin-left--20" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {!isAuthenticated && (
-              <>
-                <LoginButton />
-                <SignupButton />
-              </>
-            )}
-            {isAuthenticated && <LogoutButton />}
-            
+          ))}
+
+          {!isAuthenticated ? (
+            <div className="Flex-row">
+              <div
+                className="Button Button-color--teal-1000 Margin-right--20"
+                onClick={() => navigate("/login")}
+              >
+                Log In
+              </div>
+
+              <div
+                className="Button Button-color--teal-1000"
+                onClick={() => navigate("/signup")}
+              >
+                Sign Up
+              </div>
             </div>
+          ) : (
+            <div
+              className="Button Button-color--teal-1000"
+              onClick={() => {
+                logout()
+                navigate("/logout")
+              }}
+            >
+              Log Out
             </div>
-            </div>
-            </div>
+          )}
         </div>
       </div>
-    </>
-  );
-};
+    </div>
+  )
+}
 
-export default Navbar;
+export default Navbar

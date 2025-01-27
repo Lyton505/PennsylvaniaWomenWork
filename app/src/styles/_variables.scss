@@ -2,19 +2,15 @@
 // this is where we define our colors used in the app
 
 //add spaces so that the hex codes are lined up
-$pww-color-yellow: #b1cf24;
-//$pww-color-teal: #149baf;
+$pww-color-yellow:   #b1cf24;
 $pww-color-teal:     #0096C0;
-//$pww-color-blue: #32559a;
 $pww-color-blue:     #4C65A6;
-$pww-color-red: #db504a;
-//$pww-color-green: #4a9a4e;
+$pww-color-red:      #db504a;
 $pww-color-green:    #BFD71B;
-$pww-color-light: #ffffff;
-$pww-color-neutral:    #f6f4ef;
-//$pww-color-gray: #626262;
+$pww-color-light:    #ffffff;
+$pww-color-neutral:  #f6f4ef;
 $pww-color-gray:     #545454;
-$pww-color-dark: #000000;
+$pww-color-dark:     #000000;
 
 // allow the colors to be used in inline styles
 $palette: (
@@ -85,6 +81,8 @@ $zIndex: -10 -5 0 5 10 50 100 1000;
 
   --pww-shadow-dark: var(--pww-color-dark-50) 0px 7px 15px 0px;
   --pww-shadow-ambient: var(--pww-color-dark-100) 0px 15px 35px 0px;
+
+  --pww-color-body: var(--pww-color-gray-700);
 }
 
 // font weights

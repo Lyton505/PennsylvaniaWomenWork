@@ -407,7 +407,7 @@
 }
 
 .Card {
-  background-color: var(--pww-color-light-50);
+  background-color: var(--pww-color-light-1000);
   padding: 10px;
   border-radius: var(--pww-border-radius-8);
   border: 1px solid var(--pww-color-gray-200);
@@ -420,17 +420,6 @@
       box-shadow: 0 0 3px 3px var(--pww-color-light-500);
     }
   }
-  &--noPadding {
-    padding: 0;
-  }
-
-  &--noPadding {
-    padding: 0;
-  }
-
-  &-dark {
-    background-color: var(--pww-color-dark-1000);
-  }
 }
 
 .Block {
@@ -442,13 +431,14 @@
 
   &-header {
     font-size: var(--pww-font-size-24);
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    color: var(--pww-color-gray-800);
   }
 
   &-subtitle {
-    color: var(--pww-color-dark-700);
+    color: var(--pww-color-gray-800);
     font-size: var(--pww-font-size-16);
-    border-bottom: 1px solid var(--pww-color-dark-700);
+    border-bottom: 1px solid var(--pww-color-gray-200);
     padding-bottom: 10px;
     margin-bottom: 20px;
   }
@@ -472,18 +462,6 @@
     margin-bottom: 30px;
   }
 }
-
-.Modal--overlay {
-  background-color: rgba(0, 0, 0, 0.4);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0x;
-  z-index: var(--pww-z-100);
-  overflow: hidden;
-}
-
 .Flex {
   display: flex;
 }
@@ -625,20 +603,6 @@
   max-width: 100%;
 }
 
-.Height--100 {
-  height: 100%;
-}
-.Height--40 {
-  height: 40%;
-}
-
-.Height--100vh { 
-  height: 100vh; 
-}
-
-.Height--100vh { 
-  height: 100vh; 
-}
 
 ul {
   list-style-type: none;

@@ -1,49 +1,49 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react"
+import Navbar from "../components/Navbar"
+import { useNavigate } from "react-router-dom"
 
 interface MenteeInformationElements {
-  id: number;
-  menteeName: string;
+  id: number
+  menteeName: string
 }
 
 interface CourseInformationElements {
-  id: number;
-  courseName: string;
+  id: number
+  courseName: string
 }
 
 const handleClick = (item: MenteeInformationElements) => {
-  console.log("Clicked:", item);
-};
+  console.log("Clicked:", item)
+}
 
 const MentorDashboard = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const [activeTab, setActiveTab] = useState("My Mentees");
+  const [activeTab, setActiveTab] = useState("My Mentees")
 
   const menteeGridData: MenteeInformationElements[] = [
     {
       id: 1,
       menteeName: "Jane Doe",
     },
-  ];
+  ]
 
   const courseGridData: CourseInformationElements[] = [
     {
       id: 1,
       courseName: "Resume",
     },
-  ];
+  ]
 
   const handleClick = (id: number) => {
-    navigate(`/mentor/mentee-information/`);
-  };
+    navigate(`/mentor/mentee-information/`)
+  }
 
   return (
     <>
       <Navbar />
       <div className="Flex-row Justify-content--spaceBetween">
-        <div className="Block Width--60 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh">
+        <div className="Block Width--60 Margin-right--40 Margin-left--40 Margin-top--40">
           <div className="Flex-row Margin-bottom--30">
             {["My Mentees", "Courses"].map((tab) => (
               <div
@@ -117,7 +117,7 @@ const MentorDashboard = () => {
           )}
         </div>
         {activeTab === "My Mentees" && (
-          <div className="Block Width--40 Margin-right--40 Margin-top--40 Height--100vh">
+          <div className="Block Width--40 Margin-right--40 Margin-top--40">
             <div className="Block-header Text--center Text-color--gray-1000 Margin-bottom--20">
               Upcoming Events!
             </div>
@@ -125,39 +125,41 @@ const MentorDashboard = () => {
         )}
 
         {activeTab === "Courses" && (
-          <div className="Block Width--40 Margin-right--40 Margin-top--40 Height--100vh">
+          <div className="Block Width--40 Margin-right--40 Margin-top--40">
             <div
               className="Block-header Text--center Text-color--gray-1000 Margin-bottom--20"
               style={{
                 borderBottom: "2px solid rgba(84, 84, 84, 0.2)",
-                paddingBottom: "10px"
+                paddingBottom: "10px",
               }}
             >
               Create A New Course
             </div>
-            <div className = "Flex-row Justify-content--left">
-              <div className = "Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
-                Name: 
+            <div className="Flex-row Justify-content--left">
+              <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
+                Name:
               </div>
             </div>
-            <div className = "Flex-row Justify-content--left">
-              <div className = "Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
-                Description: 
+            <div className="Flex-row Justify-content--left">
+              <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
+                Description:
               </div>
             </div>
-            <div className = "Flex-row Justify-content--left">
-              <div className = "Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
-              onClick={() => {
-                navigate("/create-workshop");
-              }}>
-                Add New Files 
-              </div> 
+            <div className="Flex-row Justify-content--left">
+              <div
+                className="Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
+                onClick={() => {
+                  navigate("/create-workshop")
+                }}
+              >
+                Add New Files
+              </div>
             </div>
           </div>
         )}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MentorDashboard;
+export default MentorDashboard
