@@ -18,7 +18,6 @@ export const updateUser = async (req: Request, res: Response) => {
   ];
 
   try {
-    // Validate and convert `userId` to ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid userId format" });
     }
@@ -39,7 +38,7 @@ export const updateUser = async (req: Request, res: Response) => {
     const updatedUser = await User.findByIdAndUpdate(
       new mongoose.Types.ObjectId(userId),
       { $set: updateData },
-      { new: true, runValidators: true } // Return updated document and validate
+      { new: true, runValidators: true }
     );
 
     if (!updatedUser) {
