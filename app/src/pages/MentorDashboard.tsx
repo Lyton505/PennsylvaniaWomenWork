@@ -1,43 +1,104 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react"
+import Navbar from "../components/Navbar"
+import { useNavigate } from "react-router-dom"
+import Modal from "../components/Modal"
 
 interface MenteeInformationElements {
-  id: number;
-  menteeName: string;
+  id: number
+  menteeName: string
 }
 
 interface CourseInformationElements {
-  id: number;
-  courseName: string;
+  id: number
+  courseName: string
+}
+
+interface Event {
+  id: number
+  day: string
+  date: string
+  month: string
+  title: string
+  description: string
+  fullDescription: string
 }
 
 const handleClick = (item: MenteeInformationElements) => {
-  console.log("Clicked:", item);
-};
+  console.log("Clicked:", item)
+}
 
 const MentorDashboard = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const [activeTab, setActiveTab] = useState("My Mentees");
+  const [activeTab, setActiveTab] = useState("My Mentees")
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+
+  const events: Event[] = [
+    {
+      id: 1,
+      day: "wed",
+      date: "25",
+      month: "June",
+      title: "Meeting with Jane",
+      description:
+        "One-on-one meeting with Jane to discuss her career goals",
+      fullDescription:
+        "One-on-one meeting with Jane to discuss her career goals.",
+    },
+    {
+      id: 2,
+      day: "fri",
+      date: "27",
+      month: "June",
+      title: "Meeting with John",
+      description: "One-on-one meeting with John to discuss his career goals",
+      fullDescription:
+        "One-on-one meeting with John to discuss his career goals.",
+    },
+    {
+      id: 3,
+      day: "mon",
+      date: "1",
+      month: "July",
+      title: "Mentor Networking Event",
+      description: "Connecting with other mentors and industry professionals",
+      fullDescription:
+        "Discussion with other mentors and industry professionals about their work, best practices, and more.",
+    },
+  ]
+
+  const eventsByMonth: { [key: string]: Event[] } = events.reduce(
+    (acc, event) => {
+      if (!acc[event.month]) {
+        acc[event.month] = []
+      }
+      acc[event.month].push(event)
+      return acc
+    },
+    {} as { [key: string]: Event[] }
+  )
 
   const menteeGridData: MenteeInformationElements[] = [
     {
       id: 1,
       menteeName: "Jane Doe",
     },
-  ];
+    {
+      id: 2,
+      menteeName: "John Doe",
+    },
+  ]
 
   const courseGridData: CourseInformationElements[] = [
     {
       id: 1,
       courseName: "Resume",
     },
-  ];
+  ]
 
   const handleClick = (id: number) => {
-    navigate(`/mentor/mentee-information/`);
-  };
+    navigate(`/mentor/mentee-information/`)
+  }
 
   const handleClickWorkshop = (id: number) => {
     navigate(`/mentor/workshop-information/`);
@@ -46,8 +107,17 @@ const MentorDashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="Flex-row Justify-content--spaceBetween">
-        <div className="Block Width--60 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh">
+      {selectedEvent && (
+        <Modal
+          header={selectedEvent.title}
+          subheader={`${selectedEvent.day.toUpperCase()}, ${selectedEvent.month} ${selectedEvent.date}`}
+          body={<>{selectedEvent.fullDescription}</>}
+          action={() => setSelectedEvent(null)}
+        />
+      )}
+      <div className="row g-3 Margin--20">
+        <div className="col-lg-8">
+        <div className="Block p-3">
           <div className="Flex-row Margin-bottom--30">
             {["My Mentees", "Courses"].map((tab) => (
               <div
@@ -76,92 +146,122 @@ const MentorDashboard = () => {
 
           {activeTab === "My Mentees" && (
             <div>
-              <div className="Flex-grid Justify-content--spaceBetween Margin-bottom--40">
+              <div className="row gx-3 gy-3">
                 {menteeGridData.map((item) => (
+                  <div className="col-lg-4">
                   <div
-                    className="Card Card--noPadding Card-hover Margin-right--10"
-                    style={{ width: "215px" }}
+                    className="Mentor--card"
                     onClick={() => handleClick(item.id)}
                   >
                     <div
-                      className="Background-color--teal-1000 Padding--20 Border-radius-topLeft--8 Border-radius-topRight--8 Align-items--center Justify-content--center"
-                      style={{ height: "96px" }}
+                      className="Mentor--card-color Background-color--teal-1000"
                     />
-                    <div className="Padding--10" style={{ height: "75px" }}>
+                    <div className="Padding--10">
                       <h3 className="Text-fontSize--20 Text-color--gray-600">
                         {item.menteeName}
                       </h3>
                     </div>
                   </div>
+                  </div>
                 ))}
+
               </div>
             </div>
           )}
 
           {activeTab === "Courses" && (
-            <div className="Flex-grid Justify-content--spaceBetween Margin-bottom--40">
+            <div className="row gx-3 gy-3">
               {courseGridData.map((item) => (
+                <div className="col-lg-4">
                 <div
-                  className="Card Card--noPadding Card-hover Margin-right--10"
-                  style={{ width: "215px" }}
+                  className="Mentor--card"
                   onClick={() => handleClickWorkshop(item.id)}
                 >
                   <div
-                    className="Background-color--teal-1000 Padding--20 Border-radius-topLeft--8 Border-radius-topRight--8 Align-items--center Justify-content--center"
-                    style={{ height: "96px" }}
+                    className="Mentor--card-color Background-color--teal-1000"
                   />
-                  <div className="Padding--10" style={{ height: "75px" }}>
+                  <div className="Padding--10">
                     <h3 className="Text-fontSize--20 Text-color--gray-600">
                       {item.courseName}
                     </h3>
                   </div>
                 </div>
+                </div>
               ))}
             </div>
           )}
         </div>
+        </div>
         {activeTab === "My Mentees" && (
-          <div className="Block Width--40 Margin-right--40 Margin-top--40 Height--100vh">
-            <div className="Block-header Text--center Text-color--gray-1000 Margin-bottom--20">
-              Upcoming Events!
+          <div className = "col-lg-4">
+          <div className="Block p-3">
+            <div className="Block-header">
+              Upcoming Events
             </div>
+            <div className="Block-subtitle">Scheduled meetings and workshops</div>
+            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+              <div key={month} className="Event">
+                <div className="Event-month">{month}</div>
+
+                {monthEvents.map((event) => (
+                  <div
+                    className="Event-item"
+                    key={event.id}
+                    onClick={() => setSelectedEvent(event)}
+                  >
+                    <div className="Flex-column--centered Margin-right--30">
+                      <div>{event.day}</div>
+                      <div className="Text-fontSize--30">{event.date}</div>
+                    </div>
+                    <div className="Flex-column Text-bold">
+                      <span className="Margin-bottom--4">{event.title}</span>
+                      <div className="Text-fontSize--14">
+                        {event.description}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
           </div>
         )}
 
         {activeTab === "Courses" && (
-          <div className="Block Width--40 Margin-right--40 Margin-top--40 Height--100vh">
+          <div className = "col-lg-4">
+          <div className="Block p-3">
             <div
-              className="Block-header Text--center Text-color--gray-1000 Margin-bottom--20"
-              style={{
-                borderBottom: "2px solid rgba(84, 84, 84, 0.2)",
-                paddingBottom: "10px"
-              }}
+              className="Block-header"
             >
               Create A New Course
             </div>
-            <div className = "Flex-row Justify-content--left">
-              <div className = "Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
-                Name: 
+            <div className="Block-subtitle">Add course information and upload files</div>
+            <div className="Flex-row Justify-content--left">
+              <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
+                Name:
               </div>
             </div>
-            <div className = "Flex-row Justify-content--left">
-              <div className = "Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
-                Description: 
+            <div className="Flex-row Justify-content--left">
+              <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
+                Description:
               </div>
             </div>
-            <div className = "Flex-row Justify-content--left">
-              <div className = "Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
-              onClick={() => {
-                navigate("/create-workshop");
-              }}>
-                Add New Files 
-              </div> 
+            <div className="Flex-row Justify-content--left">
+              <div
+                className="Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
+                onClick={() => {
+                  navigate("/create-workshop")
+                }}
+              >
+                Add New Files
+              </div>
             </div>
+          </div>
           </div>
         )}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MentorDashboard;
+export default MentorDashboard

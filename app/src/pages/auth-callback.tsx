@@ -1,8 +1,8 @@
-import React from "react";
-import Navbar from "../components/Navbar";
+import React from "react"
+import Navbar from "../components/Navbar"
 
 const AuthCallback = () => {
-  return <Navbar />;
-};
+  return <Navbar />
+}
 
-export default AuthCallback;
+export default AuthCallback

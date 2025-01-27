@@ -13,6 +13,9 @@
 @import "utilities";
 @import "widget";
 @import "formik";
+@import "profile";
+@import "mentee";
+@import "mentor";
 
 :root {
   // define colors
@@ -42,7 +45,7 @@ body {
 body {
   font-size: var(--pww-font-size-4);
   background-color: var(--pww-color-neutral-1000);
-  color: var(--pww-color-dark-1000);
+  color: var(--pww-color-gray-800);
 }
 
 // Background Colors
