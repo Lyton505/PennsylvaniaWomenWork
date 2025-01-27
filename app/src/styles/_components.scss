@@ -1,66 +1,47 @@
 .Navbar {
-  display: flex;
-  flex-direction: column;
-  z-index: var(--pww-z-50);
-
-  &-body {
     display: flex;
     flex-direction: column;
     z-index: var(--pww-z-50);
-
+  
     &-body {    
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: space-between; /* Fixes layout issue */
         background-color: var(--pww-color-light-1000);
         padding: 10px 32px;
         box-shadow: var(--pww-shadow-dark);
-    
-        &-logo {
-            font-size: var(--pww-font-size-30);
-            font-weight: 900;
-            background-image: url('../assets/logo.png');
-            background-size: contain; /* Ensure the entire logo fits within the defined area */
-            background-repeat: no-repeat; /* Prevent repeating */
-            background-position: center; /* Center the logo within its container */
-            width: 125px;
-            height: 75px; /* Adjust height based on the image’s aspect ratio */
+        color: var(--pww-color-gray-800);
+    }
+  
+    &-body-logo {
+        width: 150px; /* Set a fixed width for consistent layout */
+        height: 50px;
+        background-image: url('../assets/logo.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: left; /* Align logo to the left */
+        cursor: pointer;
+    }
+  
+    &-left {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px; /* Creates space between items */
+    }
+  
+    &-body-link {
+        color: var(--pww-color-dark-1000);
+        cursor: pointer;
+        font-size: var(--pww-font-size-16);
+  
+        &:hover {
+            color: var(--pww-color-teal-1000);
         }
-        &-home {
-            font-size: var(--pww-font-size-30);
-            font-weight: 900;
-            background-image: url('../assets/home.png');
-            background-size: contain; /* Ensure the entire logo fits within the defined area */
-            background-repeat: no-repeat; /* Prevent repeating */
-            background-position: center; /* Center the logo within its container */
-            width: 50px;  // Reduced from 125px to be more proportional
-            height: 50px; // Reduced from 70px to match navbar height
-            margin-right: 20px; 
-        }
-
-    &-home {
-      font-size: var(--pww-font-size-30);
-      font-weight: 900;
-      background-image: url('../assets/home.png');
-      background-size: contain; /* Ensure the entire logo fits within the defined area */
-      background-repeat: no-repeat; /* Prevent repeating */
-      background-position: center; /* Center the logo within its container */
-      width: 50px;  // Reduced from 125px to be more proportional
-      height: 50px; // Reduced from 70px to match navbar height
-      margin-right: 20px; 
-  }
-
-    &-link {
-      color: var(--pww-color-dark-1000);
-      cursor: pointer;
-      font-size: var(--pww-font-size-16);
-
-      &:hover {
-        color: var(--pww-color-teal-1000);
-      }
     }
   }
-}
+
 
 .Modal-overlay {
   background-color: rgba(0, 0, 0, 0.4);
@@ -147,57 +128,5 @@
         color: var(--pww-color-light-1000);
       }
     }
-  }
-}
-
-}
-
-
-.PopUp {
-  &--overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: var(--pww-z-100);
-  }
-
-  &--content {
-    background-color: var(--pww-color-light-1000);
-    padding: 30px;
-    border-radius: var(--pww-border-radius-8);
-    width: 500px;
-    position: relative;
-    box-shadow: var(--pww-shadow-dark);
-  }
-
-  &--close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    font-size: var(--pww-font-size-20);
-    color: var(--pww-color-gray-600);
-    
-    &:hover {
-      color: var(--pww-color-gray-1000);
-    }
-  }
-
-  &--title {
-    font-size: var(--pww-font-size-24);
-    color: var(--pww-color-gray-1000);
-    margin-bottom: 20px;
-  }
-
-  &--body {
-    color: var(--pww-color-gray-800);
-    font-size: var(--pww-font-size-16);
-    line-height: 1.5;
   }
 }

@@ -1,25 +1,26 @@
-import React, { type ReactElement } from "react";
-import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import MentorDashboard from "./pages/MentorDashboard";
-import MenteeDashboard from "./pages/MenteeDashboard";
-import ConfirmLogout from "./pages/ConfirmLogout";
-import CreateWorkshop from "./pages/CreateWorkshop";
-import CreateMeeting from "./pages/CreateMeeting";
-import MenteeInformation from "./pages/MenteeInformation";
-import AuthCallback from "./pages/auth-callback";
-import LoginRedirect from "./pages/LoginRedirect";
-import { useCurrentUser } from "./hooks/useCurrentUser";
-import { useAuth0 } from "@auth0/auth0-react";
+import React, { type ReactElement } from "react"
+import { Routes, Route } from "react-router-dom"
+import Home from "./pages/Home"
+import MentorDashboard from "./pages/MentorDashboard"
+import MenteeDashboard from "./pages/MenteeDashboard"
+import ConfirmLogout from "./pages/ConfirmLogout"
+import CreateWorkshop from "./pages/CreateWorkshop"
+import CreateMeeting from "./pages/CreateMeeting"
+import MenteeInformation from "./pages/MenteeInformation"
+import AuthCallback from "./pages/auth-callback"
+import LoginRedirect from "./pages/LoginRedirect"
+import Logout from "./pages/Logout"
+import { useCurrentUser } from "./hooks/useCurrentUser"
+import { useAuth0 } from "@auth0/auth0-react"
 
 function App(): ReactElement {
   const {
     user: auth0User,
     isLoading: authLoading,
     error: authError,
-  } = useAuth0();
-  const username = auth0User?.nickname || "";
-  const { user, error, loading } = useCurrentUser(username); // Fetch user details from backend
+  } = useAuth0()
+  const username = auth0User?.nickname || ""
+  const { user, error, loading } = useCurrentUser(username) // Fetch user details from backend
   return (
     <div className="App">
       <Routes>
@@ -31,6 +32,7 @@ function App(): ReactElement {
         <Route path="/confirmLogout" element={<ConfirmLogout />} />
         <Route path="/create-workshop" element={<CreateWorkshop />} />
         <Route path="/create-meeting" element={<CreateMeeting />} />
+        <Route path="/logout" element={<Logout />} />
         <Route
           path="/mentor/mentee-information"
           element={<MenteeInformation />}
@@ -64,7 +66,7 @@ function App(): ReactElement {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

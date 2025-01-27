@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Image from "../assets/image.jpg";
+import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import Navbar from "../components/Navbar"
+import Image from "../assets/image.jpg"
 
 const MenteeInformation = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Workshops");
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState("Workshops")
 
   const menteeData = {
     name: "Chloe Kim",
@@ -13,7 +13,7 @@ const MenteeInformation = () => {
     description:
       "Lorem ipsum dolor sit amet consectetur. In lectus et et pellentesque a mattis. Sapien morbi congue nulla diam sit non at. Arcu platea semper fermentum at fusce. Eu sem varius molestie elit venenatis. Nulla est sollicitudin.",
     workshops: ["Resume Prep", "Career Advancement", "Resume Workshop"],
-  };
+  }
 
   return (
     <>
@@ -124,7 +124,7 @@ const MenteeInformation = () => {
                       Upcoming
                     </div>
                     <div className="Margin-top--20 ">
-                      <div className="Flex-row Margin-bottom--10 Margin-left--60">
+                      <div className="Flex-row Margin-bottom--10">
                         <div
                           className="Margin-right--40"
                           style={{ textAlign: "center", width: "40px" }}
@@ -145,13 +145,14 @@ const MenteeInformation = () => {
                         </div>
                       </div>
                       <div className="Flex-row Margin-bottom--10 Margin-left--60">
-                        <div className="Button Button-color--teal-1000 Border-radius--4 Text-color--white Margin-top--32 Margin-left--80"
-                        onClick={() => {
-                          navigate("/create-meeting");
-                        }}>
+                        <div
+                          className="Button Button-color--teal-1000 Border-radius--4 Text-color--white Margin-top--32 Margin-left--80"
+                          onClick={() => {
+                            navigate("/create-meeting")
+                          }}
+                        >
                           Add New Meeting Notes
                         </div>
-                        
                       </div>
                     </div>
 
@@ -233,7 +234,7 @@ const MenteeInformation = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MenteeInformation;
+export default MenteeInformation
