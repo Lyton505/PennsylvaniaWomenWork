@@ -5,6 +5,7 @@
         font-weight: bold;
         text-transform: uppercase;
         border-bottom: 1px solid var(--pww-color-gray-200);
+        width: 60%;
         padding: 10px 0;
         color: var(--pww-color-blue-1000);
         margin-bottom: 20px;
@@ -15,7 +16,7 @@
         flex-direction: row;
         cursor: pointer;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
 
     }
 }
@@ -26,14 +27,12 @@
     box-shadow: var(--pww-shadow-dark);
     border: 1px solid var(--pww-color-gray-200);
     transition: 0.3s;
-    height: 200px;
-    color: var(--pww-color-gray-800);
+    height: fit-content;
     overflow: hidden;
     cursor: pointer;
 
-
     &-color {
-        height: 75px;
+        height: 100px;
     }
 
     &-name {
@@ -42,5 +41,9 @@
         padding: 10px 0;
         font-weight: 800;
         border-bottom: 1px solid var(--pww-color-gray-200);
+    }
+
+    &-content {
+        padding: 10px 20px 20px 20px;
     }
 }

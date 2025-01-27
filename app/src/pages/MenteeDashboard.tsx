@@ -67,7 +67,7 @@ const MenteeDashboard = () => {
         <Modal
           header={selectedEvent.title}
           subheader={`${selectedEvent.day.toUpperCase()}, ${selectedEvent.month} ${selectedEvent.date}`}
-          body={<p>{selectedEvent.fullDescription}</p>}
+          body={<>{selectedEvent.fullDescription}</>}
           action={() => setSelectedEvent(null)}
         />
       )}
@@ -88,7 +88,7 @@ const MenteeDashboard = () => {
                     <div
                       className={`Workshop-card-color Background-color--${color}`}
                     ></div>
-                    <div className="Padding-x--20">
+                    <div className="Workshop-card-content">
                       <div className="Workshop-card-name">Resume Workshop</div>
                       Workshop content
                     </div>
@@ -116,12 +116,12 @@ const MenteeDashboard = () => {
                     key={event.id}
                     onClick={() => setSelectedEvent(event)}
                   >
-                    <div className="Flex-column--centered Margin-right--20">
+                    <div className="Flex-column--centered Margin-right--30">
                       <div>{event.day}</div>
                       <div className="Text-fontSize--30">{event.date}</div>
                     </div>
                     <div className="Flex-column Text-bold">
-                      {event.title}
+                      <span className="Margin-bottom--4">{event.title}</span>
                       <div className="Text-fontSize--14">
                         {event.description}
                       </div>
