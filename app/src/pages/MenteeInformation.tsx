@@ -3,12 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 
-interface Mentee {
-  name: string;
-  role: string;
-  description: string;
-  workshops: string[];
-}
 
 const MenteeInformation = () => {
   const navigate = useNavigate();
@@ -18,11 +12,12 @@ const MenteeInformation = () => {
   const [activeTab, setActiveTab] = useState("Workshops");
 
   useEffect(() => {
-    // Fetch mentee data from backend
+  
     const fetchMenteeData = async () => {
       try {
-        const response = await axios.get(`/api/src/routes/mentor`);
-        setMenteeData(response.data); // Assume response.data contains mentee info
+        const response = await axios.get(`/api/src/model/Mentor`);
+        setMenteeData(response.data); 
+        console.log(menteeData, "menteeData");
       } catch (error) {
         console.error("Error fetching mentee data:", error);
       }
@@ -31,23 +26,27 @@ const MenteeInformation = () => {
     fetchMenteeData();
   }, [mentorId]);
 
-  if (!menteeData) {
-    return <div>Loading...</div>; // Display a loading state while data is fetched
+
+
+  const test = () => {
+    console.log(menteeData, "menteeData");
   }
 
   return (
     <>
       <Navbar />
       <div className="Flex-row Justify-content--spaceBetween">
-        <div className="Block Width--80 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh">
+        <div className="Block Width--80 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh"
+        onClick = {test}>
+         
           <div className="Width--60">
             <div className="Flex-row Margin-bottom--40 Margin-left--60 Margin-right--100 Margin-top--30">
               <div>
                 <div className="Text-fontSize--22 Text-color--gray-1000 Margin-bottom--6 Margin-top--40 Padding-left--70">
-                  {menteeData.name}
+                   {/* {menteeData.name}  */}
                 </div>
                 <div className="Text-fontSize--15 Text-color--gray-600 Margin-top--7">
-                  {menteeData.role}
+                  {/* {menteeData.role} */}
                 </div>
               </div>
             </div>
@@ -59,7 +58,7 @@ const MenteeInformation = () => {
             </div>
             <div className="Flex-row Margin-bottom--40 Margin-right--100 Margin-left--60">
               <div className="Text-color--gray-600 Text-fontSize--16">
-                {menteeData.description}
+                {/* {menteeData.description} */}
               </div>
             </div>
 
@@ -103,7 +102,7 @@ const MenteeInformation = () => {
                       Current Workshops
                     </div>
                     <div className="List-style--none Margin-left--80">
-                      {menteeData.workshops.map((workshop, index) => (
+                      { /* {menteeData.workshops.map((workshop, index) => ( 
                         <div
                           key={index}
                           className="Text-fontSize--16 Text-color--gray-600 Margin-bottom--24 Flex-row Align-items--center"
@@ -118,7 +117,7 @@ const MenteeInformation = () => {
                           />
                           {workshop}
                         </div>
-                      ))}
+                      ))} */ }
                     </div>
                     <div className="Button Button-color--teal-1000 Border-radius--4 Text-color--white Margin-top--32 Margin-left--80">
                       Assign New Courses
