@@ -83,7 +83,7 @@ const MenteeInformation = () => {
                       Current Workshops
                     </div>
                     <div className="List-style--none Margin-left--80">
-                       {menteeData.workshops.map((workshop, index) => ( 
+                      {menteeData.workshops.map((workshop, index) => (
                         <div
                           key={index}
                           className="Text-fontSize--16 Text-color--gray-600 Margin-bottom--24 Flex-row Align-items--center"
@@ -118,7 +118,7 @@ const MenteeInformation = () => {
                       Upcoming
                     </div>
                     <div className="Margin-top--20 ">
-                      <div className="Flex-row Margin-bottom--10 Margin-left--60 ">
+                      <div className="Flex-row Margin-bottom--10">
                         <div
                           className="Margin-right--40"
                           style={{ textAlign: "center", width: "40px" }}

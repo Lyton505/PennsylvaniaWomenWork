@@ -40,8 +40,7 @@ const MentorDashboard = () => {
       date: "25",
       month: "June",
       title: "Meeting with Jane",
-      description:
-        "One-on-one meeting with Jane to discuss her career goals",
+      description: "One-on-one meeting with Jane to discuss her career goals",
       fullDescription:
         "One-on-one meeting with Jane to discuss her career goals.",
     },
@@ -101,8 +100,8 @@ const MentorDashboard = () => {
   }
 
   const handleClickWorkshop = (id: number) => {
-    navigate(`/mentor/workshop-information/`);
-  };
+    navigate(`/mentor/workshop-information/`)
+  }
 
   return (
     <>
@@ -117,146 +116,139 @@ const MentorDashboard = () => {
       )}
       <div className="row g-3 Margin--20">
         <div className="col-lg-8">
-        <div className="Block p-3">
-          <div className="Flex-row Margin-bottom--30">
-            {["My Mentees", "Courses"].map((tab) => (
-              <div
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={
-                  "Cursor--pointer Padding-bottom--8 Margin-right--32 Text-fontSize--20 " +
-                  (activeTab === tab
-                    ? "Border-bottom--blue Text-color--gray-1000"
-                    : "Text-color--gray-600")
-                }
-                style={{
-                  cursor: "pointer",
-                  paddingBottom: "8px",
-                  borderBottom:
-                    activeTab === tab
-                      ? "2px solid #0096C0"
-                      : "2px solid transparent",
-                  marginRight: "48px",
-                }}
-              >
-                {tab}
-              </div>
-            ))}
-          </div>
-
-          {activeTab === "My Mentees" && (
-            <div>
-              <div className="row gx-3 gy-3">
-                {menteeGridData.map((item) => (
-                  <div className="col-lg-4">
-                  <div
-                    className="Mentor--card"
-                    onClick={() => handleClick(item.id)}
-                  >
-                    <div
-                      className="Mentor--card-color Background-color--teal-1000"
-                    />
-                    <div className="Padding--10">
-                      <h3 className="Text-fontSize--20 Text-color--gray-600">
-                        {item.menteeName}
-                      </h3>
-                    </div>
-                  </div>
-                  </div>
-                ))}
-
-              </div>
-            </div>
-          )}
-
-          {activeTab === "Courses" && (
-            <div className="row gx-3 gy-3">
-              {courseGridData.map((item) => (
-                <div className="col-lg-4">
+          <div className="Block p-3">
+            <div className="Flex-row Margin-bottom--30">
+              {["My Mentees", "Courses"].map((tab) => (
                 <div
-                  className="Mentor--card"
-                  onClick={() => handleClickWorkshop(item.id)}
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={
+                    "Cursor--pointer Padding-bottom--8 Margin-right--32 Text-fontSize--20 " +
+                    (activeTab === tab
+                      ? "Border-bottom--blue Text-color--gray-1000"
+                      : "Text-color--gray-600")
+                  }
+                  style={{
+                    cursor: "pointer",
+                    paddingBottom: "8px",
+                    borderBottom:
+                      activeTab === tab
+                        ? "2px solid #0096C0"
+                        : "2px solid transparent",
+                    marginRight: "48px",
+                  }}
                 >
-                  <div
-                    className="Mentor--card-color Background-color--teal-1000"
-                  />
-                  <div className="Padding--10">
-                    <h3 className="Text-fontSize--20 Text-color--gray-600">
-                      {item.courseName}
-                    </h3>
-                  </div>
-                </div>
+                  {tab}
                 </div>
               ))}
             </div>
-          )}
-        </div>
-        </div>
-        {activeTab === "My Mentees" && (
-          <div className = "col-lg-4">
-          <div className="Block p-3">
-            <div className="Block-header">
-              Upcoming Events
-            </div>
-            <div className="Block-subtitle">Scheduled meetings and workshops</div>
-            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <div key={month} className="Event">
-                <div className="Event-month">{month}</div>
 
-                {monthEvents.map((event) => (
-                  <div
-                    className="Event-item"
-                    key={event.id}
-                    onClick={() => setSelectedEvent(event)}
-                  >
-                    <div className="Flex-column--centered Margin-right--30">
-                      <div>{event.day}</div>
-                      <div className="Text-fontSize--30">{event.date}</div>
+            {activeTab === "My Mentees" && (
+              <div>
+                <div className="row gx-3 gy-3">
+                  {menteeGridData.map((item) => (
+                    <div className="col-lg-4">
+                      <div
+                        className="Mentor--card"
+                        onClick={() => handleClick(item.id)}
+                      >
+                        <div className="Mentor--card-color Background-color--teal-1000" />
+                        <div className="Padding--10">
+                          <h3 className="Text-fontSize--20 Text-color--gray-600">
+                            {item.menteeName}
+                          </h3>
+                        </div>
+                      </div>
                     </div>
-                    <div className="Flex-column Text-bold">
-                      <span className="Margin-bottom--4">{event.title}</span>
-                      <div className="Text-fontSize--14">
-                        {event.description}
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === "Courses" && (
+              <div className="row gx-3 gy-3">
+                {courseGridData.map((item) => (
+                  <div className="col-lg-4">
+                    <div
+                      className="Mentor--card"
+                      onClick={() => handleClickWorkshop(item.id)}
+                    >
+                      <div className="Mentor--card-color Background-color--teal-1000" />
+                      <div className="Padding--10">
+                        <h3 className="Text-fontSize--20 Text-color--gray-600">
+                          {item.courseName}
+                        </h3>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-            ))}
+            )}
           </div>
+        </div>
+        {activeTab === "My Mentees" && (
+          <div className="col-lg-4">
+            <div className="Block p-3">
+              <div className="Block-header">Upcoming Events</div>
+              <div className="Block-subtitle">
+                Scheduled meetings and workshops
+              </div>
+              {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+                <div key={month} className="Event">
+                  <div className="Event-month">{month}</div>
+
+                  {monthEvents.map((event) => (
+                    <div
+                      className="Event-item"
+                      key={event.id}
+                      onClick={() => setSelectedEvent(event)}
+                    >
+                      <div className="Flex-column--centered Margin-right--30">
+                        <div>{event.day}</div>
+                        <div className="Text-fontSize--30">{event.date}</div>
+                      </div>
+                      <div className="Flex-column Text-bold">
+                        <span className="Margin-bottom--4">{event.title}</span>
+                        <div className="Text-fontSize--14">
+                          {event.description}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {activeTab === "Courses" && (
-          <div className = "col-lg-4">
-          <div className="Block p-3">
-            <div
-              className="Block-header"
-            >
-              Create A New Course
-            </div>
-            <div className="Block-subtitle">Add course information and upload files</div>
-            <div className="Flex-row Justify-content--left">
-              <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
-                Name:
+          <div className="col-lg-4">
+            <div className="Block p-3">
+              <div className="Block-header">Create A New Course</div>
+              <div className="Block-subtitle">
+                Add course information and upload files
+              </div>
+              <div className="Flex-row Justify-content--left">
+                <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
+                  Name:
+                </div>
+              </div>
+              <div className="Flex-row Justify-content--left">
+                <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
+                  Description:
+                </div>
+              </div>
+              <div className="Flex-row Justify-content--left">
+                <div
+                  className="Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
+                  onClick={() => {
+                    navigate("/create-workshop")
+                  }}
+                >
+                  Add New Files
+                </div>
               </div>
             </div>
-            <div className="Flex-row Justify-content--left">
-              <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
-                Description:
-              </div>
-            </div>
-            <div className="Flex-row Justify-content--left">
-              <div
-                className="Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
-                onClick={() => {
-                  navigate("/create-workshop")
-                }}
-              >
-                Add New Files
-              </div>
-            </div>
-          </div>
           </div>
         )}
       </div>
