@@ -1,11 +1,33 @@
-import React, { type ReactElement } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import { useAuth0 } from "@auth0/auth0-react"
+import React, { type ReactElement } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 const Navbar = (): ReactElement => {
-  const navigate = useNavigate()
-  const location = useLocation() // Get current route
-  const { isAuthenticated, logout } = useAuth0()
+  const navigate = useNavigate();
+  const location = useLocation(); // Get current route
+  const { isAuthenticated, logout, user: auth0User } = useAuth0();
+  const { user, loading } = useCurrentUser(auth0User?.email || "");
+
+  const navItems = [
+    { path: "/mentor", label: "Mentor", roles: ["mentor", "admin"] },
+    { path: "/mentee", label: "Mentee", roles: ["mentee", "admin"] },
+    {
+      path: "/create-workshop",
+      label: "Create Workshop",
+      roles: ["mentor", "admin"],
+    },
+    {
+      path: "/create-meeting",
+      label: "Create Meeting",
+      roles: ["mentor", "admin"],
+    },
+    {
+      path: "/profile",
+      label: "Profile",
+      roles: ["mentor", "mentee", "admin"],
+    },
+  ];
 
   return (
     <div className="Navbar">
@@ -16,21 +38,17 @@ const Navbar = (): ReactElement => {
         ></div>
 
         <div className="Navbar-left">
-          {[
-            { path: "/mentor", label: "Mentor" },
-            { path: "/mentee", label: "Mentee" },
-            { path: "/create-workshop", label: "Create Workshop" },
-            { path: "/create-meeting", label: "Create Meeting" },
-            { path: "/profile", label: "Profile" },
-          ].map((tab) => (
-            <div
-              key={tab.path}
-              className={`Navbar-body-link ${location.pathname === tab.path ? "Navbar-active" : ""}`}
-              onClick={() => navigate(tab.path)}
-            >
-              {tab.label}
-            </div>
-          ))}
+          {navItems
+            .filter((item) => user && item.roles.includes(user.role))
+            .map((tab) => (
+              <div
+                key={tab.path}
+                className={`Navbar-body-link ${location.pathname === tab.path ? "Navbar-active" : ""}`}
+                onClick={() => navigate(tab.path)}
+              >
+                {tab.label}
+              </div>
+            ))}
 
           {!isAuthenticated ? (
             <div className="Flex-row">
@@ -52,8 +70,8 @@ const Navbar = (): ReactElement => {
             <div
               className="Button Button-color--teal-1000"
               onClick={() => {
-                logout()
-                navigate("/logout")
+                logout();
+                navigate("/logout");
               }}
             >
               Log Out
@@ -62,7 +80,7 @@ const Navbar = (): ReactElement => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
