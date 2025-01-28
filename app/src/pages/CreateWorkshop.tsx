@@ -98,6 +98,13 @@ const CreateWorkshop = () => {
                 </div>
 
                 <div className="Flex-row Justify-content--center">
+                <button
+                    type="submit"
+                    className="Button Margin-top--30 Button-color--teal-1000 Width--50 Margin-right--10"
+                    disabled={isSubmitting} // Disable button while form is submitting
+                  >
+                    {isSubmitting ? "Submitting..." : "Add Files"}
+                  </button>
                   <button
                     type="submit"
                     className="Button Margin-top--30 Button-color--teal-1000 Width--50"
