@@ -10,7 +10,7 @@ const Profile = () => {
     isLoading: authLoading,
     error: authError,
   } = useAuth0()
-  const username = auth0User?.nickname || ""
+  const username = auth0User?.email || ""
   const { user, error, loading } = useCurrentUser(username) // Fetch user details from backend
 
   return (
