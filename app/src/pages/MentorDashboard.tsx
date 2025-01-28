@@ -229,18 +229,18 @@ const MentorDashboard = () => {
                 Add course information and upload files
               </div>
               <div className="Flex-row Justify-content--left">
-                <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
+                <div className="Create-course-text Margin-bottom--16 ">
                   Name:
                 </div>
               </div>
               <div className="Flex-row Justify-content--left">
-                <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
+                <div className="Create-course-text Margin-bottom--30">
                   Description:
                 </div>
               </div>
               <div className="Flex-row Justify-content--left">
                 <div
-                  className="Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
+                  className="Create-workshop-button Button-color--teal-1000"
                   onClick={() => {
                     navigate("/create-workshop")
                   }}

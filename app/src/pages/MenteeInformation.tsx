@@ -19,7 +19,7 @@ const MenteeInformation = () => {
     <>
       <Navbar />
       <div className="Flex-row Justify-content--spaceBetween">
-        <div className="Block Width--80 Margin-right--40 Margin-left--40 Margin-top--40 Height--100vh">
+        <div className="Mentee-info-block">
           <div className="Width--60">
             <div className="Flex-row Margin-bottom--40 Margin-left--60 Margin-right--100 Margin-top--30">
               <div>

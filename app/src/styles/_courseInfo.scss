@@ -63,6 +63,41 @@
     }
   }
 
+  .Mentee-info-block {
+    padding: 30px 30px;
+    box-shadow: var(--pww-shadow-dark);
+    background-color: var(--pww-color-light-1000);
+    border-radius: var(--pww-border-radius-8);
+    border: 1px solid var(--pww-color-gray-200);
+    width: 80%;
+    margin-right: 40px;
+    margin-left: 40px;
+    margin-top: 40px;
+  
+  }
+
+  .Create-course-text {
+    font-size: 15;
+    color: var(--pww-color-gray-800);
+    margin-left: 20;
+  }
+
+  .Create-workshop-button {
+    transition: all var(--pww-transition-duration) ease;
+    border-radius: 4px;
+    font-size: 16;
+    color: var(--pww-color-light-1000);
+    margin-bottom: 16;
+    margin-left: 20;
+    border-style: solid;
+    border-width: 2px;
+    font-size: 16px;
+    outline: none;
+    height: fit-content;
+    padding: 8px 16px;
+    text-align: center;
+  }
+
 
 
   .Flex-row--subtitle {
