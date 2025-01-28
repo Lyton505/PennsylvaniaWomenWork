@@ -13,6 +13,7 @@ import LoginRedirect from "./pages/LoginRedirect";
 import Logout from "./pages/Logout";
 import Profile from "./pages/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App(): ReactElement {
   const { isAuthenticated } = useAuth0();
@@ -31,19 +32,61 @@ function App(): ReactElement {
             <Route path="/login" element={<LoginRedirect />} />
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/mentor" element={<MentorDashboard />} />
-            <Route path="/mentee" element={<MenteeDashboard />} />
+            <Route
+              path="/mentor"
+              element={
+                <ProtectedRoute
+                  element={<MentorDashboard />}
+                  allowedRoles={["mentor", "admin"]}
+                />
+              }
+            />
+            <Route
+              path="/mentee"
+              element={
+                <ProtectedRoute
+                  element={<MenteeDashboard />}
+                  allowedRoles={["mentee", "admin"]}
+                />
+              }
+            />
             <Route path="/confirmLogout" element={<ConfirmLogout />} />
-            <Route path="/create-workshop" element={<CreateWorkshop />} />
-            <Route path="/create-meeting" element={<CreateMeeting />} />
+            <Route
+              path="/create-workshop"
+              element={
+                <ProtectedRoute
+                  element={<CreateWorkshop />}
+                  allowedRoles={["mentor", "admin"]}
+                />
+              }
+            />
+            <Route
+              path="/create-meeting"
+              element={
+                <ProtectedRoute
+                  element={<CreateMeeting />}
+                  allowedRoles={["mentor", "admin"]}
+                />
+              }
+            />
             <Route path="/profile" element={<Profile />} />
             <Route
               path="/mentor/mentee-information"
-              element={<MenteeInformation />}
+              element={
+                <ProtectedRoute
+                  element={<MenteeInformation />}
+                  allowedRoles={["mentor", "admin"]}
+                />
+              }
             />
             <Route
               path="/mentor/workshop-information"
-              element={<WorkshopInformation />}
+              element={
+                <ProtectedRoute
+                  element={<WorkshopInformation />}
+                  allowedRoles={["mentor", "admin"]}
+                />
+              }
             />
           </>
         )}
