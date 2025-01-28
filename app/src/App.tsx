@@ -45,7 +45,6 @@ function App(): ReactElement {
               path="/mentor/workshop-information"
               element={<WorkshopInformation />}
             />
-            <Route path="/callback" element={<AuthCallback />} />
           </>
         )}
       </Routes>
