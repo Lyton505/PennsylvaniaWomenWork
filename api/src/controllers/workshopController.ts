@@ -2,6 +2,44 @@
 
 import { Request, Response } from "express";
 import { Workshop } from "../model/Workshop";
+import AWS from "aws-sdk";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const s3 = new AWS.S3();
+const bucketName = process.env.S3_BUCKET_NAME;
+
+// Generate pre-signed URL for file upload
+export const generatePresignedUrl = async (req: Request, res: Response) => {
+  const { fileName, fileType } = req.query;
+
+  if (!fileName || !fileType) {
+    return res.status(400).json({ message: "fileName and fileType are required" });
+  }
+
+  const params = {
+    Bucket: bucketName,
+    Key: fileName as string,
+    ContentType: fileType as string,
+    Expires: 60 * 5, // URL expires in 5 minutes
+  };
+
+  try {
+    const url = await s3.getSignedUrlPromise("putObject", params);
+    res.json({ url });
+  } catch (error) {
+    console.error("Error generating pre-signed URL:", error);
+    res.status(500).json({ message: "Failed to generate pre-signed URL", error });
+  }
+};
+
 
 export const createWorkshop = async (req: Request, res: Response) => {
   try {
