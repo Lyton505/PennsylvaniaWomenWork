@@ -19,20 +19,60 @@ const validationSchema = Yup.object().shape({
 
 const CreateWorkshop = () => {
   // Handle form submission
+  const [isModal, setIsModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [fileTitles, setFileTitles] = useState<string[]>([])
+  const [fileAdded, setFileAdded] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([])
+
+  
   const handleSubmit = async (
     values: any,
     { setSubmitting, resetForm }: any
   ) => {
     setSubmitting(true)
     try {
+
+      const uploadedFiles = await Promise.all(
+        selectedFiles.map(async (fileData) => {
+          // Get pre-signed URL for the file
+          const response = await api.get("/api/generate-presigned-url", {
+            params: { fileName: fileData.file.name, fileType: fileData.file.type },
+          });
+  
+          const { url, objectKey } = response.data;
+  
+          // Upload file to S3
+          await fetch(url, {
+            method: "PUT",
+            body: fileData.file,
+            headers: { "Content-Type": fileData.file.type },
+          });
+  
+          // Return metadata to store in MongoDB
+          return {
+            title: fileData.title,
+            description: fileData.description,
+            objectKey, // Store only object key in database
+          };
+        })
+      );
+
       const payload = {
         name: values.name,
         description: values.description,
-        s3id: "example-s3-id", // TODO: Placeholder for S3 ID until set up
+        files: uploadedFiles, // TODO: Placeholder for S3 ID until set up
       }
 
       await api.post("/api/create-workshop", payload)
       // api.ts deals with error responses !
+      resetForm();
+      setSelectedFiles([]);
+      setFileTitles([]);
+      setFileAdded(false);
+
     } catch (error) {
       console.error("Error creating workshop:", error)
       alert("Failed to create workshop. Please try again.")
@@ -41,13 +81,7 @@ const CreateWorkshop = () => {
     }
   }
 
-  const [isModal, setIsModal] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [fileTitles, setFileTitles] = useState<string[]>([])
-  const [fileAdded, setFileAdded] = useState(false)
-  const [success, setSuccess] = useState(false)
-
+  
   const fileUploadInitialValues = {
     title: "",
     desc: "",
@@ -64,14 +98,21 @@ const CreateWorkshop = () => {
     setErrorMessage("")
 
     try {
-      const finalData = {
-        title: values.title,
-        desc: values.desc,
-        file: values.file,
+      const { title, desc, file } = values;
+      if (!file) {
+        setErrorMessage("No file selected.");
+        setIsLoading(false);
+        return;
       }
+
+      setSelectedFiles((prevFiles) => [
+        ...prevFiles,
+        { title, description: desc, file },
+      ]);
+
       setFileTitles((prevTitles) => [...prevTitles, values.title])
       setFileAdded(true)
-      console.log("Submitting data:", finalData)
+      console.log("Submitting data:")
       setSuccess(true)
       setErrorMessage("")
       resetForm()
@@ -229,8 +270,8 @@ const CreateWorkshop = () => {
                       <div className="description">Files:</div>
                     </div>
                     <ul>
-                      {fileTitles.map((title, index) => (
-                        <li key={index}>{title}</li>
+                      {selectedFiles.map((file, index) => (
+                        <li key={index}>{file.title}</li>
                       ))}
                     </ul>
                   </div>

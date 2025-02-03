@@ -6,6 +6,7 @@ import {
   createWorkshop,
   getWorkshop,
   getWorkshopsByUserId,
+  generatePresignedUrl,
 } from "../controllers/workshopController";
 
 const router = express.Router();
@@ -21,6 +22,13 @@ const workshopSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   s3id: { type: String, required: false },
+  files: [
+    {
+      title: { type: String, required: true },
+      description: { type: String, required: true },
+      objectKey: { type: String, required: true }, // Store only the S3 object key
+    },
+  ],
 });
 
 const Workshop =
@@ -28,7 +36,7 @@ const Workshop =
 
 // Route to create a new workshop
 router.post("/create-workshop", async (req: any, res: any) => {
-  const { name, description, s3id } = req.body;
+  const { name, description, s3id, files } = req.body;
 
   if (!name || !description) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -36,7 +44,7 @@ router.post("/create-workshop", async (req: any, res: any) => {
 
   try {
     // Create a new workshop with
-    const newWorkshop = new Workshop({ name, description, s3id });
+    const newWorkshop = new Workshop({ name, description, s3id, files });
     const savedWorkshop = await newWorkshop.save();
 
     // Success:

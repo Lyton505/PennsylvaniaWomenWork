@@ -24,16 +24,17 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "fileName and fileType are required" });
   }
 
+  const objectKey = `uploads/${Date.now()}-${fileName}`; // Generate a unique file key
   const params = {
     Bucket: bucketName,
-    Key: fileName as string,
-    ContentType: fileType as string,
+    Key: objectKey,
+    ContentType: fileType,
     Expires: 60 * 5, // URL expires in 5 minutes
   };
 
   try {
     const url = await s3.getSignedUrlPromise("putObject", params);
-    res.json({ url });
+    res.json({ url, objectKey }); // Send both URL and object key
   } catch (error) {
     console.error("Error generating pre-signed URL:", error);
     res.status(500).json({ message: "Failed to generate pre-signed URL", error });
@@ -43,13 +44,21 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
 
 export const createWorkshop = async (req: Request, res: Response) => {
   try {
-    const { mentorId, menteeId, textContent } = req.body;
+    const { mentorId, menteeId, textContent, files } = req.body;
+
+    const uploadedFiles = files.map((file: { title: string; description: string; objectKey: string }) => ({
+      title: file.title,
+      description: file.description,
+      objectKey: file.objectKey, // Store only the S3 object key
+    }));
 
     const newWorkshop = new Workshop({
       mentor: mentorId,
       mentee: menteeId,
       textContent,
+      files: uploadedFiles,
     });
+
 
     const savedWorkshop = await newWorkshop.save();
     res.status(201).json(savedWorkshop);
@@ -58,6 +67,7 @@ export const createWorkshop = async (req: Request, res: Response) => {
   }
 };
 
+// TODO: convert obj keys to URLs if bucket is public
 export const getWorkshop = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
