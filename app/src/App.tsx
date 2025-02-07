@@ -15,13 +15,11 @@ import Profile from "./pages/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useCurrentUser } from "./hooks/useCurrentUser";
-
 function App(): ReactElement {
   const { isAuthenticated, user: Auth0User } = useAuth0();
   const { user } = useCurrentUser(Auth0User?.email || "");
 
   const userRole = user?.role;
-
 
   return (
     <div className="App">
@@ -38,7 +36,6 @@ function App(): ReactElement {
             {/* <Route path="/" element={<Home />} /> */}
             {/* <Route path="/home" element={<Home />} /> */}
 
-
             <Route
               path="/mentor"
               element={
@@ -49,17 +46,18 @@ function App(): ReactElement {
               }
             />
 
-            {userRole === "mentee" ? (<Route
-              path="/home"
-              element={
-                <ProtectedRoute
-                  element={<MenteeDashboard />}
-                  allowedRoles={["mentee"]}
-                />
-              }
-            />)
-              :
-              (<Route
+            {userRole === "mentee" ? (
+              <Route
+                path="/home"
+                element={
+                  <ProtectedRoute
+                    element={<MenteeDashboard />}
+                    allowedRoles={["mentee"]}
+                  />
+                }
+              />
+            ) : (
+              <Route
                 path="/home"
                 element={
                   <ProtectedRoute
@@ -67,7 +65,8 @@ function App(): ReactElement {
                     allowedRoles={["mentor", "admin"]}
                   />
                 }
-              />)}
+              />
+            )}
 
             <Route
               path="/mentee"
@@ -122,5 +121,4 @@ function App(): ReactElement {
     </div>
   );
 }
-
 export default App;
