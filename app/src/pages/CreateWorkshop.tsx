@@ -39,7 +39,7 @@ const CreateWorkshop = () => {
       };
       // const { data: workshop } = await api.post("/api/create-workshop", payload);
       const { data: workshop } = await api.post(
-        "/workshop/create-workshop",
+        "/api/workshop/create-workshop",
         payload,
       );
 
