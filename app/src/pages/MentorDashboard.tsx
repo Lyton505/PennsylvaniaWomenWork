@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom"
 import Modal from "../components/Modal"
+import CreateEventModal from "../components/CreateEvent"
 
 interface MenteeInformationElements {
   id: number
@@ -32,6 +33,7 @@ const MentorDashboard = () => {
 
   const [activeTab, setActiveTab] = useState("My Mentees")
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [createEventModal, setCreateEventModal] = useState(false)
 
   const events: Event[] = [
     {
@@ -112,6 +114,13 @@ const MentorDashboard = () => {
           subheader={`${selectedEvent.day.toUpperCase()}, ${selectedEvent.month} ${selectedEvent.date}`}
           body={<>{selectedEvent.fullDescription}</>}
           action={() => setSelectedEvent(null)}
+        />
+      )}
+
+      {createEventModal && (
+        <CreateEventModal
+          isOpen={createEventModal}
+          onClose={() => setCreateEventModal(false)}
         />
       )}
       <div className="row g-3 Margin--20">
@@ -217,6 +226,14 @@ const MentorDashboard = () => {
                   ))}
                 </div>
               ))}
+              <div
+                className="Button Button-color--blue-1000 Margin-top--20"
+                onClick={() => {
+                  setCreateEventModal(true)
+                }}
+              >
+                Add New Event
+              </div>
             </div>
           </div>
         )}
