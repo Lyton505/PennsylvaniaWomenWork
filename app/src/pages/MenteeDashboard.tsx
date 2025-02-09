@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Navbar from "../components/Navbar"
 import Modal from "../components/Modal"
+import { useNavigate } from "react-router-dom"
 
 interface Event {
   id: number
@@ -12,7 +13,19 @@ interface Event {
   fullDescription: string
 }
 
+interface CourseInformationElements {
+  id: number
+  courseName: string
+}
+
 const MenteeDashboard = () => {
+
+  const navigate = useNavigate()
+
+  const handleClick= (id: number) => {
+    navigate(`/mentee/course-information/`)
+  }
+
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
 
   const events: Event[] = [
@@ -49,6 +62,23 @@ const MenteeDashboard = () => {
     },
   ]
 
+  const courseGridData: CourseInformationElements[] = [
+    {
+      id: 1,
+      courseName: "Resume",
+    },
+
+    {
+      id: 2,
+      courseName: "Networking",
+    },
+
+    {
+      id: 3,
+      courseName: "Interviewing",
+    },
+  ]
+
   const eventsByMonth: { [key: string]: Event[] } = events.reduce(
     (acc, event) => {
       if (!acc[event.month]) {
@@ -82,18 +112,19 @@ const MenteeDashboard = () => {
               Select a course to access materials.
             </div>
             <div className="row gx-3 gy-3">
-              {["teal-1000", "green-1000", "blue-1000"].map((color, index) => (
-                <div key={index} className="col-lg-4">
-                  <div className="Workshop-card">
-                    <div
-                      className={`Workshop-card-color Background-color--${color}`}
-                    ></div>
-                    <div className="Workshop-card-content">
-                      <div className="Workshop-card-name">Resume Workshop</div>
-                      Workshop content
-                    </div>
+              {courseGridData.map((item) => (
+                <div className="col-lg-4">
+                  <div className="Workshop-card"
+                  onClick={() => handleClick(item.id)}
+                  >
+                      <div className="Workshop-card-color Background-color--teal-1000"/>
+                        <div className="Padding--10">
+                        <h3 className="Text-fontSize--20 Text-color--gray-600">
+                          {item.courseName}
+                        </h3>
+                      </div>
+                      </div>
                   </div>
-                </div>
               ))}
             </div>
           </div>
