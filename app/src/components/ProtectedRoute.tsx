@@ -18,7 +18,7 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
   }
 
   if (loading) {
-    return <div>Loading...</div>; // You might want to use a proper loading component
+    return <div>Loading...</div>;
   }
 
   if (user && !allowedRoles.includes(user.role)) {
