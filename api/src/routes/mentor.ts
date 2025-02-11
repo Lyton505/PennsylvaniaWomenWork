@@ -3,7 +3,7 @@ import { getMenteesForMentor } from "../controllers/mentorController";
 
 const router = express.Router();
 
-// route to all mentees for a mentor getter
+// Route to get all mentees for a mentor
 router.get("/:mentorId/mentees", getMenteesForMentor);
 
 export default router;

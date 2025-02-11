@@ -31,6 +31,18 @@
       position: relative;
     }
 
+    .text-area {
+      border-radius: var(--pww-border-radius-8);
+      border: none;
+      background-color: var(--pww-color-dark-50);
+      font-family: "Exo 2", sans-serif;
+      font-size: var(--pww-font-size-14);
+      padding: 8px;
+      // width: 100%; // Ensure inputs fit within the container
+      box-sizing: border-box; // Include padding and border in width calculation
+      position: relative;
+    }
+
     &-toggle {
       cursor: pointer;
       margin: -30px 10px 0 auto;
