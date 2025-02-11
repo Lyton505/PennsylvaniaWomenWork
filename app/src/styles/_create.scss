@@ -1,0 +1,124 @@
+.Create-block {
+    margin-right: 80px;
+    margin-left: 80px;
+    margin-top: 40px; 
+    padding: 30px 30px;
+    box-shadow: var(--pww-shadow-dark);
+    background-color: var(--pww-color-light-1000);
+    border-radius: var(--pww-border-radius-8);
+    border: 1px solid var(--pww-color-gray-200);
+    width: 70;
+}
+
+.Create-header {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 40px;
+    margin-left: 40px;
+    margin-right: 100px;
+    margin-top: 30px;
+    font-size: 30px;
+    color: var(--pww-color-teal-1000);
+    border-bottom-color: var(--pww-color-gray-300);
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    padding-bottom: 10px;
+}
+
+.Create-header-blue {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 40px;
+    margin-left: 40px;
+    margin-right: 100px;
+    margin-top: 30px;
+    font-size: 30px;
+    color: var(--pww-color-blue-1000);
+    border-bottom-color: var(--pww-color-gray-300);
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    padding-bottom: 10px;
+}
+
+.Create-row {
+    display: flex;
+    flex-direction: row;
+    font-size: 16;
+    color: var(--pww-color-gray-1000);
+    margin-bottom: 8px;
+}
+
+.Create-button-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.Create-file-row {
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.Create-button {
+    transition: all var(--pww-transition-duration) ease;
+    border-radius: var(--pww-border-radius-4);
+    border-style: solid;
+    border-color: transparent;
+    border-width: 2px;
+    font-size: 14px;
+    outline: none;
+    height: fit-content;
+    padding: 5px 10px;
+    text-align: center;
+    margin-right: 10px;
+    width: 200px;
+    cursor: pointer;
+    background-color: var(--pww-color-teal-1000);
+    color: var(--pww-color-light-1000);
+
+    &:hover {
+        background-color: transparent;
+        border-color: var(--pww-color-teal-1000);
+        color: var(--pww-color-teal-1000);
+        cursor: pointer;
+    }
+
+    &-light {
+        background-color: var(--pww-color-light-1000);
+        color: var(--pww-color-teal-1000);
+
+        &:hover {
+            background-color: var(--pww-color-teal-1000);
+            color: var(--pww-color-light-1000);
+        }
+    }
+}
+
+.Create-button-blue {
+    transition: all var(--pww-transition-duration) ease;
+    border-radius: var(--pww-border-radius-4);
+    border-style: solid;
+    border-color: transparent;
+    border-width: 2px;
+    font-size: 14px;
+    outline: none;
+    height: fit-content;
+    padding: 5px 10px;
+    text-align: center;
+    margin-top: 30px;
+    width: 300px;
+    cursor: pointer;
+    background-color: var(--pww-color-blue-1000);
+    color: var(--pww-color-light-1000);
+
+    &:hover {
+        background-color: transparent;
+        border-color: var(--pww-color-blue-1000);
+        color: var(--pww-color-blue-1000);
+        cursor: pointer;
+    }
+
+}

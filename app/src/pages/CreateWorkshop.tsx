@@ -170,13 +170,9 @@ const CreateWorkshop = () => {
       )}
       <Navbar />
 
-      <div className="Block Width--70 Margin-right--80 Margin-left--80 Margin-top--40">
+      <div className="Create-block">
         <div
-          className="Flex-row Margin-bottom--40 Margin-left--40 Margin-right--100 Margin-top--30 Text-color--teal-1000 Text-fontSize--30"
-          style={{
-            borderBottom: "2px solid rgba(84, 84, 84, 0.3)",
-            paddingBottom: "10px",
-          }}
+          className="Create-header"
         >
           Create Workshop
         </div>
@@ -190,7 +186,7 @@ const CreateWorkshop = () => {
               <Form>
                 <div className="Margin-bottom--30">
                   <div className="Form-group">
-                    <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
+                    <div className="Create-row">
                       <div className="name">Workshop Name:</div>
                     </div>
                     <Field
@@ -208,7 +204,7 @@ const CreateWorkshop = () => {
 
                 <div className="Margin-bottom--20">
                   <div className="Form-group">
-                    <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
+                    <div className="Create-row">
                       <div className="description">Workshop Description:</div>
                     </div>
                     <Field
@@ -225,7 +221,7 @@ const CreateWorkshop = () => {
                 </div>
                 {fileAdded && (
                   <div>
-                    <div className="Flex-row Text-fontSize--16 Margin-bottom--8">
+                    <div className="Create-file-row">
                       <div className="description">Files:</div>
                     </div>
                     <ul>
@@ -235,17 +231,17 @@ const CreateWorkshop = () => {
                     </ul>
                   </div>
                 )}
-                <div className="Flex-row Justify-content--center Margin-top--30">
+                <div className="Create-button-row">
                   <button
                     type="button"
-                    className="Button Button-color--teal-1000 Width--50 Margin-right--10"
+                    className="Create-button"
                     onClick={() => setIsModal(true)}
                   >
                     Add Files
                   </button>
                   <button
                     type="submit"
-                    className="Button Button-color--teal-1000 Width--50 Button--hollow"
+                    className="Create-button"
                     disabled={isSubmitting} // Disable button while form is submitting
                   >
                     {isSubmitting ? (

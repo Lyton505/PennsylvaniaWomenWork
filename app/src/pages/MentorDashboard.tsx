@@ -227,7 +227,7 @@ const MentorDashboard = () => {
                 </div>
               ))}
               <div
-                className="Button Button-color--blue-1000 Margin-top--20"
+                className="Create-button-blue"
                 onClick={() => {
                   setCreateEventModal(true)
                 }}
@@ -257,7 +257,7 @@ const MentorDashboard = () => {
               </div>
               <div className="Flex-row Justify-content--left">
                 <div
-                  className="Create-workshop-button Button-color--teal-1000"
+                  className="Create-workshop-button"
                   onClick={() => {
                     navigate("/create-workshop")
                   }}

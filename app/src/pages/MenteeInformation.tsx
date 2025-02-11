@@ -77,7 +77,7 @@ const MenteeInformation = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="Add-button Button-color--teal-1000">
+                    <div className="Add-button">
                       Assign New Courses
                     </div>
                   </div>
@@ -111,7 +111,7 @@ const MenteeInformation = () => {
                       </div>
                       <div className="Flex-row-calendar">
                         <div
-                          className="Add-button--meeting Button-color--teal-1000"
+                          className="Add-button--meeting"
                           onClick={() => {
                             navigate("/create-meeting")
                           }}
@@ -144,7 +144,7 @@ const MenteeInformation = () => {
                         </div>
                       </div>
                       <div className="Flex-row-calendar">
-                        <div className="Add-button--meeting Button-color--teal-1000">
+                        <div className="Add-button--meeting">
                           Add New Meeting Notes
                         </div>
                       </div>
@@ -174,7 +174,7 @@ const MenteeInformation = () => {
                       </div>
                     </div>
                     <div className="Flex-row-meeting-info--description">
-                      <div className="Add-button Button-color--teal-1000">
+                      <div className="Add-button">
                         Schedule Meeting
                       </div>
                     </div>
