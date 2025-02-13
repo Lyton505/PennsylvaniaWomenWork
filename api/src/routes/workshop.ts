@@ -75,6 +75,9 @@ router.get(
   },
 );
 
+router.get(
+  "/generate-presigned-url", generatePresignedUrl);
+
 // POPULATE VERSION (if details of mentor/mentee objects are needed on the frontend like name or picture)
 
 // import express from 'express';

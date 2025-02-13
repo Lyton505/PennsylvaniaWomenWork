@@ -38,7 +38,8 @@ const CreateWorkshop = () => {
       const uploadedFiles = await Promise.all(
         selectedFiles.map(async (fileData) => {
           // Get pre-signed URL for the file
-          const response = await api.get("/api/generate-presigned-url", {
+          console.log("File data:", fileData.file.name, fileData.file.type);
+          const response = await api.get("/workshop/generate-presigned-url", {
             params: { fileName: fileData.file.name, fileType: fileData.file.type },
           });
   
@@ -66,12 +67,12 @@ const CreateWorkshop = () => {
         files: uploadedFiles, // TODO: Placeholder for S3 ID until set up
       }
 
-      await api.post("/api/create-workshop", payload)
-      // api.ts deals with error responses !
-      resetForm();
-      setSelectedFiles([]);
-      setFileTitles([]);
-      setFileAdded(false);
+      // await api.post("/api/create-workshop", payload)
+      // // api.ts deals with error responses !
+      // resetForm();
+      // setSelectedFiles([]);
+      // setFileTitles([]);
+      // setFileAdded(false);
 
     } catch (error) {
       console.error("Error creating workshop:", error)
@@ -93,7 +94,7 @@ const CreateWorkshop = () => {
     file: Yup.mixed().required("Please select a file"),
   })
 
-  const handleFileSumbit = async (values: any, { resetForm }: any) => {
+  const handleFileSumbit = async (values: any, { resetForm, setFieldValue }: any) => {
     setIsLoading(true)
     setErrorMessage("")
 
@@ -110,12 +111,16 @@ const CreateWorkshop = () => {
         { title, description: desc, file },
       ]);
 
+      console.log("File selected:", file.name, file.type);
+
       setFileTitles((prevTitles) => [...prevTitles, values.title])
       setFileAdded(true)
       console.log("Submitting data:")
+      console.log("File:", file)
       setSuccess(true)
       setErrorMessage("")
       resetForm()
+      setFieldValue("file", null)
     } catch (error) {
       console.error("Error submitting:", error)
     } finally {
@@ -136,7 +141,7 @@ const CreateWorkshop = () => {
               validationSchema={fileValidation}
               onSubmit={handleFileSumbit}
             >
-              {({ values, errors, touched, isSubmitting }) => (
+              {({ setFieldValue, errors, touched, isSubmitting }) => (
                 <Form>
                   <div className="Form-group">
                     <label htmlFor="title">Title</label>
@@ -166,11 +171,17 @@ const CreateWorkshop = () => {
                   </div>
                   <div className="Form-group">
                     <label htmlFor="file">Files</label>
-                    <Field
+                    <input
                       className="Form-input-box"
                       type="file"
                       id="file"
                       name="file"
+                      onChange={(event) =>{
+                        if (event.currentTarget.files){
+                          const file = event.currentTarget.files[0];
+                        setFieldValue("file", file);
+                        }
+                      }}
                     />
                     {errors.file && touched.file && (
                       <div className="Form-error">{errors.file}</div>
