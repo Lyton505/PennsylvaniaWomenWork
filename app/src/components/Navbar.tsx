@@ -54,7 +54,7 @@ const Navbar = (): ReactElement => {
             <div className="Flex-row">
               <div
                 className="Button Button-color--teal-1000 Margin-right--20"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
               >
                 Log In
               </div>
