@@ -156,7 +156,7 @@ const MentorDashboard = () => {
               <div>
                 <div className="row gx-3 gy-3">
                   {menteeGridData.map((item) => (
-                    <div className="col-lg-4">
+                    <div key={item.id} className="col-lg-4">
                       <div
                         className="Mentor--card"
                         onClick={() => handleClick(item.id)}
@@ -177,7 +177,7 @@ const MentorDashboard = () => {
             {activeTab === "Courses" && (
               <div className="row gx-3 gy-3">
                 {courseGridData.map((item) => (
-                  <div className="col-lg-4">
+                  <div key={item.id} className="col-lg-4">
                     <div
                       className="Mentor--card"
                       onClick={() => handleClickWorkshop(item.id)}
