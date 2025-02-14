@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import LoginLoading from "../pages/LoginLoading";
 
 interface ProtectedRouteProps {
   element: ReactElement;
@@ -18,7 +19,7 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoginLoading />;
   }
 
   if (user && !allowedRoles.includes(user.role)) {
