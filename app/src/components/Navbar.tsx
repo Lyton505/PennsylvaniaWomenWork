@@ -71,7 +71,6 @@ const Navbar = (): ReactElement => {
               className="Button Button-color--teal-1000"
               onClick={() => {
                 logout();
-                navigate("/logout");
               }}
             >
               Log Out
