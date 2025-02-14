@@ -18,17 +18,16 @@ const bucketName = process.env.S3_BUCKET_NAME;
 
 // Generate pre-signed URL for file upload
 export const generatePresignedUrl = async (req: Request, res: Response) => {
-  const { fileName, fileType } = req.query;
+  const { fileName } = req.query;
 
-  if (!fileName || !fileType) {
-    return res.status(400).json({ message: "fileName and fileType are required" });
+  if (!fileName) {
+    return res.status(400).json({ message: "fileName required" });
   }
 
   const objectKey = `uploads/${Date.now()}-${fileName}`; // Generate a unique file key
   const params = {
     Bucket: bucketName,
     Key: objectKey,
-    ContentType: fileType,
     Expires: 60 * 5, // URL expires in 5 minutes
   };
 
