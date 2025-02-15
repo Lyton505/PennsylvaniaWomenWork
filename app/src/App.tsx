@@ -24,23 +24,19 @@ function App(): ReactElement {
 
   const userRole = user?.role;
 
-
   return (
     <div className="App">
       <Routes>
         <Route path="/callback" element={<AuthCallback />} />
+        <Route path="/logout" element={<Logout />} />
         {!isAuthenticated ? (
           <>
-            <Route path="/logout" element={<Logout />} />
+            <Route path="/login" element={<LoginRedirect />} />
+            <Route path="/" element={<LoginRedirect />} />
             <Route path="*" element={<LoginRedirect />} />
           </>
         ) : (
           <>
-            <Route path="/login" element={<LoginRedirect />} />
-            {/* <Route path="/" element={<Home />} /> */}
-            {/* <Route path="/home" element={<Home />} /> */}
-
-
             <Route
               path="/mentor"
               element={
