@@ -5,6 +5,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Auth0ProviderWithNavigate } from "./utils/auth0-provider";
 import { BrowserRouter } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
+
 document.title = "PWW";
 
 const root = ReactDOM.createRoot(
@@ -14,6 +16,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Auth0ProviderWithNavigate>
+        <Toaster />
         <App />
       </Auth0ProviderWithNavigate>
     </BrowserRouter>

@@ -1,119 +1,173 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
-import { ReactComponent as SendIcon } from '../assets/send.svg';
-import { ring2 } from 'ldrs';
+import React, { useState } from "react"
+import { Formik, Form, Field } from "formik"
+import * as Yup from "yup"
+import { toast } from "react-hot-toast"
+import { ReactComponent as SendIcon } from '../assets/send.svg'
+import Navbar from "../components/Navbar"
+import AsyncSubmit from "../components/AsyncSubmit"
+import { api } from "../api"
 
-interface InviteFormData {
-    email: string;
-    verifyEmail: string;
+const initialValues = {
+    name: "",
+    email: "",
+    verifyEmail: "",
 }
 
-const SampleMenteeInvite: React.FC = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<InviteFormData>();
+const validationSchema = Yup.object().shape({
+    name: Yup.string()
+        .required("Name is required"),
+    email: Yup.string()
+        .email("Invalid email address")
+        .required("Email is required"),
+    verifyEmail: Yup.string()
+        .oneOf([Yup.ref("email")], "Emails must match")
+        .required("Please verify email"),
+})
 
-    ring2.register();
+const SampleMenteeInvite = () => {
+    const [isLoading, setIsLoading] = useState(false)
 
-    const onSubmit = async (data: InviteFormData) => {
-        setIsLoading(true);
+    const handleSubmit = async (values: any, { setSubmitting, resetForm }: any) => {
+        console.log("Submitting email invite", values);
+        setIsLoading(true)
         try {
-            const response = await fetch('/api/users/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    role: 'mentee',
-                }),
+            const response = await api.post('/user/send-email', {
+                name: values.name,
+                email: values.email,
+                role: "mentee",
             });
 
-            if (response.ok) {
-                toast.success('Invite sent successfully!', {
-                    style: {
-                        background: '#10B981',
-                        color: '#fff',
-                    },
+            if (response.status === 200) {
+                toast.success("Invite sent successfully!", {
+                    duration: 2000,
+                    position: 'top-center',
                 });
+                resetForm();
             } else {
-                throw new Error('Failed to send invite');
+                throw new Error("Failed to send invite");
             }
         } catch (error) {
-            toast.error('Failed to send invite');
+            console.error("Error sending invite:", error);
+            toast.error("Failed to send invite", {
+                duration: 2000,
+                position: 'top-center',
+            });
         } finally {
             setIsLoading(false);
+            setSubmitting(false);
         }
-    };
+    }
 
     return (
-        <div className="container">
-            <div className="row justify-content-center mt-5">
-                <div className="col-md-6">
-                    <div className="card shadow">
-                        <div className="card-body">
-                            <h2 className="card-title h4 mb-4">Invite Mentee</h2>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="mb-3">
-                                    <label className="form-label">Email</label>
-                                    <input
-                                        {...register('email', {
-                                            required: 'Email is required',
-                                            pattern: {
-                                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                                message: 'Invalid email address'
-                                            }
-                                        })}
-                                        className="form-control"
-                                        type="email"
-                                    />
-                                    {errors.email && (
-                                        <div className="text-danger small">{errors.email.message}</div>
-                                    )}
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Verify Email</label>
-                                    <input
-                                        {...register('verifyEmail', {
-                                            required: 'Please verify email',
-                                            validate: (value: string) => value === watch('email') || 'Emails do not match'
-                                        })}
-                                        className="form-control"
-                                        type="email"
-                                    />
-                                    {errors.verifyEmail && (
-                                        <div className="text-danger small">{errors.verifyEmail.message}</div>
-                                    )}
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2"
-                                >
-                                    {isLoading ? (
-                                        <l-ring-2
-                                            size="20"
-                                            stroke="3"
-                                            bg-opacity="0"
-                                            speed="2"
-                                            color="white"
+        <>
+            <Navbar />
+            <div className="Block Width--70 Margin-right--80 Margin-left--80 Margin-top--40">
+                <div
+                    className="Flex-row Margin-bottom--40 Margin-left--40 Margin-right--100 Margin-top--30 Text-color--teal-1000 Text-fontSize--30"
+                    style={{
+                        borderBottom: "2px solid rgba(84, 84, 84, 0.3)",
+                        paddingBottom: "10px",
+                    }}
+                >
+                    Invite Mentee
+                </div>
+                <div className="Margin-left--40 Margin-right--40">
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
+                    >
+                        {({ errors, touched, isSubmitting }) => (
+                            <Form>
+                                <div className="Margin-bottom--30">
+                                    <div className="Form-group">
+                                        <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
+                                            <div>Name:</div>
+                                        </div>
+                                        <Field
+                                            type="text"
+                                            name="name"
+                                            placeholder="Enter mentee name"
+                                            className="Form-input-box"
+                                            autoComplete="name"
                                         />
-                                    ) : (
-                                        <>
-                                            <SendIcon className="me-2" style={{ width: '1.25rem', height: '1.25rem' }} />
-                                            <span>Send Invite</span>
-                                        </>
-                                    )}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                                        {errors.name && touched.name && (
+                                            <div className="Form-error">{errors.name}</div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="Margin-bottom--30">
+                                    <div className="Form-group">
+                                        <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
+                                            <div>Email Address:</div>
+                                        </div>
+                                        <Field
+                                            type="email"
+                                            name="email"
+                                            placeholder="Enter email address"
+                                            className="Form-input-box"
+                                            autoComplete="email"
+                                        />
+                                        {errors.email && touched.email && (
+                                            <div className="Form-error">{errors.email}</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="Margin-bottom--30">
+                                    <div className="Form-group">
+                                        <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
+                                            <div>Verify Email Address:</div>
+                                        </div>
+                                        <Field
+                                            type="email"
+                                            name="verifyEmail"
+                                            placeholder="Verify email address"
+                                            className="Form-input-box"
+                                            autoComplete="email"
+                                        />
+                                        {errors.verifyEmail && touched.verifyEmail && (
+                                            <div className="Form-error">{errors.verifyEmail}</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="Flex-row Justify-content--center Margin-top--30">
+                                    <button
+                                        type="button"
+                                        className="Button Button-color--teal-1000 Width--50 Margin-right--20"
+                                        onClick={() => {
+                                            console.log("toast test");
+                                            toast.error("Test toast message!", {
+                                                duration: 2000,
+                                                position: 'top-center',
+                                            });
+                                        }}
+                                    >
+                                        Test Toast
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="Button Button-color--teal-1000 Width--50"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? (
+                                            <AsyncSubmit loading={isLoading} />
+                                        ) : (
+                                            <div className="Flex-row Align-items--center Justify-content--center">
+                                                <span>Send Invite</span>
+                                                <SendIcon className="Margin-left--8" style={{ width: '1.25rem', height: '1.25rem' }} />
+                                            </div>
+                                        )}
+                                    </button>
+                                </div>
+                            </Form>
+                        )}
+                    </Formik>
                 </div>
             </div>
-        </div>
-    );
-};
+        </>
+    )
+}
 
-export default SampleMenteeInvite;
+export default SampleMenteeInvite
