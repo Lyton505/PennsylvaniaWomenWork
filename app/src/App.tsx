@@ -12,6 +12,7 @@ import AuthCallback from "./pages/auth-callback";
 import LoginRedirect from "./pages/LoginRedirect";
 import Logout from "./pages/Logout";
 import Profile from "./pages/Profile";
+import SampleMenteeInvite from "./pages/SampleMenteeInvite";
 import { useAuth0 } from "@auth0/auth0-react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useCurrentUser } from "./hooks/useCurrentUser";
@@ -116,6 +117,17 @@ function App(): ReactElement {
                 />
               }
             />
+
+            <Route
+              path="/invite"
+              element={
+                <ProtectedRoute
+                  element={<SampleMenteeInvite />}
+                  allowedRoles={["board", "staff"]}
+                />
+              }
+            />
+
           </>
         )}
       </Routes>
