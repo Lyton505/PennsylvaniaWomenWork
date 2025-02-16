@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Workshop } from "../model/Workshop";
-import { Mentee } from "../model/Mentee";
+import User from "../model/User";
 
 export const getWorkshopsForMentee = async (req: Request, res: Response) => {
   try {
@@ -23,9 +23,9 @@ export const addWorkshopToMentee = async (req: Request, res: Response) => {
   }
 
   try {
-    const updatedMentee = await Mentee.findByIdAndUpdate(
+    const updatedMentee = await User.findByIdAndUpdate(
       menteeId,
-      { $push: { workshops: workshopId } },
+      { $push: { workshopIDs: workshopId } },
       { new: true, safe: true, upsert: false },
     );
 

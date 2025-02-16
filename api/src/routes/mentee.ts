@@ -11,6 +11,6 @@ const router = express.Router();
 router.get(":menteeId/workshops", getWorkshopsForMentee);
 
 // Route to add a workshop to a mentee
-router.patch(":menteeId/add-workshop", addWorkshopToMentee);
+router.patch("/:menteeId/add-workshop", addWorkshopToMentee);
 
 export default router;
