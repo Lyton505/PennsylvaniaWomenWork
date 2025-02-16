@@ -1,86 +1,104 @@
-import React, { useState } from "react"
-import { Formik, Form, Field } from "formik"
-import * as Yup from "yup"
-import Navbar from "../components/Navbar"
-import { api } from "../api"
-import Modal from "../components/Modal"
-import AsyncSubmit from "../components/AsyncSubmit"
+import React, { useState } from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Navbar from "../components/Navbar";
+import { api } from "../api";
+import Modal from "../components/Modal";
+import AsyncSubmit from "../components/AsyncSubmit";
 
 const initialValues = {
   name: "",
   description: "",
-}
+};
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-})
+});
 
 const CreateWorkshop = () => {
-  // Handle form submission
+  const [isModal, setIsModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fileDetails, setFileDetails] = useState<
+    { title: string; desc: string; s3id: string }[]
+  >([]);
+  const [fileAdded, setFileAdded] = useState(false);
+
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any
+    { setSubmitting, resetForm }: any,
   ) => {
-    setSubmitting(true)
+    setSubmitting(true);
     try {
+      // Create the workshop:
       const payload = {
         name: values.name,
         description: values.description,
-        s3id: "example-s3-id", // TODO: Placeholder for S3 ID until set up
+      };
+      // const { data: workshop } = await api.post("/api/create-workshop", payload);
+      const { data: workshop } = await api.post(
+        "/api/workshop/create-workshop",
+        payload,
+      );
+
+      // Add associated files (with placeholder s3id for now)
+      if (fileDetails.length > 0) {
+        for (const file of fileDetails) {
+          await api.post("/api/resource/create-resource", {
+            name: file.title,
+            description: file.desc,
+            s3id: file.s3id, // Placeholder
+            workshopIDs: [workshop._id], // Link resource to this workshop
+          });
+        }
       }
-
-      await api.post("/api/create-workshop", payload)
-      // api.ts deals with error responses !
+      alert("Workshop created successfully!");
+      resetForm();
+      setFileDetails([]); // Clear file details
+      setFileAdded(false);
     } catch (error) {
-      console.error("Error creating workshop:", error)
-      alert("Failed to create workshop. Please try again.")
+      console.error("Error creating workshop:", error);
+      alert("Failed to create workshop. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
-
-  const [isModal, setIsModal] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [fileTitles, setFileTitles] = useState<string[]>([])
-  const [fileAdded, setFileAdded] = useState(false)
-  const [success, setSuccess] = useState(false)
+  };
 
   const fileUploadInitialValues = {
     title: "",
     desc: "",
-    file: "",
-  }
+    file: null, // This will not be used until s3 integration
+  };
+
   const fileValidation = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     desc: Yup.string().required("Description is required"),
     file: Yup.mixed().required("Please select a file"),
-  })
+  });
 
-  const handleFileSumbit = async (values: any, { resetForm }: any) => {
-    setIsLoading(true)
-    setErrorMessage("")
+  const handleFileSubmit = async (values: any, { resetForm }: any) => {
+    setIsLoading(true);
+    setErrorMessage("");
 
     try {
-      const finalData = {
+      // Add file details with a placeholder s3id to the list
+      const newFile = {
         title: values.title,
         desc: values.desc,
-        file: values.file,
-      }
-      setFileTitles((prevTitles) => [...prevTitles, values.title])
-      setFileAdded(true)
-      console.log("Submitting data:", finalData)
-      setSuccess(true)
-      setErrorMessage("")
-      resetForm()
+        s3id: "placeholder-s3-id", // TODO: change
+      };
+      setFileDetails((prevDetails) => [...prevDetails, newFile]);
+      setFileAdded(true);
+      resetForm();
     } catch (error) {
-      console.error("Error submitting:", error)
+      console.error("Error adding file:", error);
+      setErrorMessage("Failed to add file. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -93,7 +111,7 @@ const CreateWorkshop = () => {
             <Formik
               initialValues={fileUploadInitialValues}
               validationSchema={fileValidation}
-              onSubmit={handleFileSumbit}
+              onSubmit={handleFileSubmit}
             >
               {({ values, errors, touched, isSubmitting }) => (
                 <Form>
@@ -114,7 +132,6 @@ const CreateWorkshop = () => {
                     <Field
                       as="textarea"
                       className="Form-input-box text-area"
-                      type="text"
                       id="desc"
                       name="desc"
                       rows="4"
@@ -135,7 +152,6 @@ const CreateWorkshop = () => {
                       <div className="Form-error">{errors.file}</div>
                     )}
                   </div>
-
                   <button
                     type="submit"
                     className="Button Margin-top--10 Button-color--teal-1000 Width--100"
@@ -144,7 +160,6 @@ const CreateWorkshop = () => {
                       !Object.keys(touched).length ||
                       isSubmitting
                     }
-                    // Disable button if there are errors or no fields are touched or form is submitting
                   >
                     {isSubmitting ? (
                       <AsyncSubmit loading={isLoading} />
@@ -152,15 +167,12 @@ const CreateWorkshop = () => {
                       "Upload Files"
                     )}
                   </button>
-
                   {errorMessage && (
                     <div className="Form-error">{errorMessage}</div>
                   )}
 
-                  {success && (
-                    <div className="Form-success">
-                      File uploaded successfully!
-                    </div>
+                  {fileAdded && (
+                    <div className="Form-success">File added successfully!</div>
                   )}
                 </Form>
               )}
@@ -171,97 +183,79 @@ const CreateWorkshop = () => {
       <Navbar />
 
       <div className="Block Width--70 Margin-right--80 Margin-left--80 Margin-top--40">
-        <div
-          className="Flex-row Margin-bottom--40 Margin-left--40 Margin-right--100 Margin-top--30 Text-color--teal-1000 Text-fontSize--30"
-          style={{
-            borderBottom: "2px solid rgba(84, 84, 84, 0.3)",
-            paddingBottom: "10px",
-          }}
-        >
+        <div className="Flex-row Margin-bottom--40 Margin-left--40 Margin-right--100 Margin-top--30 Text-color--teal-1000 Text-fontSize--30">
           Create Workshop
         </div>
-        <div className="Margin-left--40 Margin-right--40">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ errors, touched, isSubmitting }) => (
-              <Form>
-                <div className="Margin-bottom--30">
-                  <div className="Form-group">
-                    <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
-                      <div className="name">Workshop Name:</div>
-                    </div>
-                    <Field
-                      type="text"
-                      name="name"
-                      placeholder="Name"
-                      className="Form-input-box"
-                    />
-                    {/* Display error message if name field is invalid */}
-                    {errors.name && touched.name && (
-                      <div className="Form-error">{errors.name}</div>
-                    )}
-                  </div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ errors, touched, isSubmitting }) => (
+            <Form>
+              <div className="Margin-bottom--30">
+                <div className="Form-group">
+                  <label htmlFor="name">Workshop Name:</label>
+                  <Field
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    className="Form-input-box"
+                  />
+                  {errors.name && touched.name && (
+                    <div className="Form-error">{errors.name}</div>
+                  )}
                 </div>
-
-                <div className="Margin-bottom--20">
-                  <div className="Form-group">
-                    <div className="Flex-row Text-fontSize--16 Text-color--gray-1000 Margin-bottom--8">
-                      <div className="description">Workshop Description:</div>
-                    </div>
-                    <Field
-                      type="text"
-                      name="description"
-                      placeholder="Description"
-                      className="Form-input-box"
-                    />
-                    {/* Display error message if description field is invalid */}
-                    {errors.description && touched.description && (
-                      <div className="Form-error">{errors.description}</div>
-                    )}
-                  </div>
+              </div>
+              <div className="Margin-bottom--20">
+                <div className="Form-group">
+                  <label htmlFor="description">Workshop Description:</label>
+                  <Field
+                    type="text"
+                    name="description"
+                    placeholder="Description"
+                    className="Form-input-box"
+                  />
+                  {errors.description && touched.description && (
+                    <div className="Form-error">{errors.description}</div>
+                  )}
                 </div>
-                {fileAdded && (
-                  <div>
-                    <div className="Flex-row Text-fontSize--16 Margin-bottom--8">
-                      <div className="description">Files:</div>
-                    </div>
-                    <ul>
-                      {fileTitles.map((title, index) => (
-                        <li key={index}>{title}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <div className="Flex-row Justify-content--center Margin-top--30">
-                  <button
-                    type="button"
-                    className="Button Button-color--teal-1000 Width--50 Margin-right--10"
-                    onClick={() => setIsModal(true)}
-                  >
-                    Add Files
-                  </button>
-                  <button
-                    type="submit"
-                    className="Button Button-color--teal-1000 Width--50 Button--hollow"
-                    disabled={isSubmitting} // Disable button while form is submitting
-                  >
-                    {isSubmitting ? (
-                      <AsyncSubmit loading={isSubmitting} />
-                    ) : (
-                      "Create Workshop"
-                    )}
-                  </button>
+              </div>
+              {fileDetails.length > 0 && (
+                <div>
+                  <h4>Uploaded Files:</h4>
+                  <ul>
+                    {fileDetails.map((file, index) => (
+                      <li key={index}>{file.title}</li>
+                    ))}
+                  </ul>
                 </div>
-              </Form>
-            )}
-          </Formik>
-        </div>
+              )}
+              <div className="Flex-row Justify-content--center Margin-top--30">
+                <button
+                  type="button"
+                  className="Button Button-color--teal-1000 Width--50 Margin-right--10"
+                  onClick={() => setIsModal(true)}
+                >
+                  Add Files
+                </button>
+                <button
+                  type="submit"
+                  className="Button Button-color--teal-1000 Width--50 Button--hollow"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <AsyncSubmit loading={isSubmitting} />
+                  ) : (
+                    "Create Workshop"
+                  )}
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </>
-  )
-}
-
-export default CreateWorkshop
+  );
+};
+export default CreateWorkshop;

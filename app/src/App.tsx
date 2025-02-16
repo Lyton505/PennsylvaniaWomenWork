@@ -23,7 +23,6 @@ function App(): ReactElement {
 
   const userRole = user?.role;
 
-
   return (
     <div className="App">
       <Routes>
@@ -38,7 +37,6 @@ function App(): ReactElement {
             <Route path="/login" element={<LoginRedirect />} />
             {/* <Route path="/" element={<Home />} /> */}
             {/* <Route path="/home" element={<Home />} /> */}
-
 
             <Route
               path="/mentor"
@@ -68,7 +66,8 @@ function App(): ReactElement {
                     allowedRoles={[...tier1Roles, ...tier2Roles]}
                   />
                 }
-              />)}
+              />
+            )}
 
             <Route
               path="/mentee"
@@ -123,5 +122,4 @@ function App(): ReactElement {
     </div>
   );
 }
-
 export default App;
