@@ -3,8 +3,11 @@ import React from "react"
 import Navbar from "../components/Navbar"
 import { useCurrentUser } from "../hooks/useCurrentUser"
 import { useAuth0 } from "@auth0/auth0-react"
+import { useNavigate } from "react-router-dom"
+
 
 const Profile = () => {
+  const navigate = useNavigate()
   const {
     user: auth0User,
     isLoading: authLoading,
@@ -17,6 +20,12 @@ const Profile = () => {
     <>
       <Navbar />
       <div className="Profile">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="back-button"
+        >
+          ←
+        </button>
         <div className="Block">
           <div className="Block-header">Your Profile</div>
           {/* Display Auth0 or Backend loading/errors */}
