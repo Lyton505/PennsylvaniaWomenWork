@@ -43,7 +43,6 @@ const CreateWorkshop = () => {
 
           const { url, objectKey } = response.data;
 
-          // Upload file to S3
           const uploadResponse = await fetch(url, {
             method: "PUT",
             body: fileData.file,
@@ -62,15 +61,14 @@ const CreateWorkshop = () => {
       const payload = {
         name: values.name,
         description: values.description,
-        files: uploadedFiles, // TODO: Placeholder for S3 ID until set up
       };
 
-      // await api.post("/api/create-workshop", payload)
-      // // api.ts deals with error responses !
-      // resetForm();
-      // setSelectedFiles([]);
-      // setFileTitles([]);
-      // setFileAdded(false);
+      await api.post("/api/create-workshop", payload)
+      // api.ts deals with error responses !
+      resetForm();
+      setSelectedFiles([]);
+      setFileTitles([]);
+      setFileAdded(false);
     } catch (error) {
       console.error("Error creating workshop:", error);
       alert("Failed to create workshop. Please try again.");

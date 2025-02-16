@@ -24,7 +24,7 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "fileName required" });
   }
 
-  const objectKey = `uploads/${Date.now()}-${fileName}`; // Generate a unique file key
+  const objectKey = `${Date.now()}-${fileName}`; // Generate a unique file key
   const params = {
     Bucket: bucketName,
     Key: objectKey,
@@ -44,21 +44,13 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
 
 export const createWorkshop = async (req: Request, res: Response) => {
   try {
-    const { mentorId, menteeId, textContent, files } = req.body;
+    const { mentorId, menteeId, textContent } = req.body;
 
-    const uploadedFiles = files.map(
-      (file: { title: string; description: string; objectKey: string }) => ({
-        title: file.title,
-        description: file.description,
-        objectKey: file.objectKey, // Store only the S3 object key
-      }),
-    );
 
     const newWorkshop = new Workshop({
       mentor: mentorId,
       mentee: menteeId,
       textContent,
-      files: uploadedFiles,
     });
 
     const savedWorkshop = await newWorkshop.save();

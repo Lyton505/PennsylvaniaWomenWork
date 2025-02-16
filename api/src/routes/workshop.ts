@@ -22,13 +22,6 @@ const workshopSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   s3id: { type: String, required: false },
-  files: [
-    {
-      title: { type: String, required: true },
-      description: { type: String, required: true },
-      objectKey: { type: String, required: true }, // Store only the S3 object key
-    },
-  ],
 });
 
 const Workshop =
@@ -44,7 +37,7 @@ router.post("/create-workshop", async (req: any, res: any) => {
 
   try {
     // Create a new workshop with
-    const newWorkshop = new Workshop({ name, description, s3id, files });
+    const newWorkshop = new Workshop({ name, description, s3id });
     const savedWorkshop = await newWorkshop.save();
 
     // Success:
@@ -78,7 +71,6 @@ router.get(
 router.get(
   "/generate-presigned-url",
   async (req: express.Request, res: express.Response) => {
-    console.log("quere params", req.query);
     await generatePresignedUrl(req, res);
   },
 );
