@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom"
 import Modal from "../components/Modal"
 import CreateEventModal from "../components/CreateEvent"
-import Event, {EventData} from "../components/Event"
+import Event, { EventData } from "../components/Event"
 
 interface MenteeInformationElements {
   id: number
@@ -14,7 +14,6 @@ interface CourseInformationElements {
   id: number
   courseName: string
 }
-
 
 const handleClick = (item: MenteeInformationElements) => {
   console.log("Clicked:", item)
@@ -115,6 +114,7 @@ const MentorDashboard = () => {
           onClose={() => setCreateEventModal(false)}
         />
       )}
+
       <div className="row g-3 Margin--20">
         <div className="col-lg-8">
           <div className="Block p-3">
@@ -148,7 +148,7 @@ const MentorDashboard = () => {
               <div>
                 <div className="row gx-3 gy-3">
                   {menteeGridData.map((item) => (
-                    <div className="col-lg-4">
+                    <div className="col-lg-4" key={item.id}>
                       <div
                         className="Mentor--card"
                         onClick={() => handleClick(item.id)}
@@ -169,7 +169,7 @@ const MentorDashboard = () => {
             {activeTab === "Courses" && (
               <div className="row gx-3 gy-3">
                 {courseGridData.map((item) => (
-                  <div className="col-lg-4">
+                  <div className="col-lg-4" key={item.id}>
                     <div
                       className="Mentor--card"
                       onClick={() => handleClickWorkshop(item.id)}
@@ -187,31 +187,31 @@ const MentorDashboard = () => {
             )}
           </div>
         </div>
+
         <div className="col-lg-4">
-            <div className="Block p-3">
-              <div className="Block-header">Upcoming Events</div>
-              <div className="Block-subtitle">
-                Scheduled meetings and workshops
-              </div>
-              {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-                <Event
-                  key={month}
-                  month={month}
-                  events={monthEvents}
-                  onEventClick={setSelectedEvent}
-                />
-              ))}
-              <div
-                className="Button Button-color--blue-1000 Margin-top--20"
-                onClick={() => {
-                  setCreateEventModal(true)
-                }}
-              >
-                Add New Event
-              </div>  
+          <div className="Block p-3">
+            <div className="Block-header">Upcoming Events</div>
+            <div className="Block-subtitle">
+              Scheduled meetings and workshops
+            </div>
+            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+              <Event
+                key={month}
+                month={month}
+                events={monthEvents}
+                onEventClick={setSelectedEvent}
+              />
+            ))}
+            <div
+              className="Button Button-color--blue-1000"
+              onClick={() => {
+                setCreateEventModal(true)
+              }}
+            >
+              Add New Event
             </div>
           </div>
-      
+        </div>
       </div>
     </>
   )

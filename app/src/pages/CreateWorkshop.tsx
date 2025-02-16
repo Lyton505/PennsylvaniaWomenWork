@@ -1,47 +1,47 @@
-import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import Navbar from "../components/Navbar";
-import { api } from "../api";
-import Modal from "../components/Modal";
-import AsyncSubmit from "../components/AsyncSubmit";
+import React, { useState } from "react"
+import { Formik, Form, Field } from "formik"
+import * as Yup from "yup"
+import Navbar from "../components/Navbar"
+import { api } from "../api"
+import Modal from "../components/Modal"
+import AsyncSubmit from "../components/AsyncSubmit"
 
 const initialValues = {
   name: "",
   description: "",
-};
+}
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-});
+})
 
 const CreateWorkshop = () => {
-  const [isModal, setIsModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [isModal, setIsModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
   const [fileDetails, setFileDetails] = useState<
     { title: string; desc: string; s3id: string }[]
-  >([]);
-  const [fileAdded, setFileAdded] = useState(false);
+  >([])
+  const [fileAdded, setFileAdded] = useState(false)
 
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any,
+    { setSubmitting, resetForm }: any
   ) => {
-    setSubmitting(true);
+    setSubmitting(true)
     try {
       // Create the workshop:
       const payload = {
         name: values.name,
         description: values.description,
-      };
+      }
       // const { data: workshop } = await api.post("/api/create-workshop", payload);
       const { data: workshop } = await api.post(
         "/api/workshop/create-workshop",
-        payload,
-      );
+        payload
+      )
 
       // Add associated files (with placeholder s3id for now)
       if (fileDetails.length > 0) {
@@ -51,36 +51,36 @@ const CreateWorkshop = () => {
             description: file.desc,
             s3id: file.s3id, // Placeholder
             workshopIDs: [workshop._id], // Link resource to this workshop
-          });
+          })
         }
       }
-      alert("Workshop created successfully!");
-      resetForm();
-      setFileDetails([]); // Clear file details
-      setFileAdded(false);
+      alert("Workshop created successfully!")
+      resetForm()
+      setFileDetails([]) // Clear file details
+      setFileAdded(false)
     } catch (error) {
-      console.error("Error creating workshop:", error);
-      alert("Failed to create workshop. Please try again.");
+      console.error("Error creating workshop:", error)
+      alert("Failed to create workshop. Please try again.")
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   const fileUploadInitialValues = {
     title: "",
     desc: "",
     file: null, // This will not be used until s3 integration
-  };
+  }
 
   const fileValidation = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     desc: Yup.string().required("Description is required"),
     file: Yup.mixed().required("Please select a file"),
-  });
+  })
 
   const handleFileSubmit = async (values: any, { resetForm }: any) => {
-    setIsLoading(true);
-    setErrorMessage("");
+    setIsLoading(true)
+    setErrorMessage("")
 
     try {
       // Add file details with a placeholder s3id to the list
@@ -88,17 +88,17 @@ const CreateWorkshop = () => {
         title: values.title,
         desc: values.desc,
         s3id: "placeholder-s3-id", // TODO: change
-      };
-      setFileDetails((prevDetails) => [...prevDetails, newFile]);
-      setFileAdded(true);
-      resetForm();
+      }
+      setFileDetails((prevDetails) => [...prevDetails, newFile])
+      setFileAdded(true)
+      resetForm()
     } catch (error) {
-      console.error("Error adding file:", error);
-      setErrorMessage("Failed to add file. Please try again.");
+      console.error("Error adding file:", error)
+      setErrorMessage("Failed to add file. Please try again.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <>
@@ -182,10 +182,8 @@ const CreateWorkshop = () => {
       )}
       <Navbar />
 
-      <div className="Block Width--70 Margin-right--80 Margin-left--80 Margin-top--40">
-        <div className="Flex-row Margin-bottom--40 Margin-left--40 Margin-right--100 Margin-top--30 Text-color--teal-1000 Text-fontSize--30">
-          Create Workshop
-        </div>
+      <div className="Create-block">
+        <div className="Create-header">Create Workshop</div>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -234,14 +232,14 @@ const CreateWorkshop = () => {
               <div className="Flex-row Justify-content--center Margin-top--30">
                 <button
                   type="button"
-                  className="Button Button-color--teal-1000 Width--50 Margin-right--10"
+                  className="Button Button-color--blue-1000 Width--50 Margin-right--10"
                   onClick={() => setIsModal(true)}
                 >
                   Add Files
                 </button>
                 <button
                   type="submit"
-                  className="Button Button-color--teal-1000 Width--50 Button--hollow"
+                  className="Button Button-color--blue-1000 Width--50 Button--hollow"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -256,6 +254,6 @@ const CreateWorkshop = () => {
         </Formik>
       </div>
     </>
-  );
-};
-export default CreateWorkshop;
+  )
+}
+export default CreateWorkshop
