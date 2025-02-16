@@ -6,11 +6,11 @@ interface IWorkshop extends Document {
   textContent: string;
   files: [
     {
-      title: String,
-      description: String,
-      objectKey: String, // Store S3 object key instead of full URL
+      title: String;
+      description: String;
+      objectKey: String; // Store S3 object key instead of full URL
     },
-  ],
+  ];
   createdAt: Date;
 
   updateContent(newContent: string): Promise<void>;

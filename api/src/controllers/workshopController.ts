@@ -36,20 +36,23 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
     res.json({ url, objectKey }); // Send both URL and object key
   } catch (error) {
     console.error("Error generating pre-signed URL:", error);
-    res.status(500).json({ message: "Failed to generate pre-signed URL", error });
+    res
+      .status(500)
+      .json({ message: "Failed to generate pre-signed URL", error });
   }
 };
-
 
 export const createWorkshop = async (req: Request, res: Response) => {
   try {
     const { mentorId, menteeId, textContent, files } = req.body;
 
-    const uploadedFiles = files.map((file: { title: string; description: string; objectKey: string }) => ({
-      title: file.title,
-      description: file.description,
-      objectKey: file.objectKey, // Store only the S3 object key
-    }));
+    const uploadedFiles = files.map(
+      (file: { title: string; description: string; objectKey: string }) => ({
+        title: file.title,
+        description: file.description,
+        objectKey: file.objectKey, // Store only the S3 object key
+      }),
+    );
 
     const newWorkshop = new Workshop({
       mentor: mentorId,
@@ -57,7 +60,6 @@ export const createWorkshop = async (req: Request, res: Response) => {
       textContent,
       files: uploadedFiles,
     });
-
 
     const savedWorkshop = await newWorkshop.save();
     res.status(201).json(savedWorkshop);

@@ -75,10 +75,13 @@ router.get(
   },
 );
 
-router.get("/generate-presigned-url", async (req: express.Request, res: express.Response) => {
-  console.log("quere params", req.query);
-  await generatePresignedUrl(req, res);
-});
+router.get(
+  "/generate-presigned-url",
+  async (req: express.Request, res: express.Response) => {
+    console.log("quere params", req.query);
+    await generatePresignedUrl(req, res);
+  },
+);
 
 // POPULATE VERSION (if details of mentor/mentee objects are needed on the frontend like name or picture)
 
