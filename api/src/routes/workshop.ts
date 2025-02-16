@@ -1,18 +1,17 @@
 import express from "express";
 import mongoose from "mongoose";
-import dbConnect from "../config/db"; // Import the dbConnect function
-
 import {
   createWorkshop,
   getWorkshop,
   getWorkshopsByUserId,
   generatePresignedUrl,
 } from "../controllers/workshopController";
+import dbConnect from "../config/db";
 
 const router = express.Router();
 
-// TODO: Add auth0 middleware
-// router.use(validateAccessToken);
+// Route to create a workshop
+router.post("/create-workshop", createWorkshop);
 
 // Call the dbConnect function to connect to MongoDB
 dbConnect();
@@ -86,5 +85,12 @@ router.get(
 // router.get('/workshops/:id', getWorkshop);
 
 // export default router;
+// Route to get a specific workshop
+// router.get("/workshops/:id", getWorkshop);
+router.get("/:id", getWorkshop);
+
+// Route to get workshops by user ID
+// router.get("/workshops/user/:userId", getWorkshopsByUserId);
+router.get("/user/:userId", getWorkshopsByUserId);
 
 export default router;

@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom"
 import Modal from "../components/Modal"
+import CreateEventModal from "../components/CreateEvent"
+import Event, { EventData } from "../components/Event"
 
 interface MenteeInformationElements {
   id: number
@@ -13,16 +15,6 @@ interface CourseInformationElements {
   courseName: string
 }
 
-interface Event {
-  id: number
-  day: string
-  date: string
-  month: string
-  title: string
-  description: string
-  fullDescription: string
-}
-
 const handleClick = (item: MenteeInformationElements) => {
   console.log("Clicked:", item)
 }
@@ -31,9 +23,10 @@ const MentorDashboard = () => {
   const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState("My Mentees")
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+  const [createEventModal, setCreateEventModal] = useState(false)
 
-  const events: Event[] = [
+  const events: EventData[] = [
     {
       id: 1,
       day: "wed",
@@ -66,7 +59,7 @@ const MentorDashboard = () => {
     },
   ]
 
-  const eventsByMonth: { [key: string]: Event[] } = events.reduce(
+  const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
       if (!acc[event.month]) {
         acc[event.month] = []
@@ -74,7 +67,7 @@ const MentorDashboard = () => {
       acc[event.month].push(event)
       return acc
     },
-    {} as { [key: string]: Event[] }
+    {} as { [key: string]: EventData[] }
   )
 
   const menteeGridData: MenteeInformationElements[] = [
@@ -114,6 +107,14 @@ const MentorDashboard = () => {
           action={() => setSelectedEvent(null)}
         />
       )}
+
+      {createEventModal && (
+        <CreateEventModal
+          isOpen={createEventModal}
+          onClose={() => setCreateEventModal(false)}
+        />
+      )}
+
       <div className="row g-3 Margin--20">
         <div className="col-lg-8">
           <div className="Block p-3">
@@ -147,7 +148,7 @@ const MentorDashboard = () => {
               <div>
                 <div className="row gx-3 gy-3">
                   {menteeGridData.map((item) => (
-                    <div className="col-lg-4">
+                    <div className="col-lg-4" key={item.id}>
                       <div
                         className="Mentor--card"
                         onClick={() => handleClick(item.id)}
@@ -168,7 +169,7 @@ const MentorDashboard = () => {
             {activeTab === "Courses" && (
               <div className="row gx-3 gy-3">
                 {courseGridData.map((item) => (
-                  <div className="col-lg-4">
+                  <div className="col-lg-4" key={item.id}>
                     <div
                       className="Mentor--card"
                       onClick={() => handleClickWorkshop(item.id)}
@@ -186,71 +187,31 @@ const MentorDashboard = () => {
             )}
           </div>
         </div>
-        {activeTab === "My Mentees" && (
-          <div className="col-lg-4">
-            <div className="Block p-3">
-              <div className="Block-header">Upcoming Events</div>
-              <div className="Block-subtitle">
-                Scheduled meetings and workshops
-              </div>
-              {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-                <div key={month} className="Event">
-                  <div className="Event-month">{month}</div>
 
-                  {monthEvents.map((event) => (
-                    <div
-                      className="Event-item"
-                      key={event.id}
-                      onClick={() => setSelectedEvent(event)}
-                    >
-                      <div className="Flex-column--centered Margin-right--30">
-                        <div>{event.day}</div>
-                        <div className="Text-fontSize--30">{event.date}</div>
-                      </div>
-                      <div className="Flex-column Text-bold">
-                        <span className="Margin-bottom--4">{event.title}</span>
-                        <div className="Text-fontSize--14">
-                          {event.description}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+        <div className="col-lg-4">
+          <div className="Block p-3">
+            <div className="Block-header">Upcoming Events</div>
+            <div className="Block-subtitle">
+              Scheduled meetings and workshops
+            </div>
+            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+              <Event
+                key={month}
+                month={month}
+                events={monthEvents}
+                onEventClick={setSelectedEvent}
+              />
+            ))}
+            <div
+              className="Button Button-color--blue-1000"
+              onClick={() => {
+                setCreateEventModal(true)
+              }}
+            >
+              Add New Event
             </div>
           </div>
-        )}
-
-        {activeTab === "Courses" && (
-          <div className="col-lg-4">
-            <div className="Block p-3">
-              <div className="Block-header">Create A New Course</div>
-              <div className="Block-subtitle">
-                Add course information and upload files
-              </div>
-              <div className="Flex-row Justify-content--left">
-                <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--16 Margin-left--20">
-                  Name:
-                </div>
-              </div>
-              <div className="Flex-row Justify-content--left">
-                <div className="Text-fontSize--15 Text-color--gray-800 Margin-bottom--30 Margin-left--20">
-                  Description:
-                </div>
-              </div>
-              <div className="Flex-row Justify-content--left">
-                <div
-                  className="Button--large Border-radius--4 Text-fontSize--16 Button-color--teal-1000 Margin-bottom--16 Margin-left--20 "
-                  onClick={() => {
-                    navigate("/create-workshop")
-                  }}
-                >
-                  Add New Files
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </>
   )
