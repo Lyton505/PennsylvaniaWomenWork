@@ -1,6 +1,5 @@
 import Navbar from '../components/Navbar'
 import { ring2 } from 'ldrs';
-import '../styles/_loginLoading.css'
 
 export default function LoginLoading() {
 

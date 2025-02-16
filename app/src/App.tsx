@@ -11,7 +11,7 @@ import AuthCallback from "./pages/auth-callback";
 import LoginRedirect from "./pages/LoginRedirect";
 import Logout from "./pages/Logout";
 import Profile from "./pages/Profile";
-import SampleMenteeInvite from "./pages/SampleMenteeInvite";
+import SampleMenteeInvite from "./pages/MenteeInvite";
 import { useAuth0 } from "@auth0/auth0-react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { tier1Roles, tier2Roles, tier3Roles } from "./utils/roles";

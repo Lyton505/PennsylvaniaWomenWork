@@ -143,7 +143,6 @@ const SampleMenteeInvite = () => {
                                         ) : (
                                             <div className="Flex-row Align-items--center Justify-content--center">
                                                 <span>Send Invite</span>
-                                                <SendIcon className="Margin-left--8" style={{ width: '1.25rem', height: '1.25rem' }} />
                                             </div>
                                         )}
                                     </button>
