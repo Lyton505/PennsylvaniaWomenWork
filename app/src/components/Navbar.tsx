@@ -8,11 +8,11 @@ const Navbar = (): ReactElement => {
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
   const { isAuthenticated, logout, user: auth0User } = useAuth0();
-  const { user, loading } = useCurrentUser(auth0User?.email || "");
+  const { user } = useCurrentUser(auth0User?.email || "");
 
   const navItems = [
     { path: "/mentor", label: "Mentor", roles: [...tier1Roles, ...tier2Roles] },
-    { path: "/mentee", label: "Mentee", roles: [...tier1Roles, ...tier2Roles] },
+    { path: "/mentee", label: "Mentee", roles: [...tier1Roles, ...tier3Roles] },
     {
       path: "/create-workshop",
       label: "Create Workshop",
