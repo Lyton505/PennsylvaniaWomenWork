@@ -89,7 +89,7 @@ const CreateMeeting = () => {
                 <div className="Flex-row Justify-content--center">
                   <button
                     type="submit"
-                    className="Button Button-color--blue-1000 Width--100"
+                    className="Button Button-color--blue-1000 "
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "Submitting..." : "Create Meeting"}
