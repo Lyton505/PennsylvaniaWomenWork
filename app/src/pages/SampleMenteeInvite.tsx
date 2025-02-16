@@ -134,19 +134,6 @@ const SampleMenteeInvite = () => {
 
                                 <div className="Flex-row Justify-content--center Margin-top--30">
                                     <button
-                                        type="button"
-                                        className="Button Button-color--teal-1000 Width--50 Margin-right--20"
-                                        onClick={() => {
-                                            console.log("toast test");
-                                            toast.error("Test toast message!", {
-                                                duration: 2000,
-                                                position: 'top-center',
-                                            });
-                                        }}
-                                    >
-                                        Test Toast
-                                    </button>
-                                    <button
                                         type="submit"
                                         className="Button Button-color--teal-1000 Width--50"
                                         disabled={isSubmitting}
