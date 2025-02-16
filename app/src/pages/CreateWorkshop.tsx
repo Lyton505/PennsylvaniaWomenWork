@@ -63,7 +63,7 @@ const CreateWorkshop = () => {
         description: values.description,
       };
 
-      await api.post("/api/create-workshop", payload)
+      await api.post("/api/create-workshop", payload);
       // api.ts deals with error responses !
       resetForm();
       setSelectedFiles([]);

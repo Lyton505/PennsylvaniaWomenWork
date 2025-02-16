@@ -46,7 +46,6 @@ export const createWorkshop = async (req: Request, res: Response) => {
   try {
     const { mentorId, menteeId, textContent } = req.body;
 
-
     const newWorkshop = new Workshop({
       mentor: mentorId,
       mentee: menteeId,
