@@ -7,6 +7,7 @@ import CreateWorkshop from "./pages/CreateWorkshop";
 import CreateMeeting from "./pages/CreateMeeting";
 import MenteeInformation from "./pages/MenteeInformation";
 import WorkshopInformation from "./pages/WorkshopInformation";
+import MenteeCourseInformation from "./pages/MenteeCourseInformation";
 import AuthCallback from "./pages/auth-callback";
 import LoginRedirect from "./pages/LoginRedirect";
 import Logout from "./pages/Logout";
@@ -75,6 +76,14 @@ function App(): ReactElement {
                 />
               }
             />
+            <Route path="/mentee/course-information"
+              element={
+                <ProtectedRoute
+                  element={<MenteeCourseInformation />}
+                  allowedRoles={["mentee", "admin"]}
+                />
+              }
+            />
             <Route path="/confirmLogout" element={<ConfirmLogout />} />
             <Route
               path="/create-workshop"
@@ -130,5 +139,4 @@ function App(): ReactElement {
     </div>
   );
 }
-
 export default App;
