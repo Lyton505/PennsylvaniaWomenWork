@@ -227,7 +227,7 @@ const MentorDashboard = () => {
                 </div>
               ))}
               <div
-                className="Create-button-blue"
+                className="Button Button-color--blue-1000"
                 onClick={() => {
                   setCreateEventModal(true)
                 }}

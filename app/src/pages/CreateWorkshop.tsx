@@ -171,11 +171,7 @@ const CreateWorkshop = () => {
       <Navbar />
 
       <div className="Create-block">
-        <div
-          className="Create-header"
-        >
-          Create Workshop
-        </div>
+        <div className="Create-header">Create Workshop</div>
         <div className="Margin-left--40 Margin-right--40">
           <Formik
             initialValues={initialValues}
@@ -186,9 +182,7 @@ const CreateWorkshop = () => {
               <Form>
                 <div className="Margin-bottom--30">
                   <div className="Form-group">
-                    <div className="Create-row">
-                      <div className="name">Workshop Name:</div>
-                    </div>
+                    <label className="name">Workshop Name:</label>
                     <Field
                       type="text"
                       name="name"
@@ -204,9 +198,7 @@ const CreateWorkshop = () => {
 
                 <div className="Margin-bottom--20">
                   <div className="Form-group">
-                    <div className="Create-row">
-                      <div className="description">Workshop Description:</div>
-                    </div>
+                    <label className="description">Workshop Description:</label>
                     <Field
                       type="text"
                       name="description"
@@ -231,17 +223,16 @@ const CreateWorkshop = () => {
                     </ul>
                   </div>
                 )}
-                <div className="Create-button-row">
-                  <button
-                    type="button"
-                    className="Create-button"
+                <div className="Flex-row Justify-content--center">
+                  <div
+                    className="Button Button-color--blue-1000 Width--100 Margin-right--10"
                     onClick={() => setIsModal(true)}
                   >
                     Add Files
-                  </button>
+                  </div>
                   <button
                     type="submit"
-                    className="Create-button"
+                    className="Button Button-color--blue-1000 Button--hollow Width--100 Margin-left--10"
                     disabled={isSubmitting} // Disable button while form is submitting
                   >
                     {isSubmitting ? (

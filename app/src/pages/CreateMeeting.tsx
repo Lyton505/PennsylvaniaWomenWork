@@ -1,57 +1,53 @@
-import React from "react";
-import { Formik, Form, Field } from "formik";
-import Navbar from "../components/Navbar";
-import * as Yup from "yup";
-import { api } from "../api"; // Ensure this points to your configured API instance
+import React from "react"
+import { Formik, Form, Field } from "formik"
+import Navbar from "../components/Navbar"
+import * as Yup from "yup"
+import { api } from "../api" // Ensure this points to your configured API instance
 
 const initialValues = {
   meeting: "",
   notes: "",
-};
+}
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   meeting: Yup.string().required("Meeting name is required"),
   notes: Yup.string().required("Meeting notes are required"),
-});
+})
 
 const CreateMeeting = () => {
   const handleSubmit = async (
     values: any,
     { setSubmitting, resetForm }: any
   ) => {
-    setSubmitting(true);
+    setSubmitting(true)
     try {
       const payload = {
         username: "sample-username", // TODO: Replace with the logged-in user's username
         meeting: values.meeting,
         notes: values.notes,
-      };
+      }
 
-      console.log("Submitting payload:", payload); // Debugging log
+      console.log("Submitting payload:", payload) // Debugging log
 
-      await api.post("/user/add-meeting", payload);
+      await api.post("/user/add-meeting", payload)
 
-      alert("Meeting added successfully!");
+      alert("Meeting added successfully!")
 
-      resetForm(); // Clear the form after successful submission
+      resetForm() // Clear the form after successful submission
     } catch (error) {
-      console.error("Error adding meeting:", error);
-      alert("Failed to add meeting. Please try again.");
+      console.error("Error adding meeting:", error)
+      alert("Failed to add meeting. Please try again.")
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <>
       <Navbar />
       <div className="Create-block">
-        <div
-          className="Create-header-blue"
-        >
-          Create Meeting
-        </div>
+        <div className="Create-header">Create Meeting</div>
         <div className="Margin-left--40 Margin-right--40">
           <Formik
             initialValues={initialValues}
@@ -62,14 +58,12 @@ const CreateMeeting = () => {
               <Form>
                 <div className="Margin-bottom--30">
                   <div className="Form-group">
-                    <div className="Create-row">
-                      <div className="name">Meeting Name:</div>
-                    </div>
+                    <label htmlFor="name">Meeting Name</label>
                     <Field
                       type="text"
                       name="meeting"
-                      placeholder="Meeting Name"
                       className="Form-input-box"
+                      placeholder="Enter meeting name"
                     />
                     {errors.meeting && touched.meeting && (
                       <div className="Form-error">{errors.meeting}</div>
@@ -79,9 +73,7 @@ const CreateMeeting = () => {
 
                 <div className="Margin-bottom--20">
                   <div className="Form-group">
-                    <div className="Create-row">
-                      <div className="description">Notes:</div>
-                    </div>
+                    <label className="description">Notes:</label>
                     <Field
                       type="text"
                       name="notes"
@@ -97,7 +89,7 @@ const CreateMeeting = () => {
                 <div className="Flex-row Justify-content--center">
                   <button
                     type="submit"
-                    className="Create-button-blue"
+                    className="Button Button-color--blue-1000 Width--100"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? "Submitting..." : "Create Meeting"}
@@ -109,7 +101,7 @@ const CreateMeeting = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CreateMeeting;
+export default CreateMeeting
