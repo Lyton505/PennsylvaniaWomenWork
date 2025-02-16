@@ -1,14 +1,14 @@
 import React, { type ReactElement } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useUser } from "../contexts/UserContext";
 import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles";
 
 const Navbar = (): ReactElement => {
   const navigate = useNavigate();
   const location = useLocation(); // Get current route
-  const { isAuthenticated, logout, user: auth0User } = useAuth0();
-  const { user } = useCurrentUser(auth0User?.email || "");
+  const { isAuthenticated, logout } = useAuth0();
+  const { user } = useUser();
 
   const navItems = [
     { path: "/mentor", label: "Mentor", roles: [...tier1Roles, ...tier2Roles] },
