@@ -328,43 +328,55 @@
 }
 
 .Button {
-  transition: all var(--pww-transition-duration) ease;
+  transition: all 0.3s ease;
   border-radius: var(--pww-border-radius-4);
   border-style: solid;
   border-width: 2px;
   font-size: 14px;
   outline: none;
   height: fit-content;
-  padding: 5px 10px;
+  padding: 12px 24px;
   text-align: center;
-  // white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   &--borderless {
     border-color: transparent;
   }
+  
   &--hollow {
     background-color: transparent;
   }
 
   &--small {
     font-size: 12px;
-    padding: 2px 5px;
+    padding: 8px 16px; 
   }
 
   &--large {
     font-size: 20px;
-    padding: 8px 16px;
+    padding: 16px 32px;
   }
 
   &:hover {
     background-color: transparent;
     cursor: pointer;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   &:disabled {
     color: var(--pww-color-black-400);
     background-color: var(--pww-color-black-50);
     border-color: var(--pww-color-black-150);
+    transform: none;
+    box-shadow: none;
 
     &:hover {
       cursor: not-allowed;
