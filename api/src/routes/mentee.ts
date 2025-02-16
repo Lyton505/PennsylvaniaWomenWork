@@ -1,6 +1,9 @@
 import express from "express";
 import { Workshop } from "../model/Workshop";
-import { getWorkshopsForMentee, addWorkshopToMentee } from "../controllers/menteeController";
+import {
+  getWorkshopsForMentee,
+  addWorkshopToMentee,
+} from "../controllers/menteeController";
 
 const router = express.Router();
 
