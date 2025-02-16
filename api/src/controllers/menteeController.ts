@@ -24,16 +24,16 @@ export const addWorkshopToMentee = async (req: Request, res: Response) => {
 
   try {
     const updatedMentee = await Mentee.findByIdAndUpdate(
-        menteeId,
-        { $push: { workshops: workshopId } },  
-        { new: true, safe: true, upsert: false }
+      menteeId,
+      { $push: { workshops: workshopId } },
+      { new: true, safe: true, upsert: false },
     );
 
     if (!updatedMentee) {
-        return res.status(404).send('Mentee not found');
+      return res.status(404).send("Mentee not found");
     }
     res.json(updatedMentee);
-} catch (error) {
+  } catch (error) {
     res.status(500).send((error as Error).toString());
-}
+  }
 };
