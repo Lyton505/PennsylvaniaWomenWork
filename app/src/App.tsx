@@ -119,7 +119,7 @@ function App(): ReactElement {
               element={
                 <ProtectedRoute
                   element={<SampleMenteeInvite />}
-                  allowedRoles={["board", "staff"]}
+                  allowedRoles={[...tier1Roles]}
                 />
               }
             />

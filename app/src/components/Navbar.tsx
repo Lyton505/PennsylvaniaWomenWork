@@ -28,6 +28,11 @@ const Navbar = (): ReactElement => {
       label: "Profile",
       roles: [...tier1Roles, ...tier2Roles, ...tier3Roles],
     },
+    {
+      path: "/invite",
+      label: "Invite Mentee",
+      roles: [...tier1Roles],
+    },
   ];
 
   return (
