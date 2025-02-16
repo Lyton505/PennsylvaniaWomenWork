@@ -328,55 +328,43 @@
 }
 
 .Button {
-  transition: all 0.3s ease;
+  transition: all var(--pww-transition-duration) ease;
   border-radius: var(--pww-border-radius-4);
   border-style: solid;
   border-width: 2px;
   font-size: 14px;
   outline: none;
   height: fit-content;
-  padding: 12px 24px;
+  padding: 5px 10px;
   text-align: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  // white-space: nowrap;
 
   &--borderless {
     border-color: transparent;
   }
-  
   &--hollow {
     background-color: transparent;
   }
 
   &--small {
     font-size: 12px;
-    padding: 8px 16px; 
+    padding: 2px 5px;
   }
 
   &--large {
     font-size: 20px;
-    padding: 16px 32px;
+    padding: 8px 16px;
   }
 
   &:hover {
     background-color: transparent;
     cursor: pointer;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  &:active {
-    transform: translateY(0);
   }
 
   &:disabled {
     color: var(--pww-color-black-400);
     background-color: var(--pww-color-black-50);
     border-color: var(--pww-color-black-150);
-    transform: none;
-    box-shadow: none;
 
     &:hover {
       cursor: not-allowed;
