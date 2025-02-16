@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import sgMail from "@sendgrid/mail";
 import User from "../model/User";
 import { management } from "../config/auth0-user-management";
-import generatePassword from 'generate-password'
+import generatePassword from "generate-password";
 import { error } from "console";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -66,11 +66,11 @@ export const sendEmail = async (req: Request, res: Response) => {
       symbols: true,
       uppercase: true,
       lowercase: true,
-      strict: true
+      strict: true,
     });
 
     let templateId: string;
-    const cleanedUserRole = role.toLowerCase().trim()
+    const cleanedUserRole = role.toLowerCase().trim();
 
     if (cleanedUserRole === "mentor") {
       templateId = "d-1694192e437348e2a0517103acae3f00";
@@ -85,7 +85,7 @@ export const sendEmail = async (req: Request, res: Response) => {
       email: email,
       connection: "Username-Password-Authentication",
       password: dummy_password,
-      email_verified: true
+      email_verified: true,
     });
 
     if (newUser.status === 409) {
@@ -102,7 +102,7 @@ export const sendEmail = async (req: Request, res: Response) => {
     });
 
     if (linkResponse.status !== 201) {
-      throw new Error("Could not complete user sign up flow")
+      throw new Error("Could not complete user sign up flow");
     }
 
     await sgMail.send({
