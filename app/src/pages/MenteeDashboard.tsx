@@ -1,21 +1,12 @@
 import React, { useState } from "react"
 import Navbar from "../components/Navbar"
 import Modal from "../components/Modal"
-
-interface Event {
-  id: number
-  day: string
-  date: string
-  month: string
-  title: string
-  description: string
-  fullDescription: string
-}
+import Event, {EventData} from "../components/Event"
 
 const MenteeDashboard = () => {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
 
-  const events: Event[] = [
+  const events: EventData[] = [
     {
       id: 1,
       day: "wed",
@@ -49,7 +40,7 @@ const MenteeDashboard = () => {
     },
   ]
 
-  const eventsByMonth: { [key: string]: Event[] } = events.reduce(
+  const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
       if (!acc[event.month]) {
         acc[event.month] = []
@@ -57,7 +48,7 @@ const MenteeDashboard = () => {
       acc[event.month].push(event)
       return acc
     },
-    {} as { [key: string]: Event[] }
+    {} as { [key: string]: EventData[] }
   )
 
   return (
@@ -106,7 +97,7 @@ const MenteeDashboard = () => {
             {/* Add padding inside */}
             <div className="Block-header">Upcoming Events</div>
             <div className="Block-subtitle">Select an event to register.</div>
-            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+            {/* {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
               <div key={month} className="Event">
                 <div className="Event-month">{month}</div>
 
@@ -129,7 +120,16 @@ const MenteeDashboard = () => {
                   </div>
                 ))}
               </div>
+            ))} */}
+            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+              <Event
+                key={month}
+                month={month}
+                events={monthEvents}
+                onEventClick={setSelectedEvent}
+              />
             ))}
+
           </div>
         </div>
       </div>{" "}
