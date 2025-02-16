@@ -1,37 +1,59 @@
-import React, { useState } from "react"
-import { Formik, Form, Field } from "formik"
-import * as Yup from "yup"
-import Navbar from "../components/Navbar"
-import { api } from "../api"
-import Modal from "../components/Modal"
-import AsyncSubmit from "../components/AsyncSubmit"
+import React, { useState } from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Navbar from "../components/Navbar";
+import { api } from "../api";
+import Modal from "../components/Modal";
+import AsyncSubmit from "../components/AsyncSubmit";
 
 const initialValues = {
   name: "",
   description: "",
-}
+};
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-})
+});
 
 const CreateWorkshop = () => {
-  const [isModal, setIsModal] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+  // Handle form submission
+  const [isModal, setIsModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fileTitles, setFileTitles] = useState<string[]>([]);
+  const [fileAdded, setFileAdded] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
   const [fileDetails, setFileDetails] = useState<
     { title: string; desc: string; s3id: string }[]
   >([])
-  const [fileAdded, setFileAdded] = useState(false)
 
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any
+    { setSubmitting, resetForm }: any,
   ) => {
-    setSubmitting(true)
+    setSubmitting(true);
     try {
+      await Promise.all(
+        selectedFiles.map(async (fileData) => {
+          // Get pre-signed URL for the file
+          console.log("File data:", fileData.file.name, fileData.file.type);
+          const response = await api.get(
+            `/workshop/generate-presigned-url?fileName=${fileData.file.name}`,
+          );
+
+          const { url, objectKey } = response.data;
+
+          const uploadResponse = await fetch(url, {
+            method: "PUT",
+            body: fileData.file,
+            headers: { "Content-Type": fileData.file.type },
+          });
+          console.log("Upload response:", uploadResponse);
+        }),
+      );
       // Create the workshop:
       const payload = {
         name: values.name,
@@ -57,12 +79,13 @@ const CreateWorkshop = () => {
       alert("Workshop created successfully!")
       resetForm()
       setFileDetails([]) // Clear file details
+      setSelectedFiles([]);
       setFileAdded(false)
     } catch (error) {
-      console.error("Error creating workshop:", error)
-      alert("Failed to create workshop. Please try again.")
+      console.error("Error creating workshop:", error);
+      alert("Failed to create workshop. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   }
 
@@ -76,17 +99,31 @@ const CreateWorkshop = () => {
     title: Yup.string().required("Title is required"),
     desc: Yup.string().required("Description is required"),
     file: Yup.mixed().required("Please select a file"),
-  })
+  });
 
-  const handleFileSubmit = async (values: any, { resetForm }: any) => {
-    setIsLoading(true)
-    setErrorMessage("")
-
+  const handleFileSumbit = async (
+    values: any,
+    { resetForm, setFieldValue }: any,
+  ) => {
+    setIsLoading(true);
+    setErrorMessage("");
     try {
+      const { title, desc, file } = values;
+      if (!file) {
+        setErrorMessage("No file selected.");
+        setIsLoading(false);
+        return;
+      }
+
+      setSelectedFiles((prevFiles) => [
+        ...prevFiles,
+        { title, description: desc, file },
+      ]);
+
       // Add file details with a placeholder s3id to the list
       const newFile = {
-        title: values.title,
-        desc: values.desc,
+        title: title,
+        desc: desc,
         s3id: "placeholder-s3-id", // TODO: change
       }
       setFileDetails((prevDetails) => [...prevDetails, newFile])
@@ -96,9 +133,9 @@ const CreateWorkshop = () => {
       console.error("Error adding file:", error)
       setErrorMessage("Failed to add file. Please try again.")
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -113,7 +150,7 @@ const CreateWorkshop = () => {
               validationSchema={fileValidation}
               onSubmit={handleFileSubmit}
             >
-              {({ values, errors, touched, isSubmitting }) => (
+              {({ setFieldValue, errors, touched, isSubmitting }) => (
                 <Form>
                   <div className="Form-group">
                     <label htmlFor="title">Title</label>
@@ -142,11 +179,17 @@ const CreateWorkshop = () => {
                   </div>
                   <div className="Form-group">
                     <label htmlFor="file">Files</label>
-                    <Field
+                    <input
                       className="Form-input-box"
                       type="file"
                       id="file"
                       name="file"
+                      onChange={(event) => {
+                        if (event.currentTarget.files) {
+                          const file = event.currentTarget.files[0];
+                          setFieldValue("file", file);
+                        }
+                      }}
                     />
                     {errors.file && touched.file && (
                       <div className="Form-error">{errors.file}</div>
