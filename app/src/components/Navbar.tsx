@@ -11,8 +11,8 @@ const Navbar = (): ReactElement => {
   const { user } = useUser();
 
   const navItems = [
-    { path: "/mentor", label: "Mentor", roles: [...tier1Roles, ...tier2Roles] },
-    { path: "/mentee", label: "Mentee", roles: [...tier1Roles, ...tier3Roles] },
+    { path: "/mentor", label: "Home", roles: [...tier1Roles, ...tier2Roles] },
+    { path: "/mentee", label: "Home", roles: [...tier1Roles, ...tier3Roles] },
     {
       path: "/create-workshop",
       label: "Create Workshop",

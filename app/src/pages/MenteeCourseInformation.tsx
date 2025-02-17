@@ -33,28 +33,26 @@ const MenteeCourseInformation = () => {
       <Navbar />
       <div className="WorkshopInfo">
         <div className="Block">
-          <div className="Course-header Flex-row">
-            Welcome to Your Course Dashboard!
-          </div>
-          <div className="Block-subtitle">Resume Workshop</div>
-          <div className="Course-description">
+          <div className="Block-header">Resume workshop</div>
+          <div className="Block-subtitle">
             This course will help you create a professional resume that will
             stand out to employers.
           </div>
-          <div className="Block-subtitle">Course Materials</div>
-          <div className="row gx-3 gy-3">
-            {fakeFiles.map((file) => (
-              <div key={file.id} className="col-lg-2">
-                <div className="Card-workshop">
-                  {" "}
-                  {/* Ensure Card is inside col-lg-2 */}
-                  <div className="WorkshopInfo-image">
-                    <img src={file.icon} alt={file.type} />
+          <div className="Block-body">
+            <div className="row">
+              {fakeFiles.map((file) => (
+                <div key={file.id} className="col-lg-2">
+                  <div className="Card-workshop">
+                    {" "}
+                    {/* Ensure Card is inside col-lg-2 */}
+                    <div className="WorkshopInfo-image">
+                      <img src={file.icon} alt={file.type} />
+                    </div>
+                    <div className="WorkshopInfo-title">{file.name}</div>
                   </div>
-                  <div className="WorkshopInfo-title">{file.name}</div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -62,4 +60,4 @@ const MenteeCourseInformation = () => {
   );
 };
 
-export default MenteeCourseInformation;
+export default MenteeCourseInformation

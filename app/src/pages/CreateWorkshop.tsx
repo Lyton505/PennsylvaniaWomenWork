@@ -225,76 +225,81 @@ const CreateWorkshop = () => {
       )}
       <Navbar />
 
-      <div className="Create-block">
-        <div className="Create-header">Create Workshop</div>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ errors, touched, isSubmitting }) => (
-            <Form>
-              <div className="Margin-bottom--30">
-                <div className="Form-group">
-                  <label htmlFor="name">Workshop Name:</label>
-                  <Field
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    className="Form-input-box"
-                  />
-                  {errors.name && touched.name && (
-                    <div className="Form-error">{errors.name}</div>
+      <div className="Flex-column Align-items--center Margin-top--40">
+        <div className="Block Create-block">
+          <div className="Block-header">Create Workshop</div>
+          <div className="Block-subtitle">Add a new workshop</div>
+          <div className="Block-body">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ errors, touched, isSubmitting }) => (
+                <Form>
+                  <div className="Margin-bottom--30">
+                    <div className="Form-group">
+                      <label htmlFor="name">Workshop Name:</label>
+                      <Field
+                        type="text"
+                        name="name"
+                        placeholder="Name"
+                        className="Form-input-box"
+                      />
+                      {errors.name && touched.name && (
+                        <div className="Form-error">{errors.name}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="Margin-bottom--20">
+                    <div className="Form-group">
+                      <label htmlFor="description">Workshop Description:</label>
+                      <Field
+                        type="text"
+                        name="description"
+                        placeholder="Description"
+                        className="Form-input-box"
+                      />
+                      {errors.description && touched.description && (
+                        <div className="Form-error">{errors.description}</div>
+                      )}
+                    </div>
+                  </div>
+                  {fileDetails.length > 0 && (
+                    <div>
+                      <h4>Uploaded Files:</h4>
+                      <ul>
+                        {fileDetails.map((file, index) => (
+                          <li key={index}>{file.title}</li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                </div>
-              </div>
-              <div className="Margin-bottom--20">
-                <div className="Form-group">
-                  <label htmlFor="description">Workshop Description:</label>
-                  <Field
-                    type="text"
-                    name="description"
-                    placeholder="Description"
-                    className="Form-input-box"
-                  />
-                  {errors.description && touched.description && (
-                    <div className="Form-error">{errors.description}</div>
-                  )}
-                </div>
-              </div>
-              {fileDetails.length > 0 && (
-                <div>
-                  <h4>Uploaded Files:</h4>
-                  <ul>
-                    {fileDetails.map((file, index) => (
-                      <li key={index}>{file.title}</li>
-                    ))}
-                  </ul>
-                </div>
+                  <div className="Flex-row Justify-content--center Margin-top--30">
+                    <button
+                      type="button"
+                      className="Button Button-color--blue-1000 Width--50 Margin-right--10"
+                      onClick={() => setIsModal(true)}
+                    >
+                      Add Files
+                    </button>
+                    <button
+                      type="submit"
+                      className="Button Button-color--blue-1000 Width--50 Button--hollow"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <AsyncSubmit loading={isSubmitting} />
+                      ) : (
+                        "Create Workshop"
+                      )}
+                    </button>
+                  </div>
+                </Form>
               )}
-              <div className="Flex-row Justify-content--center Margin-top--30">
-                <button
-                  type="button"
-                  className="Button Button-color--blue-1000 Width--50 Margin-right--10"
-                  onClick={() => setIsModal(true)}
-                >
-                  Add Files
-                </button>
-                <button
-                  type="submit"
-                  className="Button Button-color--blue-1000 Width--50 Button--hollow"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <AsyncSubmit loading={isSubmitting} />
-                  ) : (
-                    "Create Workshop"
-                  )}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
+            </Formik>
+          </div>
+        </div>
       </div>
     </>
   );
