@@ -46,58 +46,61 @@ const CreateMeeting = () => {
   return (
     <>
       <Navbar />
-      <div className="Create-block">
-        <div className="Create-header">Create Meeting</div>
-        <div className="Margin-left--40 Margin-right--40">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ errors, touched, isSubmitting }) => (
-              <Form>
-                <div className="Margin-bottom--30">
-                  <div className="Form-group">
-                    <label htmlFor="name">Meeting Name</label>
-                    <Field
-                      type="text"
-                      name="meeting"
-                      className="Form-input-box"
-                      placeholder="Enter meeting name"
-                    />
-                    {errors.meeting && touched.meeting && (
-                      <div className="Form-error">{errors.meeting}</div>
-                    )}
+      <div className="Flex-column Align-items--center Margin-top--40">
+        <div className="Block Create-block">
+          <div className="Block-header">Create Meeting</div>
+          <div className="Block-subtitle">Add a new meeting</div>
+          <div className="Block-body">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ errors, touched, isSubmitting }) => (
+                <Form>
+                  <div className="Margin-bottom--30">
+                    <div className="Form-group">
+                      <label htmlFor="name">Meeting Name</label>
+                      <Field
+                        type="text"
+                        name="meeting"
+                        className="Form-input-box"
+                        placeholder="Enter meeting name"
+                      />
+                      {errors.meeting && touched.meeting && (
+                        <div className="Form-error">{errors.meeting}</div>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="Margin-bottom--20">
-                  <div className="Form-group">
-                    <label className="description">Notes:</label>
-                    <Field
-                      type="text"
-                      name="notes"
-                      placeholder="Notes"
-                      className="Form-input-box"
-                    />
-                    {errors.notes && touched.notes && (
-                      <div className="Form-error">{errors.notes}</div>
-                    )}
+                  <div className="Margin-bottom--20">
+                    <div className="Form-group">
+                      <label className="description">Notes:</label>
+                      <Field
+                        type="text"
+                        name="notes"
+                        placeholder="Notes"
+                        className="Form-input-box"
+                      />
+                      {errors.notes && touched.notes && (
+                        <div className="Form-error">{errors.notes}</div>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="Flex-row Justify-content--center">
-                  <button
-                    type="submit"
-                    className="Button Button-color--blue-1000 "
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? "Submitting..." : "Create Meeting"}
-                  </button>
-                </div>
-              </Form>
-            )}
-          </Formik>
+                  <div className="Flex-row Justify-content--center">
+                    <button
+                      type="submit"
+                      className="Button Button-color--blue-1000 Width--100"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Submitting..." : "Create Meeting"}
+                    </button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
     </>
