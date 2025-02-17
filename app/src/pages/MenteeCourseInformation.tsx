@@ -60,4 +60,4 @@ const MenteeCourseInformation = () => {
   );
 };
 
-export default MenteeCourseInformation
+export default MenteeCourseInformation;
