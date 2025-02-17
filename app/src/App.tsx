@@ -76,7 +76,8 @@ function App(): ReactElement {
                 />
               }
             />
-            <Route path="/mentee/course-information"
+            <Route
+              path="/mentee/course-information"
               element={
                 <ProtectedRoute
                   element={<MenteeCourseInformation />}
@@ -132,7 +133,6 @@ function App(): ReactElement {
                 />
               }
             />
-
           </>
         )}
       </Routes>

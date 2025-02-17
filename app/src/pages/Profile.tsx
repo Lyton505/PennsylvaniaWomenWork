@@ -1,11 +1,11 @@
-import React from "react"
-import Navbar from "../components/Navbar"
-import { useUser } from "../contexts/UserContext"
-import { useAuth0 } from "@auth0/auth0-react"
+import React from "react";
+import Navbar from "../components/Navbar";
+import { useUser } from "../contexts/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Profile = () => {
-  const { user: auth0User } = useAuth0()
-  const { user, error, loading } = useUser()
+  const { user: auth0User } = useAuth0();
+  const { user, error, loading } = useUser();
 
   return (
     <>
@@ -30,7 +30,7 @@ const Profile = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

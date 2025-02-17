@@ -1,10 +1,10 @@
-import React, { FC } from "react"
+import React, { FC } from "react";
 
 interface IconProps {
-  glyph: string
-  regular?: boolean
-  size?: string
-  className?: string
+  glyph: string;
+  regular?: boolean;
+  size?: string;
+  className?: string;
 }
 
 const Icon: FC<IconProps> = ({
@@ -13,7 +13,7 @@ const Icon: FC<IconProps> = ({
   size = "",
   className = "",
 }) => {
-  const iconClass = `fa${regular ? "r" : "s"} fa-${glyph}`
+  const iconClass = `fa${regular ? "r" : "s"} fa-${glyph}`;
 
   return (
     <i
@@ -21,7 +21,7 @@ const Icon: FC<IconProps> = ({
         size ? `Text-fontSize--${size}` : ""
       } ${className}`}
     />
-  )
-}
+  );
+};
 
-export default Icon
+export default Icon;

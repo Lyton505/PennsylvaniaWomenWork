@@ -1,30 +1,30 @@
-import React, { useState } from "react"
-import Navbar from "../components/Navbar"
-import { useNavigate } from "react-router-dom"
-import Modal from "../components/Modal"
-import CreateEventModal from "../components/CreateEvent"
-import Event, { EventData } from "../components/Event"
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
+import Modal from "../components/Modal";
+import CreateEventModal from "../components/CreateEvent";
+import Event, { EventData } from "../components/Event";
 
 interface MenteeInformationElements {
-  id: number
-  menteeName: string
+  id: number;
+  menteeName: string;
 }
 
 interface CourseInformationElements {
-  id: number
-  courseName: string
+  id: number;
+  courseName: string;
 }
 
 const handleClick = (item: MenteeInformationElements) => {
-  console.log("Clicked:", item)
-}
+  console.log("Clicked:", item);
+};
 
 const MentorDashboard = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("My Mentees")
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
-  const [createEventModal, setCreateEventModal] = useState(false)
+  const [activeTab, setActiveTab] = useState("My Mentees");
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [createEventModal, setCreateEventModal] = useState(false);
 
   const events: EventData[] = [
     {
@@ -57,18 +57,18 @@ const MentorDashboard = () => {
       fullDescription:
         "Discussion with other mentors and industry professionals about their work, best practices, and more.",
     },
-  ]
+  ];
 
   const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
       if (!acc[event.month]) {
-        acc[event.month] = []
+        acc[event.month] = [];
       }
-      acc[event.month].push(event)
-      return acc
+      acc[event.month].push(event);
+      return acc;
     },
-    {} as { [key: string]: EventData[] }
-  )
+    {} as { [key: string]: EventData[] },
+  );
 
   const menteeGridData: MenteeInformationElements[] = [
     {
@@ -79,22 +79,22 @@ const MentorDashboard = () => {
       id: 2,
       menteeName: "John Doe",
     },
-  ]
+  ];
 
   const courseGridData: CourseInformationElements[] = [
     {
       id: 1,
       courseName: "Resume",
     },
-  ]
+  ];
 
   const handleClick = (id: number) => {
-    navigate(`/mentor/mentee-information/`)
-  }
+    navigate(`/mentor/mentee-information/`);
+  };
 
   const handleClickWorkshop = (id: number) => {
-    navigate(`/mentor/workshop-information/`)
-  }
+    navigate(`/mentor/workshop-information/`);
+  };
 
   return (
     <>
@@ -205,7 +205,7 @@ const MentorDashboard = () => {
             <div
               className="Button Button-color--blue-1000"
               onClick={() => {
-                setCreateEventModal(true)
+                setCreateEventModal(true);
               }}
             >
               Add New Event
@@ -214,7 +214,7 @@ const MentorDashboard = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MentorDashboard
+export default MentorDashboard;

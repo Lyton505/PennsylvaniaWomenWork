@@ -2,15 +2,15 @@
 // this is where we define our colors used in the app
 
 //add spaces so that the hex codes are lined up
-$pww-color-yellow:   #b1cf24;
-$pww-color-teal:     #0096C0;
-$pww-color-blue:     #4C65A6;
-$pww-color-red:      #db504a;
-$pww-color-green:    #BFD71B;
-$pww-color-light:    #ffffff;
-$pww-color-neutral:  #f6f4ef;
-$pww-color-gray:     #545454;
-$pww-color-dark:     #000000;
+$pww-color-yellow: #b1cf24;
+$pww-color-teal: #0096c0;
+$pww-color-blue: #4c65a6;
+$pww-color-red: #db504a;
+$pww-color-green: #bfd71b;
+$pww-color-light: #ffffff;
+$pww-color-neutral: #f6f4ef;
+$pww-color-gray: #545454;
+$pww-color-dark: #000000;
 
 // allow the colors to be used in inline styles
 $palette: (
@@ -20,7 +20,7 @@ $palette: (
   "red": $pww-color-red,
   "green": $pww-color-green,
   "light": $pww-color-light,
-  "neutral":  $pww-color-neutral,
+  "neutral": $pww-color-neutral,
   "gray": $pww-color-gray,
   "dark": $pww-color-dark,
 );
@@ -30,8 +30,8 @@ $alphas: 25 50 100 150 200 300 400 500 600 700 800 900 1000;
 
 // this is where we define our colors used in the app
 @mixin pww-create-color($name, $baseColor, $alphas) {
-  --pww-color-#{$name}: #{red($baseColor)}, #{green($baseColor)},
-    #{blue($baseColor)};
+  --pww-color-#{$name}:
+    #{red($baseColor)}, #{green($baseColor)}, #{blue($baseColor)};
 
   @each $alpha in $alphas {
     --pww-color-#{$name}-#{$alpha}: #{rgba($baseColor, math.div($alpha, 1000))};
@@ -66,7 +66,6 @@ $zIndex: -10 -5 0 5 10 50 100 1000;
 
 // initializes all the vairations of the variables
 :root {
-
   @each $fontSize in $fontSizes {
     --pww-font-size-#{$fontSize}: #{$fontSize}px;
   }
@@ -92,9 +91,11 @@ $weights: 25 50 100 200 300 400 500 600 700 800 900 !default;
 @mixin root-palette($palette) {
   @each $name, $color in $palette {
     --#{$name}: #{red($color)}, #{green($color)}, #{blue($color)};
-    --#{$name}-dark: #{red(saturate($color, 20))},
-      #{green(saturate($color, 20))}, #{blue(saturate($color, 20))};
-    --#{$name}-light: #{red(lighten($color, 20))}, #{green(lighten($color, 20))},
+    --#{$name}-dark:
+      #{red(saturate($color, 20))}, #{green(saturate($color, 20))},
+      #{blue(saturate($color, 20))};
+    --#{$name}-light:
+      #{red(lighten($color, 20))}, #{green(lighten($color, 20))},
       #{blue(lighten($color, 20))};
   }
 }
