@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Auth0ProviderWithNavigate } from "./utils/auth0-provider";
 import { BrowserRouter } from "react-router-dom";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 import { UserProvider } from "./contexts/UserContext";
 
 document.title = "PWW";

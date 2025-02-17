@@ -1,23 +1,23 @@
-import React, { useState } from "react"
-import Navbar from "../components/Navbar"
-import Modal from "../components/Modal"
-import { useNavigate } from "react-router-dom"
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import Modal from "../components/Modal";
+import { useNavigate } from "react-router-dom";
 
-import Event, { EventData } from "../components/Event"
+import Event, { EventData } from "../components/Event";
 
 interface CourseInformationElements {
-  id: number
-  courseName: string
+  id: number;
+  courseName: string;
 }
 
 const MenteeDashboard = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = (id: number) => {
-    navigate(`/mentee/course-information/`)
-  }
+    navigate(`/mentee/course-information/`);
+  };
 
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
 
   const events: EventData[] = [
     {
@@ -51,7 +51,7 @@ const MenteeDashboard = () => {
       fullDescription:
         "Join us for an evening of networking with senior members in your desired field.",
     },
-  ]
+  ];
 
   const courseGridData: CourseInformationElements[] = [
     {
@@ -68,18 +68,18 @@ const MenteeDashboard = () => {
       id: 3,
       courseName: "Interviewing",
     },
-  ]
+  ];
 
   const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
       if (!acc[event.month]) {
-        acc[event.month] = []
+        acc[event.month] = [];
       }
-      acc[event.month].push(event)
-      return acc
+      acc[event.month].push(event);
+      return acc;
     },
-    {} as { [key: string]: EventData[] }
-  )
+    {} as { [key: string]: EventData[] },
+  );
 
   return (
     <>
@@ -165,7 +165,7 @@ const MenteeDashboard = () => {
         </div>
       </div>{" "}
     </>
-  )
-}
+  );
+};
 
-export default MenteeDashboard
+export default MenteeDashboard;

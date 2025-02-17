@@ -1,10 +1,10 @@
-import React from "react"
-import Navbar from "../components/Navbar"
-import pdf from "../assets/pdf.jpg"
-import docx from "../assets/docx.png"
-import video from "../assets/video.png"
-import Icon from "../components/Icon"
-import { useNavigate } from "react-router-dom"
+import React from "react";
+import Navbar from "../components/Navbar";
+import pdf from "../assets/pdf.jpg";
+import docx from "../assets/docx.png";
+import video from "../assets/video.png";
+import Icon from "../components/Icon";
+import { useNavigate } from "react-router-dom";
 
 // 🔹 Define Fake Data
 const fakeFiles = [
@@ -26,10 +26,10 @@ const fakeFiles = [
     type: "docx",
     icon: docx,
   },
-]
+];
 
 const WorkshopInformation = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <>
       <Navbar />
@@ -63,7 +63,7 @@ const WorkshopInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default WorkshopInformation
+export default WorkshopInformation;

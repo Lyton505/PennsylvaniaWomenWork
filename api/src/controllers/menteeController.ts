@@ -9,17 +9,21 @@ export const getWorkshopsForMentee = async (req: Request, res: Response) => {
     const workshops = await Workshop.find({
       $or: [
         { mentee: menteeId },
-        { _id: { $in: (await User.findById(menteeId))?.workshopIDs || [] } }
-      ]
+        { _id: { $in: (await User.findById(menteeId))?.workshopIDs || [] } },
+      ],
     });
 
     if (!workshops || workshops.length === 0) {
-      return res.status(404).json({ message: "No workshops found for this user" });
+      return res
+        .status(404)
+        .json({ message: "No workshops found for this user" });
     }
 
     res.status(200).json(workshops);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving workshops for mentee", error });
+    res
+      .status(500)
+      .json({ message: "Error retrieving workshops for mentee", error });
   }
 };
 
@@ -35,7 +39,7 @@ export const addWorkshopToMentee = async (req: Request, res: Response) => {
     const updatedMentee = await User.findByIdAndUpdate(
       menteeId,
       { $push: { workshopIDs: workshopId } },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedMentee) {

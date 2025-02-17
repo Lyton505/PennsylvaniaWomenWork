@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Only connect to DB if not in test environment
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   connectDB();
 }
 
@@ -31,7 +31,7 @@ app.use("/api/resource", routes.resource);
 export { app };
 
 // Only listen if not in test environment
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   app.listen(process.env.PORT || 8000, () => {
     console.log("Server running...");
   });

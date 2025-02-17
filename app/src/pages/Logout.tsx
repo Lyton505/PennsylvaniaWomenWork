@@ -1,13 +1,13 @@
-import React, { useEffect, type ReactElement } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, type ReactElement } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Logout = (): ReactElement => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     // Remove token from localStorage
-    localStorage.removeItem("token")
-    console.log("User logged out")
-  }, []) // Ensure navigate is included in the dependency array
+    localStorage.removeItem("token");
+    console.log("User logged out");
+  }, []); // Ensure navigate is included in the dependency array
 
   return (
     <>
@@ -21,7 +21,7 @@ const Logout = (): ReactElement => {
             <div className="Button Button-color--yellow-1000 Margin-top--20">
               <div
                 onClick={() => {
-                  navigate("/")
+                  navigate("/");
                 }}
               >
                 Login
@@ -31,7 +31,7 @@ const Logout = (): ReactElement => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Logout
+export default Logout;

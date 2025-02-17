@@ -1,9 +1,9 @@
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import pdf from "../assets/pdf.jpg"
-import docx from "../assets/docx.png"
-import video from "../assets/video.png"
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import pdf from "../assets/pdf.jpg";
+import docx from "../assets/docx.png";
+import video from "../assets/video.png";
 
 // 🔹 Define Fake Data
 const fakeFiles = [
@@ -25,7 +25,7 @@ const fakeFiles = [
     type: "docx",
     icon: docx,
   },
-]
+];
 
 const MenteeCourseInformation = () => {
   return (
@@ -36,15 +36,12 @@ const MenteeCourseInformation = () => {
           <div className="Course-header Flex-row">
             Welcome to Your Course Dashboard!
           </div>
-          <div className="Block-subtitle">
-            Resume Workshop
-          </div>
+          <div className="Block-subtitle">Resume Workshop</div>
           <div className="Course-description">
-            This course will help you create a professional resume that will stand out to employers.
+            This course will help you create a professional resume that will
+            stand out to employers.
           </div>
-          <div className="Block-subtitle">
-            Course Materials 
-          </div>
+          <div className="Block-subtitle">Course Materials</div>
           <div className="row gx-3 gy-3">
             {fakeFiles.map((file) => (
               <div key={file.id} className="col-lg-2">
@@ -62,7 +59,7 @@ const MenteeCourseInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MenteeCourseInformation
+export default MenteeCourseInformation;

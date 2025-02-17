@@ -1,16 +1,16 @@
-import React from "react"
-import Modal from "./Modal"
-import { Formik, Form, Field, FormikHelpers } from "formik"
-import * as yup from "yup"
+import React from "react";
+import Modal from "./Modal";
+import { Formik, Form, Field, FormikHelpers } from "formik";
+import * as yup from "yup";
 
 // Define the shape of our form values
 interface CreateEventFormValues {
-  name: string
-  description: string
-  date: string
-  startTime: string
-  endTime: string
-  invitationLink: string
+  name: string;
+  description: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  invitationLink: string;
 }
 
 // Initial form values
@@ -21,7 +21,7 @@ const initialValues: CreateEventFormValues = {
   startTime: "",
   endTime: "",
   invitationLink: "",
-}
+};
 
 // Yup validation schema
 const validationSchema = yup.object().shape({
@@ -36,20 +36,20 @@ const validationSchema = yup.object().shape({
       "is-after-start",
       "End time must be after start time",
       function (endTime) {
-        const { startTime } = this.parent
-        return !startTime || !endTime || startTime < endTime
-      }
+        const { startTime } = this.parent;
+        return !startTime || !endTime || startTime < endTime;
+      },
     ),
   invitationLink: yup
     .string()
     .url("Must be a valid URL")
     .required("Invitation link is required"),
-})
+});
 
 // Define props for our modal component
 interface CreateEventModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const CreateEventModal: React.FC<CreateEventModalProps> = ({
@@ -59,26 +59,26 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   // The function that handles form submission
   const handleSubmit = async (
     values: CreateEventFormValues,
-    { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>
+    { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>,
   ) => {
     try {
       // TODO: Replace with your own event creation logic
-      console.log("Event created with values:", values)
+      console.log("Event created with values:", values);
 
       // Optionally reset the form after submit
-      resetForm()
+      resetForm();
       // Close the modal after successful creation
-      onClose()
+      onClose();
     } catch (error) {
-      console.error("Error creating event:", error)
+      console.error("Error creating event:", error);
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   // If `isOpen` is false, don't render anything
   if (!isOpen) {
-    return null
+    return null;
   }
 
   return (
@@ -173,7 +173,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       }
       action={onClose}
     />
-  )
-}
+  );
+};
 
-export default CreateEventModal
+export default CreateEventModal;

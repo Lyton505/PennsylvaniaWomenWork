@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import Icon from "../components/Icon"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Icon from "../components/Icon";
 
 const MenteeInformation = () => {
-  const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState("Workshops")
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("Workshops");
 
   const menteeData = {
     name: "Jane Doe",
@@ -13,7 +13,7 @@ const MenteeInformation = () => {
     description:
       "Lorem ipsum dolor sit amet consectetur. In lectus et et pellentesque a mattis. Sapien morbi congue nulla diam sit non at. Arcu platea semper fermentum at fusce. Eu sem varius molestie elit venenatis. Nulla est sollicitudin.",
     workshops: ["Resume Prep", "Career Advancement", "Resume Workshop"],
-  }
+  };
 
   return (
     <>
@@ -89,7 +89,7 @@ const MenteeInformation = () => {
                   <div
                     className="Button Button-color--teal-1000 Width--40"
                     onClick={() => {
-                      navigate("/create-meeting")
+                      navigate("/create-meeting");
                     }}
                   >
                     Add New Meeting Notes
@@ -140,7 +140,7 @@ const MenteeInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MenteeInformation
+export default MenteeInformation;

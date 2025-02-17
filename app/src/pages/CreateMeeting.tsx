@@ -1,47 +1,47 @@
-import React from "react"
-import { Formik, Form, Field } from "formik"
-import Navbar from "../components/Navbar"
-import * as Yup from "yup"
-import { api } from "../api" // Ensure this points to your configured API instance
+import React from "react";
+import { Formik, Form, Field } from "formik";
+import Navbar from "../components/Navbar";
+import * as Yup from "yup";
+import { api } from "../api"; // Ensure this points to your configured API instance
 
 const initialValues = {
   meeting: "",
   notes: "",
-}
+};
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   meeting: Yup.string().required("Meeting name is required"),
   notes: Yup.string().required("Meeting notes are required"),
-})
+});
 
 const CreateMeeting = () => {
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any
+    { setSubmitting, resetForm }: any,
   ) => {
-    setSubmitting(true)
+    setSubmitting(true);
     try {
       const payload = {
         username: "sample-username", // TODO: Replace with the logged-in user's username
         meeting: values.meeting,
         notes: values.notes,
-      }
+      };
 
-      console.log("Submitting payload:", payload) // Debugging log
+      console.log("Submitting payload:", payload); // Debugging log
 
-      await api.post("/user/add-meeting", payload)
+      await api.post("/user/add-meeting", payload);
 
-      alert("Meeting added successfully!")
+      alert("Meeting added successfully!");
 
-      resetForm() // Clear the form after successful submission
+      resetForm(); // Clear the form after successful submission
     } catch (error) {
-      console.error("Error adding meeting:", error)
-      alert("Failed to add meeting. Please try again.")
+      console.error("Error adding meeting:", error);
+      alert("Failed to add meeting. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
@@ -101,7 +101,7 @@ const CreateMeeting = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default CreateMeeting
+export default CreateMeeting;
