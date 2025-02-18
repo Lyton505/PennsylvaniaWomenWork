@@ -9,6 +9,7 @@ export const useCurrentUser = (username: string) => {
     username: string;
     role: string;
   } | null>(null);
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 

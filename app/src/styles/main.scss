@@ -1,6 +1,6 @@
 // Imports for all of the external libraries
 @import url("https://fonts.googleapis.com/css?family=Rubik");
-@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url("https://fonts.googleapis.com/css?family=Lato");
 @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
 
 @import "~bootstrap/scss/bootstrap-utilities.scss";
@@ -14,8 +14,10 @@
 @import "widget";
 @import "formik";
 @import "profile";
+@import "create";
 @import "mentee";
 @import "courseInfo";
+@import "loginLoading";
 
 :root {
   // define colors

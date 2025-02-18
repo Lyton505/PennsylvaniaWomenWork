@@ -1,9 +1,10 @@
-import React from "react"
-import { useNavigate } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import pdf from "../assets/pdf.jpg"
-import docx from "../assets/docx.png"
-import video from "../assets/video.png"
+import React from "react";
+import Navbar from "../components/Navbar";
+import pdf from "../assets/pdf.jpg";
+import docx from "../assets/docx.png";
+import video from "../assets/video.png";
+import Icon from "../components/Icon";
+import { useNavigate } from "react-router-dom";
 
 // 🔹 Define Fake Data
 const fakeFiles = [
@@ -25,14 +26,18 @@ const fakeFiles = [
     type: "docx",
     icon: docx,
   },
-]
+];
 
 const WorkshopInformation = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Navbar />
       <div className="WorkshopInfo">
         <div className="Block">
+          <div onClick={() => navigate("/home")} className=" Margin-bottom--10">
+            <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
+          </div>
           <div className="Block-header Flex-row">
             Workshop Information
             <div className="Button Button-color--blue-1000 Margin-left--auto">
@@ -58,7 +63,7 @@ const WorkshopInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default WorkshopInformation
+export default WorkshopInformation;

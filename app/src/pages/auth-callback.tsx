@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom"
-import { useAuth0 } from "@auth0/auth0-react"
-import { useEffect } from "react"
-import Navbar from "../components/Navbar"
+import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 const AuthCallback = () => {
   const { isLoading, error, handleRedirectCallback } = useAuth0();
@@ -29,7 +29,7 @@ const AuthCallback = () => {
     console.error("Google auth login error", error);
   }
 
-  return <Navbar />
-}
+  return <Navbar />;
+};
 
-export default AuthCallback
+export default AuthCallback;

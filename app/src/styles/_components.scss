@@ -1,50 +1,49 @@
 .Navbar {
+  display: flex;
+  flex-direction: column;
+  z-index: var(--pww-z-50);
+
+  &-body {
     display: flex;
-    flex-direction: column;
-    z-index: var(--pww-z-50);
-  
-    &-body {    
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between; /* Fixes layout issue */
-        background-color: var(--pww-color-light-1000);
-        padding: 10px 32px;
-        box-shadow: var(--pww-shadow-dark);
-    }
-  
-    &-body-logo {
-        width: 150px; /* Set a fixed width for consistent layout */
-        height: 50px;
-        background-image: url('../assets/logo.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: left; /* Align logo to the left */
-        cursor: pointer;
-    }
-  
-    &-left {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 20px; /* Creates space between items */
-    }
-  
-    &-body-link {
-        cursor: pointer;
-        font-size: var(--pww-font-size-16);
-  
-        &:hover {
-            color: var(--pww-color-teal-1000);
-        }
-    }
-    &-active {
-        color: var(--pww-color-teal-1000);
-        font-weight: bold;
-        border-bottom: 2px solid var(--pww-color-teal-1000); // Underline for active tab
-    }
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between; /* Fixes layout issue */
+    background-color: var(--pww-color-light-1000);
+    padding: 10px 32px;
+    box-shadow: var(--pww-shadow-dark);
   }
 
+  &-body-logo {
+    width: 150px; /* Set a fixed width for consistent layout */
+    height: 50px;
+    background-image: url("../assets/logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left; /* Align logo to the left */
+    cursor: pointer;
+  }
+
+  &-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px; /* Creates space between items */
+  }
+
+  &-body-link {
+    cursor: pointer;
+    font-size: var(--pww-font-size-16);
+
+    &:hover {
+      color: var(--pww-color-teal-1000);
+    }
+  }
+  &-active {
+    color: var(--pww-color-teal-1000);
+    font-weight: bold;
+    border-bottom: 2px solid var(--pww-color-teal-1000); // Underline for active tab
+  }
+}
 
 .Modal-overlay {
   background-color: rgba(0, 0, 0, 0.4);
@@ -113,7 +112,7 @@
 
     // line spacing
     line-height: 1.6;
-    color: var(--pww-color-body)
+    color: var(--pww-color-body);
   }
 
   &-tab {
