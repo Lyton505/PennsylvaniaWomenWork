@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL;
+
 export const useCurrentUser = (username: string) => {
   const [user, setUser] = useState<{
     _id: string;
@@ -14,7 +16,7 @@ export const useCurrentUser = (username: string) => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/user/current-user?username=${encodeURIComponent(username)}`,
+          `${API_BASE_URL}/api/user/current-user?username=${encodeURIComponent(username)}`,
         );
         setUser(response.data); // store full user object including _id (for backend retrieval)
       } catch (err) {
