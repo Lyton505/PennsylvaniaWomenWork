@@ -19,7 +19,6 @@ export const getMenteesForMentor = async (
     // console.log("Mentor object:", mentor);
     // console.log("menteeInfo field:", mentor.menteeInfo);
 
-
     const menteeIds = mentor.menteeInfo;
     // console.log("menteeIds field:", menteeIds);
 
