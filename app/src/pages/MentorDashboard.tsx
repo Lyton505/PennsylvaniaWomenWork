@@ -115,6 +115,17 @@ const MentorDashboard = () => {
   //   },
   // ];
 
+  // const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
+  //   (acc, event) => {
+  //     if (!acc[event.month]) {
+  //       acc[event.month] = [];
+  //     }
+  //     acc[event.month].push(event);
+  //     return acc;
+  //   },
+  //   {} as { [key: string]: EventData[] },
+  // );
+
   const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
       const eventDate = new Date(event.date); // Convert date string to Date object
@@ -165,8 +176,8 @@ const MentorDashboard = () => {
       {selectedEvent && (
         <Modal
           header={selectedEvent.title}
-          subheader={`${selectedEvent.day.toUpperCase()}, ${selectedEvent.month} ${selectedEvent.date}`}
-          body={<>{selectedEvent.fullDescription}</>}
+          subheader={`${selectedEvent.month} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          body={<>{selectedEvent.description}</>}
           action={() => setSelectedEvent(null)}
         />
       )}
@@ -273,6 +284,7 @@ const MentorDashboard = () => {
                 {monthEvents.map((event) => (
                   <div
                     key={event.id}
+                    onClick={() => setSelectedEvent(event)} // ✅ Click event sets selectedEvent
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -281,6 +293,7 @@ const MentorDashboard = () => {
                       background: "#f9f9f9",
                       borderRadius: "5px",
                       marginBottom: "8px",
+                      cursor: "pointer", // Indicate it's clickable
                     }}
                   >
                     {/* Date */}

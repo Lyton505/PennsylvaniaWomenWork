@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 import { useNavigate } from "react-router-dom";
@@ -13,45 +14,81 @@ interface CourseInformationElements {
 const MenteeDashboard = () => {
   const navigate = useNavigate();
 
+  const [events, setEvents] = useState<EventData[]>([]);
+  const API_BASE_URL =
+    process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+  const userId = "64a6b8c5f5c6dca8ef18d1f1"; // TODO: Replace with actual mentee user ID
+
+  const fetchEvents = async () => {
+    try {
+      if (!userId) {
+        console.error("Error: userId is undefined");
+        return;
+      }
+
+      const response = await axios.get(`${API_BASE_URL}/api/event/${userId}`);
+      console.log("Fetched Events for Mentee:", response.data); // Debugging
+
+      // Transform API response to match EventData structure
+      const parsedEvents: EventData[] = response.data.map((event: any) => ({
+        id: event._id, // MongoDB stores IDs as `_id`
+        title: event.name, // Map `name` from MongoDB to `title`
+        description: event.description,
+        date: event.date,
+        month: new Date(event.date).toLocaleString("default", {
+          month: "long",
+        }),
+      }));
+
+      setEvents(parsedEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
   const handleClick = (id: number) => {
     navigate(`/mentee/course-information/`);
   };
 
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
 
-  const events: EventData[] = [
-    {
-      id: 1,
-      day: "wed",
-      date: "25",
-      month: "June",
-      title: "Mock Interview Session",
-      description:
-        "Practice your interview skills with an industry professional",
-      fullDescription:
-        "Join us for a comprehensive mock interview session where industry professionals will provide real-world interview scenarios and valuable feedback. You'll get hands-on experience with common interview questions and learn techniques to improve your performance.",
-    },
-    {
-      id: 2,
-      day: "fri",
-      date: "27",
-      month: "June",
-      title: "Resume Workshop",
-      description: "Develop your resume with a senior employee",
-      fullDescription:
-        "Work directly with senior employees to craft a compelling resume. Learn about industry best practices, how to highlight your achievements, and get personalized feedback on your current resume. Bring your laptop and current resume for hands-on improvements.",
-    },
-    {
-      id: 3,
-      day: "mon",
-      date: "1",
-      month: "July",
-      title: "Networking Event",
-      description: "Connect with industry professionals",
-      fullDescription:
-        "Join us for an evening of networking with senior members in your desired field.",
-    },
-  ];
+  // const events: EventData[] = [
+  //   {
+  //     id: 1,
+  //     day: "wed",
+  //     date: "25",
+  //     month: "June",
+  //     title: "Mock Interview Session",
+  //     description:
+  //       "Practice your interview skills with an industry professional",
+  //     fullDescription:
+  //       "Join us for a comprehensive mock interview session where industry professionals will provide real-world interview scenarios and valuable feedback. You'll get hands-on experience with common interview questions and learn techniques to improve your performance.",
+  //   },
+  //   {
+  //     id: 2,
+  //     day: "fri",
+  //     date: "27",
+  //     month: "June",
+  //     title: "Resume Workshop",
+  //     description: "Develop your resume with a senior employee",
+  //     fullDescription:
+  //       "Work directly with senior employees to craft a compelling resume. Learn about industry best practices, how to highlight your achievements, and get personalized feedback on your current resume. Bring your laptop and current resume for hands-on improvements.",
+  //   },
+  //   {
+  //     id: 3,
+  //     day: "mon",
+  //     date: "1",
+  //     month: "July",
+  //     title: "Networking Event",
+  //     description: "Connect with industry professionals",
+  //     fullDescription:
+  //       "Join us for an evening of networking with senior members in your desired field.",
+  //   },
+  // ];
 
   const courseGridData: CourseInformationElements[] = [
     {
@@ -70,6 +107,17 @@ const MenteeDashboard = () => {
     },
   ];
 
+  // const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
+  //   (acc, event) => {
+  //     if (!acc[event.month]) {
+  //       acc[event.month] = [];
+  //     }
+  //     acc[event.month].push(event);
+  //     return acc;
+  //   },
+  //   {} as { [key: string]: EventData[] },
+  // );
+
   const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
       if (!acc[event.month]) {
@@ -87,8 +135,8 @@ const MenteeDashboard = () => {
       {selectedEvent && (
         <Modal
           header={selectedEvent.title}
-          subheader={`${selectedEvent.day.toUpperCase()}, ${selectedEvent.month} ${selectedEvent.date}`}
-          body={<>{selectedEvent.fullDescription}</>}
+          subheader={`${selectedEvent.month} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          body={<>{selectedEvent.description}</>}
           action={() => setSelectedEvent(null)}
         />
       )}
@@ -154,12 +202,58 @@ const MenteeDashboard = () => {
               </div>
             ))} */}
             {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <Event
-                key={month}
-                month={month}
-                events={monthEvents}
-                onEventClick={setSelectedEvent}
-              />
+              <div key={month} style={{ marginBottom: "20px" }}>
+                <h3
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {month}
+                </h3>
+
+                {monthEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    onClick={() => setSelectedEvent(event)} // ✅ Click event opens modal
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "10px",
+                      borderBottom: "1px solid #ddd",
+                      background: "#f9f9f9",
+                      borderRadius: "5px",
+                      marginBottom: "8px",
+                      cursor: "pointer", // Indicates the event is clickable
+                    }}
+                  >
+                    {/* Date */}
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        color: "#333",
+                        minWidth: "90px",
+                        textAlign: "left",
+                      }}
+                    >
+                      {new Date(event.date).toLocaleDateString()}
+                    </div>
+
+                    {/* Event Details */}
+                    <div style={{ flexGrow: 1, paddingLeft: "10px" }}>
+                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>
+                        {event.title}
+                      </span>
+                      {" - "}
+                      <span style={{ fontSize: "14px", color: "#666" }}>
+                        {event.description}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ))}
           </div>
         </div>
