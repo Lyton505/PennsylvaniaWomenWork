@@ -15,6 +15,7 @@ const MenteeDashboard = () => {
   const navigate = useNavigate();
 
   const [events, setEvents] = useState<EventData[]>([]);
+  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([]);
   const API_BASE_URL =
     process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
   const userId = "64a6b8c5f5c6dca8ef18d1f1"; // TODO: Replace with actual mentee user ID
@@ -27,12 +28,11 @@ const MenteeDashboard = () => {
       }
 
       const response = await axios.get(`${API_BASE_URL}/api/event/${userId}`);
-      console.log("Fetched Events for Mentee:", response.data); // Debugging
+      console.log("Fetched Events for Mentee:", response.data);
 
-      // Transform API response to match EventData structure
       const parsedEvents: EventData[] = response.data.map((event: any) => ({
-        id: event._id, // MongoDB stores IDs as `_id`
-        title: event.name, // Map `name` from MongoDB to `title`
+        id: event._id,
+        title: event.name,
         description: event.description,
         date: event.date,
         month: new Date(event.date).toLocaleString("default", {
@@ -46,8 +46,31 @@ const MenteeDashboard = () => {
     }
   };
 
+  const fetchWorkshops = async () => {
+    try {
+      if (!userId) {
+        console.error("Error: userId is undefined");
+        return;
+      }
+
+      const response = await axios.get(`${API_BASE_URL}/api/workshop/user/${userId}`);
+      console.log("Fetched Workshops:", response.data);
+
+      const parsedWorkshops: CourseInformationElements[] = response.data.map((workshop: any) => ({
+        id: workshop._id,
+        courseName: workshop.name,
+      }));
+
+      setWorkshops(parsedWorkshops);
+    } catch (error) {
+      console.error("Error fetching workshops:", error);
+    }
+  };
+
+
   useEffect(() => {
     fetchEvents();
+    fetchWorkshops();
   }, []);
 
   const handleClick = (id: number) => {
@@ -90,22 +113,17 @@ const MenteeDashboard = () => {
   //   },
   // ];
 
+  // const courseGridData: CourseInformationElements[] = [
+  //   { id: 1, courseName: "Resume" },
+  //   { id: 2, courseName: "Networking" },
+  //   { id: 3, courseName: "Interviewing" },
+  // ];
+
+
   const courseGridData: CourseInformationElements[] = [
-    {
-      id: 1,
-      courseName: "Resume",
-    },
-
-    {
-      id: 2,
-      courseName: "Networking",
-    },
-
-    {
-      id: 3,
-      courseName: "Interviewing",
-    },
+    ...workshops,
   ];
+
 
   // const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
   //   (acc, event) => {
