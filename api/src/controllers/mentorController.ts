@@ -16,18 +16,12 @@ export const getMenteesForMentor = async (
       return;
     }
 
-    // console.log("Mentor object:", mentor);
-    // console.log("menteeInfo field:", mentor.menteeInfo);
-
     const menteeIds = mentor.menteeInfo;
-    // console.log("menteeIds field:", menteeIds);
 
     const mentees = await User.find({
       _id: { $in: menteeIds },
       role: "mentee",
     });
-
-    // console.log("mentees: ", mentees)
 
     res.status(200).json({ mentees });
   } catch (error) {

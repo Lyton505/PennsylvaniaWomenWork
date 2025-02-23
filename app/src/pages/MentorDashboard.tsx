@@ -7,13 +7,13 @@ import { useAuth0 } from "@auth0/auth0-react";
 import CreateEventModal from "../components/CreateEvent";
 import Event, { EventData } from "../components/Event";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 interface Mentee {
   _id: string;
   firstName: string;
   lastName: string;
 }
-
-
 
 interface MenteeInformationElements {
   id: number;
@@ -85,7 +85,7 @@ const MentorDashboard = () => {
       try {
         console.log("Fetching mentees for mentor ID:", user._id);
         const response = await fetch(
-          `http://localhost:8000/api/mentor/${user._id}/mentees`,
+          `http://${API_BASE_URL}/api/mentor/${user._id}/mentees`,
         );
         console.log("Response status:", response.status);
 
@@ -165,18 +165,6 @@ const MentorDashboard = () => {
     },
     {} as { [key: string]: EventData[] },
   );
-
-  // previous static dummy data
-  // const menteeGridData: MenteeInformationElements[] = [
-  //   {
-  //     id: 1,
-  //     menteeName: "Jane Doe",
-  //   },
-  //   {
-  //     id: 2,
-  //     menteeName: "John Doe",
-  //   },
-  // ]
 
   const menteeGridData = Array.isArray(mentees) // parse mentee data
     ? mentees.map((mentee) => ({
