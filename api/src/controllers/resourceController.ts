@@ -67,10 +67,10 @@ export const generateRetrievalURL = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Missing objectId parameter" });
     }
 
-    const signedUrl = s3.getSignedUrl("getObject", {
+    const signedUrl = await s3.getSignedUrlPromise("getObject", {
       Bucket: bucketName,
       Key: objectId,
-      Expires: 3600, // URL expires in 1 hour
+      Expires: 3600,
     });
 
     res.status(200).json({ signedUrl });
