@@ -1,151 +1,73 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Navbar from "../components/Navbar";
-import Modal from "../components/Modal";
-import { useNavigate } from "react-router-dom";
-
-import Event, { EventData } from "../components/Event";
+import React, { useState, useEffect } from "react"
+import Navbar from "../components/Navbar"
+import Modal from "../components/Modal"
+import { useNavigate } from "react-router-dom"
+import { api } from "../api"
+import Event, { EventData } from "../components/Event"
+import { useUser } from "../contexts/UserContext"
+import { useAuth0 } from "@auth0/auth0-react"
 
 interface CourseInformationElements {
-  id: number;
-  courseName: string;
+  id: string
+  courseName: string
 }
 
 const MenteeDashboard = () => {
-  const navigate = useNavigate();
-
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([]);
-  const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
-  const userId = "64a6b8c5f5c6dca8ef18d1f1"; // TODO: Replace with actual mentee user ID
-
-  const fetchEvents = async () => {
-    try {
-      if (!userId) {
-        console.error("Error: userId is undefined");
-        return;
-      }
-
-      const response = await axios.get(`${API_BASE_URL}/api/event/${userId}`);
-      console.log("Fetched Events for Mentee:", response.data);
-
-      const parsedEvents: EventData[] = response.data.map((event: any) => ({
-        id: event._id,
-        title: event.name,
-        description: event.description,
-        date: event.date,
-        month: new Date(event.date).toLocaleString("default", {
-          month: "long",
-        }),
-      }));
-
-      setEvents(parsedEvents);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
-  };
-
-  const fetchWorkshops = async () => {
-    try {
-      if (!userId) {
-        console.error("Error: userId is undefined");
-        return;
-      }
-
-      const response = await axios.get(`${API_BASE_URL}/api/workshop/user/${userId}`);
-      console.log("Fetched Workshops:", response.data);
-
-      const parsedWorkshops: CourseInformationElements[] = response.data.map((workshop: any) => ({
-        id: workshop._id,
-        courseName: workshop.name,
-      }));
-
-      setWorkshops(parsedWorkshops);
-    } catch (error) {
-      console.error("Error fetching workshops:", error);
-    }
-  };
-
+  const navigate = useNavigate()
+  const [events, setEvents] = useState<EventData[]>([])
+  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+  const { user } = useUser()
+  const userId = user?._id
 
   useEffect(() => {
-    fetchEvents();
-    fetchWorkshops();
-  }, []);
+    if (!userId) return
 
-  const handleClick = (id: number) => {
-    navigate(`/mentee/course-information/`);
-  };
+    const fetchData = async () => {
+      try {
+        const [eventsResponse, workshopsResponse] = await Promise.all([
+          api.get(`/api/event/${userId}`),
+          api.get(`/api/workshop/user/${userId}`),
+        ])
 
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+        setEvents(
+          eventsResponse.data.map((event: any) => ({
+            id: event._id,
+            title: event.name,
+            description: event.description,
+            date: event.date,
+            month: new Date(event.date).toLocaleString("default", {
+              month: "long",
+            }),
+          }))
+        )
 
-  // const events: EventData[] = [
-  //   {
-  //     id: 1,
-  //     day: "wed",
-  //     date: "25",
-  //     month: "June",
-  //     title: "Mock Interview Session",
-  //     description:
-  //       "Practice your interview skills with an industry professional",
-  //     fullDescription:
-  //       "Join us for a comprehensive mock interview session where industry professionals will provide real-world interview scenarios and valuable feedback. You'll get hands-on experience with common interview questions and learn techniques to improve your performance.",
-  //   },
-  //   {
-  //     id: 2,
-  //     day: "fri",
-  //     date: "27",
-  //     month: "June",
-  //     title: "Resume Workshop",
-  //     description: "Develop your resume with a senior employee",
-  //     fullDescription:
-  //       "Work directly with senior employees to craft a compelling resume. Learn about industry best practices, how to highlight your achievements, and get personalized feedback on your current resume. Bring your laptop and current resume for hands-on improvements.",
-  //   },
-  //   {
-  //     id: 3,
-  //     day: "mon",
-  //     date: "1",
-  //     month: "July",
-  //     title: "Networking Event",
-  //     description: "Connect with industry professionals",
-  //     fullDescription:
-  //       "Join us for an evening of networking with senior members in your desired field.",
-  //   },
-  // ];
-
-  // const courseGridData: CourseInformationElements[] = [
-  //   { id: 1, courseName: "Resume" },
-  //   { id: 2, courseName: "Networking" },
-  //   { id: 3, courseName: "Interviewing" },
-  // ];
-
-
-  const courseGridData: CourseInformationElements[] = [
-    ...workshops,
-  ];
-
-
-  // const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
-  //   (acc, event) => {
-  //     if (!acc[event.month]) {
-  //       acc[event.month] = [];
-  //     }
-  //     acc[event.month].push(event);
-  //     return acc;
-  //   },
-  //   {} as { [key: string]: EventData[] },
-  // );
-
-  const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
-    (acc, event) => {
-      if (!acc[event.month]) {
-        acc[event.month] = [];
+        setWorkshops(
+          workshopsResponse.data.map((workshop: any) => ({
+            id: workshop._id,
+            courseName: workshop.name,
+          }))
+        )
+      } catch (error) {
+        console.error("Error fetching data:", error)
       }
-      acc[event.month].push(event);
-      return acc;
+    }
+
+    fetchData()
+  }, [userId])
+
+  const handleClick = (id: string) => {
+    navigate(`/mentee/course-information/${id}`)
+  }
+
+  const eventsByMonth = events.reduce<{ [key: string]: EventData[] }>(
+    (acc, event) => {
+      if (!acc[event.month]) acc[event.month] = []
+      acc[event.month].push(event)
+      return acc
     },
-    {} as { [key: string]: EventData[] },
-  );
+    {}
+  )
 
   return (
     <>
@@ -159,18 +81,15 @@ const MenteeDashboard = () => {
         />
       )}
       <div className="row g-3 Margin--20">
-        {/* Left Section */}
         <div className="col-lg-8">
           <div className="Block p-3">
-            {" "}
-            {/* Add padding inside */}
-            <div className="Block-header">My courses</div>
+            <div className="Block-header">My Courses</div>
             <div className="Block-subtitle">
               Select a course to access materials.
             </div>
             <div className="row gx-3 gy-3">
-              {courseGridData.map((item) => (
-                <div className="col-lg-4">
+              {workshops.map((item) => (
+                <div className="col-lg-4" key={item.id}>
                   <div
                     className="Workshop-card"
                     onClick={() => handleClick(item.id)}
@@ -187,38 +106,10 @@ const MenteeDashboard = () => {
             </div>
           </div>
         </div>
-
-        {/* Right Section */}
         <div className="col-lg-4">
           <div className="Block p-3">
-            {" "}
-            {/* Add padding inside */}
             <div className="Block-header">Upcoming Events</div>
             <div className="Block-subtitle">Select an event to register.</div>
-            {/* {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <div key={month} className="Event">
-                <div className="Event-month">{month}</div>
-
-                {monthEvents.map((event) => (
-                  <div
-                    className="Event-item"
-                    key={event.id}
-                    onClick={() => setSelectedEvent(event)}
-                  >
-                    <div className="Flex-column--centered Margin-right--30">
-                      <div>{event.day}</div>
-                      <div className="Text-fontSize--30">{event.date}</div>
-                    </div>
-                    <div className="Flex-column Text-bold">
-                      <span className="Margin-bottom--4">{event.title}</span>
-                      <div className="Text-fontSize--14">
-                        {event.description}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))} */}
             {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
               <div key={month} style={{ marginBottom: "20px" }}>
                 <h3
@@ -230,11 +121,10 @@ const MenteeDashboard = () => {
                 >
                   {month}
                 </h3>
-
                 {monthEvents.map((event) => (
                   <div
                     key={event.id}
-                    onClick={() => setSelectedEvent(event)} // ✅ Click event opens modal
+                    onClick={() => setSelectedEvent(event)}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -243,10 +133,9 @@ const MenteeDashboard = () => {
                       background: "#f9f9f9",
                       borderRadius: "5px",
                       marginBottom: "8px",
-                      cursor: "pointer", // Indicates the event is clickable
+                      cursor: "pointer",
                     }}
                   >
-                    {/* Date */}
                     <div
                       style={{
                         fontSize: "14px",
@@ -258,8 +147,6 @@ const MenteeDashboard = () => {
                     >
                       {new Date(event.date).toLocaleDateString()}
                     </div>
-
-                    {/* Event Details */}
                     <div style={{ flexGrow: 1, paddingLeft: "10px" }}>
                       <span style={{ fontSize: "16px", fontWeight: "bold" }}>
                         {event.title}
@@ -275,9 +162,9 @@ const MenteeDashboard = () => {
             ))}
           </div>
         </div>
-      </div>{" "}
+      </div>
     </>
-  );
-};
+  )
+}
 
-export default MenteeDashboard;
+export default MenteeDashboard

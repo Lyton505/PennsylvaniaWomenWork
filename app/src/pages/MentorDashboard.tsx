@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom"
 import Modal from "../components/Modal"
-import { useCurrentUser } from "../hooks/useCurrentUser"
-import { useAuth0 } from "@auth0/auth0-react"
 import CreateEventModal from "../components/CreateEvent"
 import Event, { EventData } from "../components/Event"
 import { useUser } from "../contexts/UserContext"
@@ -33,10 +31,6 @@ interface Event {
   title: string
   description: string
   fullDescription: string
-}
-
-const handleClick = (item: MenteeInformationElements) => {
-  console.log("Clicked:", item)
 }
 
 const MentorDashboard = () => {
@@ -114,11 +108,11 @@ const MentorDashboard = () => {
   ]
 
   const handleClick = (id: string) => {
-    navigate(`/mentor/mentee-information/${id}`)
+    navigate("/mentor/mentee-information", { state: { menteeId: id } })
   }
 
   const handleClickWorkshop = (id: number) => {
-    navigate(`/mentor/workshop-information/`)
+    navigate("/mentor/workshop-information", { state: { workshopId: id } })
   }
 
   const handleCreateEvent = async (eventData: {
