@@ -2,33 +2,67 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import { useUser } from "../contexts/UserContext";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
 import Icon from "../components/Icon";
+import '../styles/_profile.scss';
+
 
 const Profile = () => {
   const { user: auth0User } = useAuth0();
   const { user, error, loading } = useUser();
-  const navigate = useNavigate();
+
 
   return (
     <>
       <Navbar />
 
       <div className="Profile">
-
-        <div onClick={() => navigate("/home")} className=" Margin-bottom--10">
-          <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
-        </div>
         {loading ? (
           <p>Loading user info...</p>
         ) : error ? (
           <p>Error: {error}</p>
         ) : auth0User && user ? (
-          <div>
-            <div className="Profile-username--text">
-              {user.username} <span className="Profile-separator">|</span> <span className="Profile-role--text">{user.role}</span>
+          <div className="Profile-Block">
+            <div className="Profile-header">Profile Information</div>
+            <div className="Profile-subheader">User Details and Settings</div>
+            <div className="Profile-content">
+              <div className="Profile-avatar">
+                <img 
+                  src={auth0User.picture} 
+                  alt={`${auth0User.name}'s profile`}
+                  className="Profile-avatar-image"
+                />
+              </div>
+              <div className="Profile-field">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>Username:</strong>
+                  <span>{user.username}</span>
+                </div>
+              </div>
+              <div className="Profile-field">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>Name:</strong>
+                  <span>{auth0User.name}</span>
+                </div>
+              </div>
+              <div className="Profile-field">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>Nickname:</strong>
+                  <span>{auth0User.nickname}</span>
+                </div>
+              </div>
+              <div className="Profile-field">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>Role:</strong>
+                  <span>{user.role}</span>
+                </div>
+              </div>
+              <div className="Profile-field">
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <strong>Email:</strong>
+                  <span>{auth0User.email}</span>
+                </div>
+              </div>
             </div>
-            <div className="Profile-email--text">Email: <u>{auth0User.email}</u></div>
           </div>
         ) : (
           <p>No user info available</p>
