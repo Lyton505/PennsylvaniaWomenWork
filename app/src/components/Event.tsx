@@ -1,20 +1,20 @@
-import React from "react";
-import "../styles/_mentee.scss";
+import React from "react"
 
 export interface EventData {
-  id: number;
-  day: string;
-  date: string;
-  month: string;
-  title: string;
-  description: string;
-  fullDescription: string;
+  id: number
+  day: string
+  date: string
+  month: string
+  title: string
+  description: string
+  fullDescription: string
+  formattedDate?: string
 }
 
 interface EventProps {
-  month: string;
-  events: EventData[];
-  onEventClick: (event: EventData) => void;
+  month: string
+  events: EventData[]
+  onEventClick: (event: EventData) => void
 }
 
 const Event = ({ month, events, onEventClick }: EventProps) => {
@@ -38,7 +38,7 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default Event;
+export default Event

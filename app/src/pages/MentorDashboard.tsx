@@ -1,192 +1,135 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import { useNavigate } from "react-router-dom";
-import Modal from "../components/Modal";
-import { useCurrentUser } from "../hooks/useCurrentUser";
-import { useAuth0 } from "@auth0/auth0-react";
-import CreateEventModal from "../components/CreateEvent";
-import Event, { EventData } from "../components/Event";
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+import React, { useEffect, useState } from "react"
+import Navbar from "../components/Navbar"
+import { useNavigate } from "react-router-dom"
+import Modal from "../components/Modal"
+import CreateEventModal from "../components/CreateEvent"
+import Event, { EventData } from "../components/Event"
+import { useUser } from "../contexts/UserContext"
+import { api } from "../api"
 
 interface Mentee {
-  _id: string;
-  firstName: string;
-  lastName: string;
+  _id: string
+  firstName: string
+  lastName: string
 }
 
 interface MenteeInformationElements {
-  id: number;
-  menteeName: string;
+  id: number
+  menteeName: string
 }
 
 interface CourseInformationElements {
-  id: number;
-  courseName: string;
+  id: number
+  courseName: string
 }
 
 interface Event {
-  id: number;
-  day: string;
-  date: string;
-  month: string;
-  title: string;
-  description: string;
-  fullDescription: string;
+  id: number
+  day: string
+  date: string
+  month: string
+  title: string
+  description: string
+  fullDescription: string
 }
 
-const handleClick = (item: MenteeInformationElements) => {
-  console.log("Clicked:", item);
-};
-
 const MentorDashboard = () => {
-  const navigate = useNavigate();
-  const [mentees, setMentees] = useState<Mentee[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  const [mentees, setMentees] = useState<Mentee[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("My Mentees")
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+  const [createEventModal, setCreateEventModal] = useState(false)
+  const [events, setEvents] = useState<EventData[]>([])
+  const { user } = useUser()
+  const userId = user?._id
 
-  const {
-    user: auth0User,
-    isLoading: authLoading,
-    error: authError,
-  } = useAuth0();
-  const username = auth0User?.email || "";
-  const { user } = useCurrentUser(username); // fetch user details from backend
+  // const {
+  //   user: auth0User,
+  //   isLoading: authLoading,
+  //   error: authError,
+  // } = useAuth0()
+  // const username = auth0User?.email || ""
 
   useEffect(() => {
-    console.log("Auth Loading:", authLoading);
-    console.log("Current user:", user);
-
-    if (authLoading) {
-      console.log("Auth still loading...");
-      return;
+    if (!userId || user.role !== "mentor") {
+      setError("Only mentors can view mentees.")
+      setLoading(false)
+      return
     }
-
-    if (!user) {
-      console.log("User is not available yet...");
-      return;
-    }
-
-    if (!user._id) {
-      console.log("User ID is missing...");
-      return;
-    }
-
-    if (user.role !== "mentor") {
-      console.log("User is not a mentor.");
-      setError("Only mentors can view mentees.");
-      setLoading(false);
-      return;
-    }
-
-    console.log("User is a mentor. Proceeding to fetch mentees...");
 
     const fetchMentees = async () => {
       try {
-        console.log("Fetching mentees for mentor ID:", user._id);
-        const response = await fetch(
-          `http://${API_BASE_URL}/api/mentor/${user._id}/mentees`,
-        );
-        console.log("Response status:", response.status);
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch mentees. Status: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-        console.log("Retrieved mentee data:", data);
-
-        // Ensure `data.mentees` is an array before setting it
-        if (Array.isArray(data.mentees)) {
-          setMentees(data.mentees);
-        } else {
-          console.error("Error: Expected an array but received:", data);
-          setMentees([]); // Prevents .map() errors
-        }
-
-        setLoading(false);
+        const response = await api.get(`/api/mentor/${userId}/mentees`)
+        setMentees(
+          Array.isArray(response.data.mentees) ? response.data.mentees : []
+        )
+        setLoading(false)
       } catch (err) {
-        console.error("Error fetching mentees:", err);
-        setError("Unable to fetch mentees.");
-        setLoading(false);
+        setError("Unable to fetch mentees.")
+        setLoading(false)
       }
-    };
+    }
 
-    fetchMentees();
-  }, [user, authLoading]); // re-run when user updates
-
-  const [activeTab, setActiveTab] = useState("My Mentees");
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [createEventModal, setCreateEventModal] = useState(false);
-
-
-  const events: EventData[] = [
-    {
-      id: 1,
-      day: "wed",
-      date: "25",
-      month: "June",
-      title: "Meeting with Jane",
-      description: "One-on-one meeting with Jane to discuss her career goals",
-      fullDescription:
-        "One-on-one meeting with Jane to discuss her career goals.",
-    },
-    {
-      id: 2,
-      day: "fri",
-      date: "27",
-      month: "June",
-      title: "Meeting with John",
-      description: "One-on-one meeting with John to discuss his career goals",
-      fullDescription:
-        "One-on-one meeting with John to discuss his career goals.",
-    },
-    {
-      id: 3,
-      day: "mon",
-      date: "1",
-      month: "July",
-      title: "Mentor Networking Event",
-      description: "Connecting with other mentors and industry professionals",
-      fullDescription:
-        "Discussion with other mentors and industry professionals about their work, best practices, and more.",
-    },
-  ];
+    fetchMentees()
+  }, [userId, user?.role])
 
   const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
-      if (!acc[event.month]) {
-        acc[event.month] = [];
+      const eventDate = new Date(event.date) // Convert date string to Date object
+      const month = eventDate.toLocaleString("default", { month: "long" })
+
+      if (!acc[month]) {
+        acc[month] = []
       }
-      acc[event.month].push(event);
-      return acc;
+      acc[month].push({
+        ...event,
+        formattedDate: eventDate.toDateString(), // Human-readable format
+      })
+
+      return acc
     },
-    {} as { [key: string]: EventData[] },
-  );
+    {} as { [key: string]: EventData[] }
+  )
 
   const menteeGridData = Array.isArray(mentees) // parse mentee data
     ? mentees.map((mentee) => ({
         id: mentee._id,
         menteeName: `${mentee.firstName} ${mentee.lastName}`,
       }))
-    : []; // initialize empty array
+    : [] // initialize empty array
 
   const courseGridData: CourseInformationElements[] = [
     {
       id: 1,
       courseName: "Resume",
     },
-  ];
+  ]
 
   const handleClick = (id: string) => {
-    navigate(`/mentor/mentee-information/${id}`);
-  };
+    navigate("/mentor/mentee-information", { state: { menteeId: id } })
+  }
 
   const handleClickWorkshop = (id: number) => {
-    navigate(`/mentor/workshop-information/`);
-  };
+    navigate("/mentor/workshop-information", { state: { workshopId: id } })
+  }
+
+  const handleCreateEvent = async (eventData: {
+    name: string
+    description: string
+    date: string
+    userIds: string[]
+    calendarLink?: string
+  }) => {
+    try {
+      const response = await api.post(`/api/event`, eventData)
+      setEvents((prev) => [...prev, response.data.event])
+      setCreateEventModal(false)
+    } catch (error) {
+      setError("Error creating event.")
+    }
+  }
 
   return (
     <>
@@ -194,8 +137,8 @@ const MentorDashboard = () => {
       {selectedEvent && (
         <Modal
           header={selectedEvent.title}
-          subheader={`${selectedEvent.day.toUpperCase()}, ${selectedEvent.month} ${selectedEvent.date}`}
-          body={<>{selectedEvent.fullDescription}</>}
+          subheader={`${selectedEvent.month} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          body={<>{selectedEvent.description}</>}
           action={() => setSelectedEvent(null)}
         />
       )}
@@ -204,6 +147,7 @@ const MentorDashboard = () => {
         <CreateEventModal
           isOpen={createEventModal}
           onClose={() => setCreateEventModal(false)}
+          onSubmit={handleCreateEvent} // Pass event creation function
         />
       )}
 
@@ -295,17 +239,64 @@ const MentorDashboard = () => {
               Scheduled meetings and workshops
             </div>
             {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <Event
-                key={month}
-                month={month}
-                events={monthEvents}
-                onEventClick={setSelectedEvent}
-              />
+              <div key={month} style={{ marginBottom: "20px" }}>
+                <h3
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {month}
+                </h3>
+
+                {monthEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    onClick={() => setSelectedEvent(event)} // ✅ Click event sets selectedEvent
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "10px",
+                      borderBottom: "1px solid #ddd",
+                      background: "#f9f9f9",
+                      borderRadius: "5px",
+                      marginBottom: "8px",
+                      cursor: "pointer", // Indicate it's clickable
+                    }}
+                  >
+                    {/* Date */}
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        color: "#333",
+                        minWidth: "90px",
+                        textAlign: "left",
+                      }}
+                    >
+                      {new Date(event.date).toLocaleDateString()}
+                    </div>
+
+                    {/* Event Details */}
+                    <div style={{ flexGrow: 1, paddingLeft: "10px" }}>
+                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>
+                        {event.title}
+                      </span>
+                      {" - "}
+                      <span style={{ fontSize: "14px", color: "#666" }}>
+                        {event.description}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ))}
+
             <div
               className="Button Button-color--blue-1000"
               onClick={() => {
-                setCreateEventModal(true);
+                setCreateEventModal(true)
               }}
             >
               Add New Event
@@ -314,7 +305,7 @@ const MentorDashboard = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MentorDashboard;
+export default MentorDashboard
