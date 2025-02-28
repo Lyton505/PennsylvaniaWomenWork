@@ -23,7 +23,7 @@ export const getMenteesForMentor = async (
       role: "mentee",
     });
 
-    res.status(200).json(mentees);
+    res.status(200).json({ mentees });
   } catch (error) {
     console.error("Error in getAllMenteesForMentor:", error);
     res.status(500).json({ message: "An error occurred", error });
