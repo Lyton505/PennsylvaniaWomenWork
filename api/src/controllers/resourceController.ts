@@ -1,5 +1,18 @@
 import { Request, Response } from "express";
 import { Resource } from "../model/Resource";
+import AWS from "aws-sdk";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const s3 = new AWS.S3();
+const bucketName = process.env.S3_BUCKET_NAME;
 
 export const createResource = async (req: Request, res: Response) => {
   const { name, description, s3id, workshopIDs } = req.body;
@@ -44,5 +57,25 @@ export const getResourcesByWorkshopId = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error retrieving resources:", error);
     res.status(500).json({ message: "Error retrieving resources", error });
+  }
+};
+
+export const generateRetrievalURL = async (req: Request, res: Response) => {
+  try {
+    const { objectId } = req.params;
+    if (!objectId) {
+      return res.status(400).json({ message: "Missing objectId parameter" });
+    }
+
+    const signedUrl = await s3.getSignedUrlPromise("getObject", {
+      Bucket: bucketName,
+      Key: objectId,
+      Expires: 3600,
+    });
+
+    res.status(200).json({ signedUrl });
+  } catch (error) {
+    console.error("Error generating signed URL:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
