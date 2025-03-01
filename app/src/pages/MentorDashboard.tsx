@@ -23,16 +23,6 @@ interface CourseInformationElements {
   courseName: string
 }
 
-interface Event {
-  id: number
-  day: string
-  date: string
-  month: string
-  title: string
-  description: string
-  fullDescription: string
-}
-
 const MentorDashboard = () => {
   const navigate = useNavigate()
   const [mentees, setMentees] = useState<Mentee[]>([])
@@ -44,15 +34,11 @@ const MentorDashboard = () => {
   const [events, setEvents] = useState<EventData[]>([])
   const { user } = useUser()
   const userId = user?._id
-
-  // const {
-  //   user: auth0User,
-  //   isLoading: authLoading,
-  //   error: authError,
-  // } = useAuth0()
-  // const username = auth0User?.email || ""
-
   useEffect(() => {
+    if (!user) {
+      return
+    }
+
     if (!userId || user.role !== "mentor") {
       setError("Only mentors can view mentees.")
       setLoading(false)
@@ -61,7 +47,8 @@ const MentorDashboard = () => {
 
     const fetchMentees = async () => {
       try {
-        const response = await api.get(`/api/mentor/${userId}/mentees`)
+        const encodedUserId = encodeURIComponent(userId) // ✅ URL-safe encoding
+        const response = await api.get(`/api/mentor/${encodedUserId}/mentees`)
         setMentees(
           Array.isArray(response.data.mentees) ? response.data.mentees : []
         )
@@ -73,7 +60,7 @@ const MentorDashboard = () => {
     }
 
     fetchMentees()
-  }, [userId, user?.role])
+  }, [user, userId])
 
   const eventsByMonth: { [key: string]: EventData[] } = events.reduce(
     (acc, event) => {
@@ -93,12 +80,12 @@ const MentorDashboard = () => {
     {} as { [key: string]: EventData[] }
   )
 
-  const menteeGridData = Array.isArray(mentees) // parse mentee data
+  const menteeGridData = Array.isArray(mentees) // Parse mentee data
     ? mentees.map((mentee) => ({
         id: mentee._id,
         menteeName: `${mentee.firstName} ${mentee.lastName}`,
       }))
-    : [] // initialize empty array
+    : [] // Initialize empty array
 
   const courseGridData: CourseInformationElements[] = [
     {
@@ -107,8 +94,8 @@ const MentorDashboard = () => {
     },
   ]
 
-  const handleClick = (id: string) => {
-    navigate("/mentor/mentee-information", { state: { menteeId: id } })
+  const handleClick = (menteeId: string) => {
+    navigate("/mentor/mentee-information", { state: { menteeId } })
   }
 
   const handleClickWorkshop = (id: number) => {

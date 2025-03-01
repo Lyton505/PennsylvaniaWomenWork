@@ -1,49 +1,78 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Icon from "../components/Icon";
+import React, { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import Navbar from "../components/Navbar"
+import Icon from "../components/Icon"
 import Modal from "../components/Modal"
-import { Formik, Form, Field, FieldArray } from "formik";
-import * as yup from "yup";
+import { Formik, Form, Field } from "formik"
+import * as yup from "yup"
+import { api } from "../api"
 
+interface MenteeInfo {
+  _id: string // Mentee's unique ID (MongoDB ObjectID or Auth0 ID)
+  firstName: string
+  lastName: string
+  email: string
+  role: string // e.g., "mentee"
+  mentor?: string // Optional mentor ID assigned to mentee
+  workshops: string[] // List of workshop names
+}
 
 const MenteeInformation = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("Workshops");
-  const [isModal, setIsModal] = useState(false);
+  const navigate = useNavigate()
+  const location = useLocation()
+  const menteeId = location.state?.menteeId
+  const [mentee, setMentee] = useState<MenteeInfo | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState("Workshops")
+  const [isModal, setIsModal] = useState(false)
+
+  useEffect(() => {
+    if (!menteeId) {
+      setError("Mentee ID is missing.")
+      setLoading(false)
+      return
+    }
+
+    const fetchMentee = async () => {
+      try {
+        console.log("Fetching mentee data for ID:", menteeId)
+        const response = await api.get(`/api/mentee/get-mentee/${menteeId}`) // ✅ Fetch mentee data
+        setMentee(response.data)
+      } catch (err) {
+        setError("Failed to load mentee details.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMentee()
+  }, [menteeId])
+
   const initialValues = {
-    courseName: '',
-    startDate: '',
-    description: '',
-  };
+    courseName: "",
+    startDate: "",
+    description: "",
+  }
 
   const validationSchema = yup.object({
-    courseName: yup.string().required('Course name is required'),
-    startDate: yup.date().required('Start date is required'),
-    description: yup.string().required('Course description is required'),
-  });
+    courseName: yup.string().required("Course name is required"),
+    startDate: yup.date().required("Start date is required"),
+    description: yup.string().required("Course description is required"),
+  })
 
-  const handleSubmit = async (values: typeof initialValues, { setSubmitting }: any) => {
+  const handleSubmit = async (
+    values: typeof initialValues,
+    { setSubmitting }: any
+  ) => {
     try {
-      // Add your submission logic here
-      console.log(values);
-      setIsModal(false);
+      console.log(values)
+      setIsModal(false)
     } catch (error) {
-      console.error('Error assigning course:', error);
+      console.error("Error assigning course:", error)
     }
-    setSubmitting(false);
-  };
-
-
-  
-
-  const menteeData = {
-    name: "Jane Doe",
-    role: "Marketing",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. In lectus et et pellentesque a mattis. Sapien morbi congue nulla diam sit non at. Arcu platea semper fermentum at fusce. Eu sem varius molestie elit venenatis. Nulla est sollicitudin.",
-    workshops: ["Resume Prep", "Career Advancement", "Resume Workshop"],
-  };
+    setSubmitting(false)
+  }
 
   return (
     <>
@@ -54,19 +83,23 @@ const MenteeInformation = () => {
         </div>
         <div className="Flex-row--mentee-info">
           <div>
-            <div className="Mentee-name--text">{menteeData.name}</div>
-            <div className="Mentee-role--text">{menteeData.role}</div>
+            <div className="Mentee-name--text">
+              {mentee?.firstName} {mentee?.lastName}
+            </div>
+            <div className="Mentee-role--text">
+              {mentee?.role || "No role assigned"}
+            </div>
           </div>
         </div>
 
         <div className="Flex-row--mentee-description">
           <div className="Mentee-info--text">Information</div>
         </div>
-        <div className="Flex-row--mentee-bio">
+        {/* <div className="Flex-row--mentee-bio">
           <div className="Mentee-description--text">
-            {menteeData.description}
+            {mentee.description || "No description available."}
           </div>
-        </div>
+        </div> */}
 
         <div>
           <div>
@@ -86,14 +119,21 @@ const MenteeInformation = () => {
               <div>
                 <div className="Workshop-header">Current Workshops</div>
                 <div className="List-style--none Margin-left--80">
-                  {menteeData.workshops.map((workshop, index) => (
-                    <div key={index} className="Course-list-element">
-                      <div className="Course-list-bullet" />
-                      {workshop}
-                    </div>
-                  ))}
+                  {mentee?.workshops && mentee.workshops.length > 0 ? (
+                    mentee.workshops.map((workshop: string, index: number) => (
+                      <div key={index} className="Course-list-element">
+                        <div className="Course-list-bullet" />
+                        {workshop}
+                      </div>
+                    ))
+                  ) : (
+                    <p>No workshops assigned.</p>
+                  )}
                 </div>
-                <div className="Button Button-color--teal-1000 Margin-left--80" onClick={() => setIsModal(true)}>
+                <div
+                  className="Button Button-color--teal-1000 Margin-left--80"
+                  onClick={() => setIsModal(true)}
+                >
                   Assign New Courses
                 </div>
               </div>
@@ -122,7 +162,9 @@ const MenteeInformation = () => {
                             placeholder="Enter course name"
                           />
                           {errors.courseName && touched.courseName && (
-                            <div className="Form-error">{errors.courseName}</div>
+                            <div className="Form-error">
+                              {errors.courseName}
+                            </div>
                           )}
                         </div>
 
@@ -148,10 +190,11 @@ const MenteeInformation = () => {
                             name="description"
                             rows="3"
                             placeholder="Enter course description"
-                            style={{ fontFamily: 'inherit' }}
                           />
                           {errors.description && touched.description && (
-                            <div className="Form-error">{errors.description}</div>
+                            <div className="Form-error">
+                              {errors.description}
+                            </div>
                           )}
                         </div>
 
@@ -174,7 +217,7 @@ const MenteeInformation = () => {
                 <div className="Calendar-upcoming">Upcoming</div>
                 <div className="Flex-row-calendar">
                   <div className="Calendar-block">
-                    <div className="Calendar-day">wed</div>
+                    <div className="Calendar-day">Wed</div>
                     <div className="Calendar-date">25</div>
                   </div>
                   <div>
@@ -185,54 +228,11 @@ const MenteeInformation = () => {
                     </div>
                   </div>
                 </div>
-                <div className="Flex-row-calendar">
-                  <div
-                    className="Button Button-color--teal-1000 Width--40"
-                    onClick={() => {
-                      navigate("/create-meeting");
-                    }}
-                  >
-                    Add New Meeting Notes
-                  </div>
-                </div>
-                <div className="Calendar-upcoming">Past</div>
-                <div className="Flex-row-calendar">
-                  <div className="Calendar-block">
-                    <div className="Calendar-day">wed</div>
-                    <div className="Calendar-date">25</div>
-                  </div>
-                  <div>
-                    <div className="Calendar-event">Mock Interview Session</div>
-                    <div className="Calendar-description">
-                      Practice your interview skills with an industry
-                      professional
-                    </div>
-                  </div>
-                </div>
-                <div className="Flex-row-calendar">
-                  <div className="Button Button-color--teal-1000 Width--40">
-                    Add New Meeting Notes
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === "Schedule New" && (
-              <div>
-                <div className="Workshop-header">Schedule A New Meeting</div>
-                <div className="Flex-row-meeting-info">
-                  <div className="Meeting-info--text">Date:</div>
-                </div>
-                <div className="Flex-row-meeting-info">
-                  <div className="Meeting-info--text">Time:</div>
-                </div>
-                <div className="Flex-row-meeting-info">
-                  <div className="Meeting-info--text">Description:</div>
-                </div>
-                <div className="Flex-row-meeting-info--description">
-                  <div className="Button Button-color--teal-1000 Margin-left--80">
-                    Schedule Meeting
-                  </div>
+                <div
+                  className="Button Button-color--teal-1000 Width--40"
+                  onClick={() => navigate("/create-meeting")}
+                >
+                  Add New Meeting Notes
                 </div>
               </div>
             )}
@@ -240,7 +240,7 @@ const MenteeInformation = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MenteeInformation;
+export default MenteeInformation

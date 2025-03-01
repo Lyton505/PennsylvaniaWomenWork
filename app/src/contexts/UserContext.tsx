@@ -31,16 +31,23 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)) // ✅ Restore user from storage
+      setLoading(false)
+    }
+
     const fetchUser = async () => {
+      if (!auth0User?.sub || user) return // ✅ Skip if user already exists
+
       try {
-        if (!auth0User?.sub) return // ✅ Use Auth0 sub as _id
-
         const response = await api.get(
-          `/api/user/current-userid?user_id=${encodeURIComponent(auth0User.sub)}`
+          `/api/user/current-userid/${encodeURIComponent(auth0User.sub)}`
         )
-
         console.log("Fetched user data:", response.data)
         setUser(response.data)
+        localStorage.setItem("user", JSON.stringify(response.data)) // ✅ Store user persistently
       } catch (err) {
         console.error("Error fetching user:", err)
         setError("Failed to fetch user information")

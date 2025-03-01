@@ -240,16 +240,15 @@ export const updateUser = async (req: Request, res: Response) => {
     })
   }
 }
-
 export const getCurrentUserById = async (req: Request, res: Response) => {
-  const { user_id } = req.query // ✅ Match frontend request
+  const { user_id } = req.params // ✅ Get from URL param instead of query
 
   if (!user_id) {
     return res.status(400).json({ message: "User ID is required" })
   }
 
   try {
-    const user = await User.findById(user_id) // ✅ Now searching `_id = sub`
+    const user = await User.findOne({ user_id }) // 🔹 Use `findOne` instead of `findById`
 
     if (!user) {
       return res.status(404).json({ message: "User not found" })
