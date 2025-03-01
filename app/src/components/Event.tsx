@@ -29,62 +29,50 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
       >
         {month}
       </h3>
-      {events.map((event) => (
-        <div
-          key={event.name}
-          onClick={() => onEventClick(event)}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            padding: "10px",
-            borderBottom: "1px solid #ddd",
-            background: "#f9f9f9",
-            borderRadius: "5px",
-            marginBottom: "8px",
-            cursor: "pointer",
-          }}
-        >
-          
+      {events.map((event) => {
+        const eventDate = new Date(event.date);
+        const dayOfMonth = eventDate.getDate();
+        const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
+        
+        return (
           <div
+            key={event.name}
+            onClick={() => onEventClick(event)}
             style={{
-              fontSize: "14px",
-              fontWeight: "bold",
-              color: "#333",
-              minWidth: "90px",
-              textAlign: "left",
+              display: "flex",
+              alignItems: "center",
+              padding: "10px",
+              borderBottom: "1px solid var(--pww-color-gray-200)",
+              background: "var(--pww-color-gray-50)",
+              borderRadius: "5px",
+              marginBottom: "8px",
+              cursor: "pointer",
             }}
           >
-            {new Date(event.date).toLocaleDateString()}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                minWidth: "60px",
+              }}
+            >
+              <div style={{ fontSize: "24px", fontWeight: "bold", color: "var(--pww-color-dark-1000)" }}>
+                {dayOfMonth}
+              </div>
+              <div style={{ fontSize: "14px", color: "var(--pww-color-gray-1000)", textTransform: "uppercase" }}>
+                {dayOfWeek}
+              </div>
+            </div>
+            <div style={{ flexGrow: 1, paddingLeft: "20px" }}>
+              <span style={{ fontSize: "16px", fontWeight: "bold" }}>
+                {event.name}
+              </span>
+            </div>
           </div>
-          <div style={{ flexGrow: 1, paddingLeft: "10px" }}>
-            <span style={{ fontSize: "16px", fontWeight: "bold" }}>
-              {event.name}
-            </span>
-
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
-    // <div className="Event">
-    //   <div className="Event-month">{month}</div>
-    //   {events.map((event) => (
-    //     <div
-    //       className="Event-item"
-    //       key={event.id}
-    //       onClick={() => onEventClick(event)}
-    //     >
-    //       <div className="Flex-column--centered Margin-right--30">
-    //         <div>{event.day}</div>
-    //         <div className="Text-fontSize--30">{event.date}</div>
-    //       </div>
-    //       <div className="Flex-column Text-bold">
-    //         <span className="Margin-bottom--4">{event.title}</span>
-    //         <div className="Text-fontSize--14">{event.description}</div>
-    //       </div>
-    //     </div>
-    //   ))}
-
-    // </div>
   )
 }
 
