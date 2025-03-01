@@ -13,12 +13,13 @@ document.title = "PWW";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
 );
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <Auth0ProviderWithNavigate>
-        <Toaster />
         <UserProvider>
+          <Toaster />
           <App />
         </UserProvider>
       </Auth0ProviderWithNavigate>

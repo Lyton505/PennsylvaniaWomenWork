@@ -24,8 +24,7 @@ router.post("/add-meeting", addMeeting);
 // Route to get current user information
 router.get("/current-user", getCurrentUser);
 
-// Route to get current user information by ID
-router.get("/current-userid", getCurrentUserById);
+router.get("/current-userid/:user_id", getCurrentUserById);
 
 // Route to change a user's information
 router.put("/:userId", updateUser);

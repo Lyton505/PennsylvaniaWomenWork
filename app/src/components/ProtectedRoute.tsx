@@ -10,15 +10,15 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
-  const { isAuthenticated } = useAuth0();
-  const { user, loading } = useUser();
+  const { isAuthenticated, isLoading: auth0Loading } = useAuth0();
+  const { user, loading: userLoading } = useUser(); // ✅ Get user loading state
+
+  if (auth0Loading || userLoading) {
+    return <LoginLoading />; // ✅ Prevents flickering
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
-  }
-
-  if (loading) {
-    return <LoginLoading />;
   }
 
   if (user && !allowedRoles.includes(user.role)) {

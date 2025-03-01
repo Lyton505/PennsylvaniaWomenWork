@@ -13,10 +13,10 @@ import LoginRedirect from "./pages/LoginRedirect";
 import Logout from "./pages/Logout";
 import Profile from "./pages/Profile";
 import SampleMenteeInvite from "./pages/MenteeInvite";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0, User } from "@auth0/auth0-react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { tier1Roles, tier2Roles, tier3Roles } from "./utils/roles";
-import { UserProvider, useUser } from "./contexts/UserContext";
+import { useUser } from "./contexts/UserContext";
 
 function App(): ReactElement {
   const { isAuthenticated, user: Auth0User } = useAuth0();

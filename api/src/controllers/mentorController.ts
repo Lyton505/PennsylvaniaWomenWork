@@ -8,24 +8,26 @@ export const getMenteesForMentor = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { mentorId } = req.params;
+    const { mentorId } = req.params; // Auth0 ID (e.g., "auth0|67c25886597da31e8523d039")
 
-    const mentor = await User.findById(mentorId);
-    if (!mentor || mentor.role !== "mentor") {
-      res.status(404).json({ message: "Mentor not found or invalid role" });
-      return;
-    }
+    console.log("Searching for mentees with mentor_id:", mentorId);
 
-    const menteeIds = mentor.menteeInfo;
-
+    // Find all users where mentor_id matches the given mentorId
     const mentees = await User.find({
-      _id: { $in: menteeIds },
+      mentor_id: mentorId, // 🔹 Match mentor_id (string) instead of _id
       role: "mentee",
     });
 
+    if (!mentees || mentees.length === 0) {
+      console.log("No mentees found for mentor:", mentorId);
+      res.status(404).json({ message: "No mentees found for this mentor." });
+      return;
+    }
+
+    console.log("Mentees found:", mentees.length);
     res.status(200).json({ mentees });
   } catch (error) {
-    console.error("Error in getAllMenteesForMentor:", error);
+    console.error("Error in getMenteesForMentor:", error);
     res.status(500).json({ message: "An error occurred", error });
   }
 };

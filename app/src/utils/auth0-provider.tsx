@@ -14,8 +14,9 @@ export const Auth0ProviderWithNavigate = ({
   const redirectUri = process.env.REACT_APP_AUTH0_CALLBACK_URL;
 
   const onRedirectCallback = (appState: any) => {
-    const returnTo = appState?.returnTo || window.location.pathname;
-    navigate(returnTo);
+    if (appState?.returnTo) {
+      navigate(appState.returnTo); // ✅ Navigate only if needed
+    }
   };
 
   if (!(domain && clientId && redirectUri)) {

@@ -37,3 +37,26 @@ export const addWorkshopToMentee = async (req: Request, res: Response) => {
     res.status(500).send((error as Error).toString());
   }
 };
+
+export const getMenteeById = async (req: Request, res: Response) => {
+  try {
+    const { menteeId } = req.params;
+
+    if (!menteeId) {
+      return res.status(400).json({ message: "Mentee ID is required" });
+    }
+
+    console.log("Fetching mentee with ID:", menteeId);
+
+    const mentee = await User.findOne({ _id: menteeId });
+
+    if (!mentee) {
+      return res.status(404).json({ message: "Mentee not found" });
+    }
+
+    res.status(200).json(mentee);
+  } catch (error) {
+    console.error("Error retrieving mentee:", error);
+    res.status(500).json({ message: "Error retrieving mentee", error });
+  }
+};

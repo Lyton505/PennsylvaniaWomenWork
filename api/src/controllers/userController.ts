@@ -7,6 +7,7 @@ import { error } from "console";
 
 export const createUser = async (req: Request, res: Response) => {
   const {
+    sub, // Auth0 user ID
     firstName,
     lastName,
     username,
@@ -19,31 +20,40 @@ export const createUser = async (req: Request, res: Response) => {
     meetings,
   } = req.body;
 
-  if (!firstName || !lastName || !username || !email || !role) {
+  if (!sub || !firstName || !lastName || !username || !email || !role) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  // Create a new user based on role
-  const newUser = new User({
-    firstName,
-    lastName,
-    username,
-    email,
-    role,
-    workshopIDs: role === "mentor" ? workshopIDs : undefined,
-    menteeInfo: role === "mentor" ? menteeInfo : undefined,
-    meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
-    mentorData: role === "mentee" ? mentorData : undefined,
-    meetings: meetings || [],
-  });
-
   try {
+    // Check if the user already exists
+    let existingUser = await User.findById(sub);
+    if (existingUser) {
+      return res
+        .status(409)
+        .json({ message: "User already exists", user: existingUser });
+    }
+
+    const newUser = new User({
+      _id: sub, // ✅ Store Auth0 sub as `_id`
+      firstName,
+      lastName,
+      username,
+      email,
+      role,
+      workshopIDs: role === "mentor" ? workshopIDs : undefined,
+      menteeInfo: role === "mentor" ? menteeInfo : undefined,
+      meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
+      mentorData: role === "mentee" ? mentorData : undefined,
+      meetings: meetings || [],
+    });
+
     const savedUser = await newUser.save();
     res
       .status(201)
       .json({ message: "User created successfully", user: savedUser });
   } catch (error) {
-    res.status(400).json({ message: "Failed to create user", error });
+    console.error("Error creating user:", error);
+    res.status(500).json({ message: "Failed to create user", error });
   }
 };
 
@@ -169,9 +179,11 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      _id: user._id.toString(), // Include _id in the response
+      _id: user._id.toString(), // Convert MongoDB ObjectId to string
       username: user.username,
       role: user.role,
+      firstName: user.firstName, // Include firstName
+      lastName: user.lastName, // Include lastName
     });
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -230,26 +242,21 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   }
 };
-
 export const getCurrentUserById = async (req: Request, res: Response) => {
-  const { userid } = req.query;
+  const { user_id } = req.params; // ✅ Get from URL param instead of query
 
-  if (!userid) {
+  if (!user_id) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
   try {
-    const user = await User.findOne({ _id: userid });
+    const user = await User.findOne({ user_id }); // 🔹 Use `findOne` instead of `findById`
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({
-      username: user.username,
-      role: user.role,
-      userid: user._id,
-    });
+    res.status(200).json(user);
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ message: "Error fetching user", error });
