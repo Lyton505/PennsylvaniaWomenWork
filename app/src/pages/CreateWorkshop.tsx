@@ -41,7 +41,7 @@ const CreateWorkshop = () => {
           // Get pre-signed URL for the file
           console.log("File data:", fileData.file.name, fileData.file.type)
           const response = await api.get(
-            `/workshop/generate-presigned-url?fileName=${fileData.file.name}`
+            `/api/workshop/generate-presigned-url/${encodeURIComponent(fileData.file.name)}`
           )
 
           const { url, objectKey } = response.data
