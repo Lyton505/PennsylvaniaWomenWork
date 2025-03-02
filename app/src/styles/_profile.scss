@@ -1,42 +1,44 @@
 .Profile {
-  padding: 30px 30px;
-  box-shadow: var(--pww-shadow-dark);
-  background-color: var(--pww-color-light-1000);
-  border-radius: var(--pww-border-radius-8);
-  border: 1px solid var(--pww-color-gray-200);
-  margin-right: 80px;
-  margin-left: 80px;
-  margin-top: 80px;
-  margin-bottom: 80px;
-  min-height: calc(100vh - 300px);
-}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-.Profile-username--text {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--pww-color-gray-1000);
-  margin-bottom: 16px;
-  margin-top: 40px;
-  text-align: left;
-}
+  &-Block {
+    width: 40%;
+    margin-top: 56px;
+  }
 
-.Profile-separator {
-  color: var(--pww-color-gray-400);
-  margin: 0 6px;
-  font-weight: 400;
-}
+  &-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
 
-.Profile-role--text {
-  font-size: 28px;
-  color: var(--pww-color-gray-500);
-  font-weight: 400;
-  display: inline;
-}
+    &-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--pww-color-blue-1000);
+      box-shadow: var(--pww-shadow-dark);
+    }
+  }
 
-.Profile-email--text {
-  font-size: 16px;
-  color: var(--pww-color-teal-800);
-  margin-bottom: 6px;
-  margin-top: 6px;
-  text-align: left;
+  &-field {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid var(--pww-color-gray-100);
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: var(--pww-color-gray-800);
+      margin-right: 10px;
+      font-weight: 1000;
+    }
+  }
 }

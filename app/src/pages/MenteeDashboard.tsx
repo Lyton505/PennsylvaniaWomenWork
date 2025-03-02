@@ -36,9 +36,7 @@ const MenteeDashboard = () => {
             title: event.name,
             description: event.description,
             date: event.date,
-            month: new Date(event.date).toLocaleString("default", {
-              month: "long",
-            }),
+
           }))
         )
 
@@ -60,23 +58,46 @@ const MenteeDashboard = () => {
     navigate(`/mentee/course-information/${id}`)
   }
 
-  const eventsByMonth = events.reduce<{ [key: string]: EventData[] }>(
+  const eventsByMonth: { [key: string]: EventData[] } = events
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort events chronologically
+  .reduce(
     (acc, event) => {
-      if (!acc[event.month]) acc[event.month] = []
-      acc[event.month].push(event)
+      const eventDate = new Date(event.date)
+      const month = eventDate.toLocaleString("default", { month: "long" })
+
+      if (!acc[month]) {
+        acc[month] = []
+      }
+      acc[month].push({
+        ...event,
+        formattedDate: eventDate.toDateString(),
+      })
+
       return acc
     },
-    {}
+    {} as { [key: string]: EventData[] }
   )
+
+  const handleEventClick = (event: EventData) => {
+    setSelectedEvent(event)
+  }
+
+
 
   return (
     <>
       <Navbar />
       {selectedEvent && (
         <Modal
-          header={selectedEvent.title}
-          subheader={`${selectedEvent.month} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
-          body={<>{selectedEvent.description}</>}
+          header={selectedEvent.name}
+          subheader={`${new Date(selectedEvent.date).toLocaleString('default', { month: 'long' })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          body={<>{selectedEvent.description}
+            <div>
+              <a href={selectedEvent.calendarLink} target="_blank" rel="noopener noreferrer">
+                Add to Calendar
+              </a>
+            </div>
+          </>}
           action={() => setSelectedEvent(null)}
         />
       )}
@@ -111,54 +132,12 @@ const MenteeDashboard = () => {
             <div className="Block-header">Upcoming Events</div>
             <div className="Block-subtitle">Select an event to register.</div>
             {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <div key={month} style={{ marginBottom: "20px" }}>
-                <h3
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    marginBottom: "10px",
-                  }}
-                >
-                  {month}
-                </h3>
-                {monthEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    onClick={() => setSelectedEvent(event)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "10px",
-                      borderBottom: "1px solid #ddd",
-                      background: "#f9f9f9",
-                      borderRadius: "5px",
-                      marginBottom: "8px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        color: "#333",
-                        minWidth: "90px",
-                        textAlign: "left",
-                      }}
-                    >
-                      {new Date(event.date).toLocaleDateString()}
-                    </div>
-                    <div style={{ flexGrow: 1, paddingLeft: "10px" }}>
-                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>
-                        {event.title}
-                      </span>
-                      {" - "}
-                      <span style={{ fontSize: "14px", color: "#666" }}>
-                        {event.description}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <Event
+                key={month}
+                month={month}
+                events={monthEvents}
+                onEventClick={handleEventClick}
+              />
             ))}
           </div>
         </div>
