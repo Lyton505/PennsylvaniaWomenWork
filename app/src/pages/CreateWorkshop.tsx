@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar"
 import { api } from "../api"
 import Modal from "../components/Modal"
 import AsyncSubmit from "../components/AsyncSubmit"
+import { useNavigate } from "react-router-dom"
 
 const initialValues = {
   name: "",
@@ -29,6 +30,8 @@ const CreateWorkshop = () => {
   const [fileDetails, setFileDetails] = useState<
     { title: string; desc: string; s3id: string }[]
   >([])
+
+  const navigate = useNavigate()
 
   const handleSubmit = async (
     values: any,
@@ -81,6 +84,9 @@ const CreateWorkshop = () => {
       setFileDetails([]) // Clear file details
       setSelectedFiles([])
       setFileAdded(false)
+      // close modal
+      setIsModal(false)
+      navigate("/workshops")
     } catch (error) {
       console.error("Error creating workshop:", error)
       alert("Failed to create workshop. Please try again.")

@@ -44,7 +44,7 @@ const WorkshopInformation = () => {
           <div className="Block-header Flex-row">
             Workshop Information
             <div className="Button Button-color--blue-1000 Margin-left--auto">
-              Add New Files {workshopId}
+              Add New Files
             </div>
           </div>
           <div className="Block-subtitle">Add New Files</div>
