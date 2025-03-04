@@ -1,0 +1,29 @@
+{
+    "name": "pennsylvania-women-work",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "api",
+        "app"
+    ],
+    "scripts": {
+        "start:api": "cd api && npm start",
+        "start:app": "cd app && npm start",
+        "start:prod:api": "cd api && npm start:prod",
+        "start:prod:app": "cd app && npm start:prod",
+        "dev": "concurrently \"npm run start:api\" \"npm run start:app\"",
+        "install:all": "npm install && npm run install:api && npm run install:app",
+        "install:api": "cd api && npm install",
+        "install:app": "cd app && npm install",
+        "build": "npm run build:api && npm run build:app",
+        "build:api": "cd api && npm run build",
+        "build:app": "cd app && npm run build",
+        "start:prod": "npm run build && concurrently \"npm run start:prod:api\" \"echo \"==App starts in 15==\" && sleep 15 && npm run start:prod:app\""
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.0"
+    },
+    "dependencies": {
+        "serve": "^14.2.4"
+    }
+}
