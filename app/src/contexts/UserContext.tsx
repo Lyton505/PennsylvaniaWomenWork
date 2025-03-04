@@ -43,7 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       try {
         const response = await api.get(
-          `/api/user/current-userid/${encodeURIComponent(auth0User.sub)}`
+          `/api/user/current-user?username=${auth0User.email}`
         )
         console.log("Fetched user data:", response.data)
         setUser(response.data)
