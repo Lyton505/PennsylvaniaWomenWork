@@ -11,7 +11,7 @@
         "start:dev:app": "cd app && npm start",
         "start:prod:api": "cd api && npm start:prod",
         "start:prod:app": "cd app && npm start:prod",
-        "start:dev": "concurrently \"npm run start:dev:api\" \"npm run start:dev:app\"",
+        "start:dev": "concurrently \"npm run start:dev:api\" \"sleep 15 && npm run start:dev:app\"",
         "start:prod": "npm run build && concurrently \"npm run start:prod:api\" \"echo \"==App starts in 15==\" && sleep 15 && npm run start:prod:app\"",
         "build": "npm run build:api && npm run build:app",
         "build:api": "cd api && npm run build",
