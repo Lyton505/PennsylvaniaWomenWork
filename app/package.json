@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:prod": "ls -la build && serve -s build",
+    "start:prod": "serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
