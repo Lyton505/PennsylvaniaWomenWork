@@ -24,4 +24,6 @@ app.use("/api", router);
 app.use("/api/workshop", routes.workshop);
 app.use("/api/resource", routes.resource);
 
-app.listen(process.env.PORT || 8000, () => console.log("Server running..."));
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
