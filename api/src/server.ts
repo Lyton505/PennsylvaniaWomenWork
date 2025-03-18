@@ -12,7 +12,9 @@ import router from "./routes";
 var cors = require("cors");
 
 const app = express();
-app.use(cors({ origin: "http://localhost:3000" })); // Connect to the frontend PORT 3000
+app.use(
+  cors({ origin: "https://pennsylvaniawomenwork-staging.up.railway.app" })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
