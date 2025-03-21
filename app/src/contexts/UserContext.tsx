@@ -36,18 +36,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     if (storedUser) {
       setUser(JSON.parse(storedUser)) // ✅ Restore user from storage
       setLoading(false)
+      return
     }
 
     const fetchUser = async () => {
       if (!auth0User?.sub || user) return // ✅ Skip if user already exists
 
       try {
+        // Fetch the user based on `user_id` instead of `_id`
         const response = await api.get(
-          `/api/user/current-userid/${encodeURIComponent(auth0User.sub)}`
+          `/api/user/by-auth0-id/${encodeURIComponent(auth0User.sub)}`
         )
+
         console.log("Fetched user data:", response.data)
-        setUser(response.data)
-        localStorage.setItem("user", JSON.stringify(response.data)) // ✅ Store user persistently
+
+        if (response.data && response.data._id) {
+          setUser(response.data)
+          localStorage.setItem("user", JSON.stringify(response.data)) // ✅ Store user persistently
+        } else {
+          setError("User not found")
+        }
       } catch (err) {
         console.error("Error fetching user:", err)
         setError("Failed to fetch user information")
