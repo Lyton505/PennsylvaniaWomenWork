@@ -45,7 +45,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       try {
         // ✅ Fetch user by `user_id` (Auth0 ID) instead of `_id`
         const response = await api.get(
-          `/api/user/by-auth0-id/${encodeURIComponent(auth0User.sub)}`
+          `/api/user/current-userid/${encodeURIComponent(auth0User.sub)}`
         )
 
         console.log("Fetched user data:", response.data)
