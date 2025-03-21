@@ -34,7 +34,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const storedUser = localStorage.getItem("user")
 
     if (storedUser) {
-      setUser(JSON.parse(storedUser)) // ✅ Restore user from storage
+      setUser(JSON.parse(storedUser)) // ✅ Restore user from localStorage
       setLoading(false)
       return
     }
@@ -43,7 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (!auth0User?.sub || user) return // ✅ Skip if user already exists
 
       try {
-        // Fetch the user based on `user_id` instead of `_id`
+        // ✅ Fetch user by `user_id` (Auth0 ID) instead of `_id`
         const response = await api.get(
           `/api/user/by-auth0-id/${encodeURIComponent(auth0User.sub)}`
         )
