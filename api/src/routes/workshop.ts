@@ -4,6 +4,7 @@ import {
   getWorkshop,
   getWorkshopsByUserId,
   generatePresignedUrl,
+  updateWorkshop
 } from "../controllers/workshopController"
 
 const router = express.Router()
@@ -19,5 +20,7 @@ router.get("/user/:userId", getWorkshopsByUserId)
 
 // Route to generate a presigned URL for S3
 router.get("/generate-presigned-url/:file_name", generatePresignedUrl)
+
+router.put("/update-workshop/:id", updateWorkshop)
 
 export default router

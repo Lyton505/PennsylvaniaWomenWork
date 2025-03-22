@@ -98,3 +98,32 @@ export const getWorkshopsByUserId = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error retrieving workshops", error })
   }
 }
+
+export const updateWorkshop = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const { name, description } = req.body
+
+    if (!name || !description) {
+      return res.status(400).json({ message: "Missing required fields" })
+    }
+
+    const updatedWorkshop = await Workshop.findByIdAndUpdate(
+      id,
+      { name, description },
+      { new: true }
+    )
+
+    if (!updatedWorkshop) {
+      return res.status(404).json({ message: "Workshop not found" })
+    }
+
+    res.status(200).json({
+      message: "Workshop updated successfully",
+      workshop: updatedWorkshop,
+    })
+  } catch (error) {
+    console.error("Error updating workshop:", error)
+    res.status(500).json({ message: "Failed to update workshop", error })
+  }
+}
