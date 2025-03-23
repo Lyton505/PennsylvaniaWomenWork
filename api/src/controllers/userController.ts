@@ -240,7 +240,9 @@ export const updateUser = async (req: Request, res: Response) => {
 
 export const getCurrentUserById = async (req: Request, res: Response) => {
   try {
-    const user = await User.findOne({ sub: req.params.sub })
+    const sub = decodeURIComponent(req.params.auth_id)
+    console.log("Searching for user with sub:", sub)
+    const user = await User.findOne({ auth_id: sub })
     if (!user) return res.status(404).json({ error: "User not found" })
     res.json(user)
   } catch (err) {

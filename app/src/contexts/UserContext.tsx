@@ -42,6 +42,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const fetchUser = async () => {
       if (!auth0User?.sub || user) return
 
+      console.log("Fetching user data for Auth0 user:", auth0User)
+
       try {
         const response = await api.get(
           `/api/user/current-userid/${encodeURIComponent(auth0User.sub)}`
