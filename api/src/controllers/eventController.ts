@@ -4,12 +4,14 @@ import mongoose from "mongoose";
 
 export const createEvent = async (req: Request, res: Response) => {
   try {
-    const { name, description, date, userIds, calendarLink } = req.body;
+    const { name, description, date, startTime, endTime, userIds, calendarLink } = req.body;
 
     const newEvent = new Event({
       name,
       description,
       date,
+      startTime,
+      endTime,
       users: userIds,
       calendarLink,
     });

@@ -34,8 +34,11 @@ const MenteeDashboard = () => {
           eventsResponse.data.map((event: any) => ({
             id: event._id,
             title: event.name,
+            startTime: event.startTime,
+            endTime: event.endTime,
             description: event.description,
             date: event.date,
+            calendarLink: event.calendarLink
 
           }))
         )
@@ -59,10 +62,10 @@ const MenteeDashboard = () => {
   }
 
   const eventsByMonth: { [key: string]: EventData[] } = events
-  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort events chronologically
+  .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()) // Sort events chronologically
   .reduce(
     (acc, event) => {
-      const eventDate = new Date(event.date)
+      const eventDate = new Date(event.startTime)
       const month = eventDate.toLocaleString("default", { month: "long" })
 
       if (!acc[month]) {
@@ -90,7 +93,7 @@ const MenteeDashboard = () => {
       {selectedEvent && (
         <Modal
           header={selectedEvent.name}
-          subheader={`${new Date(selectedEvent.date).toLocaleString('default', { month: 'long' })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          subheader={`${new Date(selectedEvent.date).toLocaleString('default', { month: 'long' })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()} ${new Date(selectedEvent.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} - ${new Date(selectedEvent.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`}
           body={<>{selectedEvent.description}
             <div>
               <a href={selectedEvent.calendarLink} target="_blank" rel="noopener noreferrer">
