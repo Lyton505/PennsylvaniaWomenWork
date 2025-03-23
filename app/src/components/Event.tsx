@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 // export interface EventData {
 //   userIds: string[]
@@ -11,20 +11,20 @@ import React from "react"
 //   calendarLink?: string
 // }
 export interface EventData {
-  userIds: string[]
-  date: string
-  startTime: string
-  endTime: string
-  name: string
-  description: string
-  formattedDate?: string
-  calendarLink?: string
+  userIds: string[];
+  date: string;
+  startTime: string;
+  endTime: string;
+  name: string;
+  description: string;
+  formattedDate?: string;
+  calendarLink?: string;
 }
 
 interface EventProps {
-  month: string
-  events: EventData[]
-  onEventClick: (event: EventData) => void
+  month: string;
+  events: EventData[];
+  onEventClick: (event: EventData) => void;
 }
 
 const Event = ({ month, events, onEventClick }: EventProps) => {
@@ -40,19 +40,21 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
       >
         {month}
       </h3>
-      <div 
+      <div
         style={{
           height: "1px",
           width: "60%",
           backgroundColor: "var(--pww-color-gray-300)",
-          marginBottom: "15px"
+          marginBottom: "15px",
         }}
       />
       {events.map((event) => {
         const eventDate = new Date(event.date);
         const dayOfMonth = eventDate.getDate();
-        const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
-        
+        const dayOfWeek = eventDate.toLocaleDateString("en-US", {
+          weekday: "short",
+        });
+
         return (
           <div
             key={event.name}
@@ -72,24 +74,40 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
                 minWidth: "60px",
               }}
             >
-              <div style={{ fontSize: "16px", color: "var(--pww-color-gray-600)", textTransform: "lowercase" }}>
+              <div
+                style={{
+                  fontSize: "16px",
+                  color: "var(--pww-color-gray-600)",
+                  textTransform: "lowercase",
+                }}
+              >
                 {dayOfWeek}
               </div>
-              <div style={{ fontSize: "30px", color: "var(--pww-color-gray-800)" }}>
+              <div
+                style={{ fontSize: "30px", color: "var(--pww-color-gray-800)" }}
+              >
                 {dayOfMonth}
               </div>
             </div>
             <div style={{ flexGrow: 1, paddingLeft: "20px" }}>
-              <div style={{ display: "flex", flexDirection: "column"}}>
-                <span style={{ fontSize: "16px", fontWeight: "bold", color: "var(--pww-color-gray-1000)" }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    color: "var(--pww-color-gray-1000)",
+                  }}
+                >
                   {event.name}
                 </span>
-                <span style={{ 
-                  fontSize: "14px", 
+                <span
+                  style={{
+                    fontSize: "14px",
                     color: "var(--pww-color-gray-800)",
-                    marginTop: "2px"
-                  }}>
-                    {event.description}
+                    marginTop: "2px",
+                  }}
+                >
+                  {event.description}
                 </span>
               </div>
             </div>
@@ -97,7 +115,7 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
         );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default Event
+export default Event;

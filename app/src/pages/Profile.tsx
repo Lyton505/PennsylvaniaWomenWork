@@ -1,12 +1,12 @@
-import React from "react"
-import Navbar from "../components/Navbar"
-import { useUser } from "../contexts/UserContext"
-import { useAuth0 } from "@auth0/auth0-react"
-import "../styles/_profile.scss"
+import React from "react";
+import Navbar from "../components/Navbar";
+import { useUser } from "../contexts/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
+import "../styles/_profile.scss";
 
 const Profile = () => {
-  const { user: auth0User, logout } = useAuth0()
-  const { user, error, loading } = useUser()
+  const { user: auth0User, logout } = useAuth0();
+  const { user, error, loading } = useUser();
 
   return (
     <>
@@ -64,7 +64,7 @@ const Profile = () => {
               <div
                 className="Button Button-color--blue-1000 Margin-top--20"
                 onClick={() => {
-                  logout()
+                  logout();
                 }}
               >
                 Log Out
@@ -76,7 +76,7 @@ const Profile = () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

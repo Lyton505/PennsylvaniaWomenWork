@@ -12,7 +12,7 @@ interface CreateMeetingFormValues {
   startTime: string;
   endTime: string;
   calendarLink: string;
-  inviteeIds: string[];  
+  inviteeIds: string[];
 }
 const initialValues: CreateMeetingFormValues = {
   username: "",
@@ -34,11 +34,17 @@ const validationSchema = Yup.object().shape({
   startTime: Yup.string().required("Start time is required"),
   endTime: Yup.string()
     .required("End time is required")
-    .test("is-after-start", "End time must be after start time", function (endTime) {
-      const { startTime } = this.parent;
-      return !startTime || !endTime || startTime < endTime;
-    }),
-  calendarLink: Yup.string().url("Must be a valid URL").required("Calendar link is required"),
+    .test(
+      "is-after-start",
+      "End time must be after start time",
+      function (endTime) {
+        const { startTime } = this.parent;
+        return !startTime || !endTime || startTime < endTime;
+      },
+    ),
+  calendarLink: Yup.string()
+    .url("Must be a valid URL")
+    .required("Calendar link is required"),
   //menteeIds: Yup.array().min(1, "Select at least one mentee"),
 });
 
@@ -50,12 +56,12 @@ const CreateMeeting = () => {
     setSubmitting(true);
     try {
       const baseDate = new Date(values.date);
-      
-      const [startHours, startMinutes] = values.startTime.split(':');
+
+      const [startHours, startMinutes] = values.startTime.split(":");
       const startDateTime = new Date(baseDate);
       startDateTime.setHours(parseInt(startHours), parseInt(startMinutes));
-      
-      const [endHours, endMinutes] = values.endTime.split(':');
+
+      const [endHours, endMinutes] = values.endTime.split(":");
       const endDateTime = new Date(baseDate);
       endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
 
@@ -121,7 +127,7 @@ const CreateMeeting = () => {
                       className="Form-input-box"
                       placeholder="Enter meeting notes"
                       style={{
-                        fontFamily: 'inherit'
+                        fontFamily: "inherit",
                       }}
                     />
                     {errors.notes && touched.notes && (
@@ -131,11 +137,7 @@ const CreateMeeting = () => {
 
                   <div className="Form-group">
                     <label htmlFor="date">Date</label>
-                    <Field 
-                      type="date" 
-                      name="date" 
-                      className="Form-input-box" 
-                    />
+                    <Field type="date" name="date" className="Form-input-box" />
                     {errors.date && touched.date && (
                       <div className="Form-error">{errors.date}</div>
                     )}
@@ -155,10 +157,10 @@ const CreateMeeting = () => {
 
                   <div className="Form-group">
                     <label htmlFor="endTime">End Time</label>
-                    <Field 
-                      type="time" 
-                      name="endTime" 
-                      className="Form-input-box" 
+                    <Field
+                      type="time"
+                      name="endTime"
+                      className="Form-input-box"
                     />
                     {errors.endTime && touched.endTime && (
                       <div className="Form-error">{errors.endTime}</div>
@@ -186,8 +188,8 @@ const CreateMeeting = () => {
                       className="Form-input-box"
                       multiple={true}
                       style={{
-                        fontFamily: 'inherit',
-                        color: 'var(--color-grey-1000)',
+                        fontFamily: "inherit",
+                        color: "var(--color-grey-1000)",
                       }}
                     >
                       <option value="1">Mentee 1</option>
@@ -220,4 +222,3 @@ const CreateMeeting = () => {
 };
 
 export default CreateMeeting;
-
