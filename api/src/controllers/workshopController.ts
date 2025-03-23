@@ -98,3 +98,18 @@ export const getWorkshopsByUserId = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error retrieving workshops", error });
   }
 };
+
+// get all workshops
+export const getAllWorkshops = async (req: Request, res: Response) => {
+  try {
+    const workshops = await Workshop.find();
+
+    if (workshops.length === 0) {
+      return res.status(404).json({ message: "No workshops found" });
+    }
+
+    res.status(200).json(workshops);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving workshops", error });
+  }
+};

@@ -5,6 +5,7 @@ import docx from "../assets/docx.png";
 import video from "../assets/video.png";
 import Icon from "../components/Icon";
 import { useNavigate, useLocation } from "react-router-dom";
+import { api } from "../api";
 
 // 🔹 Define Fake Data
 const fakeFiles = [
@@ -28,10 +29,36 @@ const fakeFiles = [
   },
 ];
 
+interface Workshop {
+  _id: string;
+  name: string;
+  description: string;
+  s3id: string;
+  createdAt: string;
+  mentor: string;
+  mentee: string;
+}
+
 const WorkshopInformation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const workshopId = location.state?.workshopId;
+  const [workshop, setWorkshop] = React.useState<Workshop | null>(null);
+
+  // get workshop information by id
+  const getWorkshop = async () => {
+    try {
+      const response = await api.get(`/api/workshop/${workshopId}`);
+      console.log("Workshop:", response.data);
+      setWorkshop(response.data);
+    } catch (error) {
+      console.error("Error getting workshop:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    getWorkshop();
+  }, []);
 
   return (
     <>
@@ -42,12 +69,12 @@ const WorkshopInformation = () => {
             <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
           </div>
           <div className="Block-header Flex-row">
-            Workshop Information
+            {workshop?.name}
             <div className="Button Button-color--blue-1000 Margin-left--auto">
               Add New Files
             </div>
           </div>
-          <div className="Block-subtitle">Add New Files</div>
+          <div className="Block-subtitle">{workshop?.description}</div>
 
           <div className="row gx-3 gy-3">
             {fakeFiles.map((file) => (
