@@ -1,20 +1,20 @@
-import React from "react"
+import React from "react";
 
 export interface EventData {
-  userIds: string[]
+  userIds: string[];
   //day: string
-  date: string
+  date: string;
   //month: string
-  name: string
-  description: string
-  formattedDate?: string
-  calendarLink?: string
+  name: string;
+  description: string;
+  formattedDate?: string;
+  calendarLink?: string;
 }
 
 interface EventProps {
-  month: string
-  events: EventData[]
-  onEventClick: (event: EventData) => void
+  month: string;
+  events: EventData[];
+  onEventClick: (event: EventData) => void;
 }
 
 const Event = ({ month, events, onEventClick }: EventProps) => {
@@ -32,8 +32,10 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
       {events.map((event) => {
         const eventDate = new Date(event.date);
         const dayOfMonth = eventDate.getDate();
-        const dayOfWeek = eventDate.toLocaleDateString('en-US', { weekday: 'short' });
-        
+        const dayOfWeek = eventDate.toLocaleDateString("en-US", {
+          weekday: "short",
+        });
+
         return (
           <div
             key={event.name}
@@ -57,10 +59,22 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
                 minWidth: "60px",
               }}
             >
-              <div style={{ fontSize: "24px", fontWeight: "bold", color: "var(--pww-color-dark-1000)" }}>
+              <div
+                style={{
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "var(--pww-color-dark-1000)",
+                }}
+              >
                 {dayOfMonth}
               </div>
-              <div style={{ fontSize: "14px", color: "var(--pww-color-gray-1000)", textTransform: "uppercase" }}>
+              <div
+                style={{
+                  fontSize: "14px",
+                  color: "var(--pww-color-gray-1000)",
+                  textTransform: "uppercase",
+                }}
+              >
                 {dayOfWeek}
               </div>
             </div>
@@ -73,7 +87,7 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
         );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default Event
+export default Event;

@@ -1,78 +1,78 @@
-import React, { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import Icon from "../components/Icon"
-import Modal from "../components/Modal"
-import { Formik, Form, Field } from "formik"
-import * as yup from "yup"
-import { api } from "../api"
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Icon from "../components/Icon";
+import Modal from "../components/Modal";
+import { Formik, Form, Field } from "formik";
+import * as yup from "yup";
+import { api } from "../api";
 
 interface MenteeInfo {
-  _id: string // Mentee's unique ID (MongoDB ObjectID or Auth0 ID)
-  firstName: string
-  lastName: string
-  email: string
-  role: string // e.g., "mentee"
-  mentor?: string // Optional mentor ID assigned to mentee
-  workshops: string[] // List of workshop names
+  _id: string; // Mentee's unique ID (MongoDB ObjectID or Auth0 ID)
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string; // e.g., "mentee"
+  mentor?: string; // Optional mentor ID assigned to mentee
+  workshops: string[]; // List of workshop names
 }
 
 const MenteeInformation = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const menteeId = location.state?.menteeId
-  const [mentee, setMentee] = useState<MenteeInfo | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("Workshops")
-  const [isModal, setIsModal] = useState(false)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const menteeId = location.state?.menteeId;
+  const [mentee, setMentee] = useState<MenteeInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("Workshops");
+  const [isModal, setIsModal] = useState(false);
 
   useEffect(() => {
     if (!menteeId) {
-      setError("Mentee ID is missing.")
-      setLoading(false)
-      return
+      setError("Mentee ID is missing.");
+      setLoading(false);
+      return;
     }
 
     const fetchMentee = async () => {
       try {
-        console.log("Fetching mentee data for ID:", menteeId)
-        const response = await api.get(`/api/mentee/get-mentee/${menteeId}`) // ✅ Fetch mentee data
-        setMentee(response.data)
+        console.log("Fetching mentee data for ID:", menteeId);
+        const response = await api.get(`/api/mentee/get-mentee/${menteeId}`); // ✅ Fetch mentee data
+        setMentee(response.data);
       } catch (err) {
-        setError("Failed to load mentee details.")
+        setError("Failed to load mentee details.");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchMentee()
-  }, [menteeId])
+    fetchMentee();
+  }, [menteeId]);
 
   const initialValues = {
     courseName: "",
     startDate: "",
     description: "",
-  }
+  };
 
   const validationSchema = yup.object({
     courseName: yup.string().required("Course name is required"),
     startDate: yup.date().required("Start date is required"),
     description: yup.string().required("Course description is required"),
-  })
+  });
 
   const handleSubmit = async (
     values: typeof initialValues,
-    { setSubmitting }: any
+    { setSubmitting }: any,
   ) => {
     try {
-      console.log(values)
-      setIsModal(false)
+      console.log(values);
+      setIsModal(false);
     } catch (error) {
-      console.error("Error assigning course:", error)
+      console.error("Error assigning course:", error);
     }
-    setSubmitting(false)
-  }
+    setSubmitting(false);
+  };
 
   return (
     <>
@@ -240,7 +240,7 @@ const MenteeInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MenteeInformation
+export default MenteeInformation;
