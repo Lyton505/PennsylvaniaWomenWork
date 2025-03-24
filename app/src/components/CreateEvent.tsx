@@ -54,6 +54,8 @@ interface CreateEventModalProps {
     name: string;
     description: string;
     date: string;
+    startTime: string;
+    endTime: string;
     userIds: string[];
     calendarLink?: string;
   }) => void;
@@ -70,13 +72,25 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
     { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>,
   ) => {
     try {
+      const baseDate = new Date(values.date);
+
+      //Parse start time
+      const [startHours, startMinutes] = values.startTime.split(":");
+      const startDateTime = new Date(baseDate);
+      startDateTime.setHours(parseInt(startHours), parseInt(startMinutes));
+
+      // Parse end time
+      const [endHours, endMinutes] = values.endTime.split(":");
+      const endDateTime = new Date(baseDate);
+      endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
+
       const eventData = {
         name: values.name,
         description: values.description,
-        date: new Date(values.date).toISOString(), // Ensure proper date format
-        startTime: values.startTime,
-        endTime: values.endTime,
-        userIds: ["64a6b8c5f5c6dca8ef18d1f1"], // ✅ Hardcoded user ID for now
+        date: startDateTime.toISOString(),
+        startTime: startDateTime.toISOString(),
+        endTime: endDateTime.toISOString(),
+        userIds: ["64a6b8c5f5c6dca8ef18d1f1"],
         calendarLink: values.invitationLink,
       };
 
