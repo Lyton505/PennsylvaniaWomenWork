@@ -60,3 +60,18 @@ export const getMenteeById = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error retrieving mentee", error });
   }
 };
+
+export const getAllMentees = async (req: Request, res: Response) => {
+  try {
+    const mentees = await User.find({ role: "mentee" });
+
+    if (!mentees || mentees.length === 0) {
+      return res.status(404).json({ message: "No mentees found" });
+    }
+
+    res.status(200).json(mentees);
+  } catch (error) {
+    console.error("Error getting all mentees:", error);
+    res.status(500).json({ message: "Error retrieving mentees", error });
+  }
+};
