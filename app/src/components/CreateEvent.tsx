@@ -1,16 +1,16 @@
-import React from "react";
-import Modal from "./Modal";
-import { Formik, Form, Field, FormikHelpers } from "formik";
-import * as yup from "yup";
+import React from "react"
+import Modal from "./Modal"
+import { Formik, Form, Field, FormikHelpers } from "formik"
+import * as yup from "yup"
 
 // Define the shape of our form values
 interface CreateEventFormValues {
-  name: string;
-  description: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  invitationLink: string;
+  name: string
+  description: string
+  date: string
+  startTime: string
+  endTime: string
+  invitationLink: string
 }
 
 // Initial form values
@@ -21,7 +21,7 @@ const initialValues: CreateEventFormValues = {
   startTime: "",
   endTime: "",
   invitationLink: "",
-};
+}
 
 // Yup validation schema
 const validationSchema = yup.object().shape({
@@ -36,29 +36,29 @@ const validationSchema = yup.object().shape({
       "is-after-start",
       "End time must be after start time",
       function (endTime) {
-        const { startTime } = this.parent;
-        return !startTime || !endTime || startTime < endTime;
-      },
+        const { startTime } = this.parent
+        return !startTime || !endTime || startTime < endTime
+      }
     ),
   invitationLink: yup
     .string()
     .url("Must be a valid URL")
     .required("Invitation link is required"),
-});
+})
 
 // Define props for our modal component
 interface CreateEventModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
   onSubmit: (eventData: {
-    name: string;
-    description: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    userIds: string[];
-    calendarLink?: string;
-  }) => void;
+    name: string
+    description: string
+    date: string
+    startTime: string
+    endTime: string
+    userIds: string[]
+    calendarLink?: string
+  }) => void
 }
 
 const CreateEventModal: React.FC<CreateEventModalProps> = ({
@@ -69,20 +69,20 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
   // The function that handles form submission
   const handleSubmit = async (
     values: CreateEventFormValues,
-    { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>,
+    { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>
   ) => {
     try {
-      const baseDate = new Date(values.date);
+      const baseDate = new Date(values.date)
 
       //Parse start time
-      const [startHours, startMinutes] = values.startTime.split(":");
-      const startDateTime = new Date(baseDate);
-      startDateTime.setHours(parseInt(startHours), parseInt(startMinutes));
+      const [startHours, startMinutes] = values.startTime.split(":")
+      const startDateTime = new Date(baseDate)
+      startDateTime.setHours(parseInt(startHours), parseInt(startMinutes))
 
       // Parse end time
-      const [endHours, endMinutes] = values.endTime.split(":");
-      const endDateTime = new Date(baseDate);
-      endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
+      const [endHours, endMinutes] = values.endTime.split(":")
+      const endDateTime = new Date(baseDate)
+      endDateTime.setHours(parseInt(endHours), parseInt(endMinutes))
 
       const eventData = {
         name: values.name,
@@ -92,32 +92,23 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
         endTime: endDateTime.toISOString(),
         userIds: ["64a6b8c5f5c6dca8ef18d1f1"],
         calendarLink: values.invitationLink,
-      };
-      // const eventData = {
-      //   name: values.name,
-      //   description: values.description,
-      //   date: new Date(values.date).toISOString(), // Ensure proper date format
-      //   startTime: (values.startTime),
-      //   endTime: values.endTime,
-      //   userIds: ["64a6b8c5f5c6dca8ef18d1f1"], // ✅ Hardcoded user ID for now
-      //   calendarLink: values.invitationLink,
-      // }
+      }
 
-      console.log("Submitting Event Data:", eventData); // Debugging
+      console.log("Submitting Event Data:", eventData) // Debugging
 
-      await onSubmit(eventData); // Send to MentorDashboard.tsx
-      resetForm();
-      onClose();
+      await onSubmit(eventData) // Send to MentorDashboard.tsx
+      resetForm()
+      onClose()
     } catch (error) {
-      console.error("Error creating event:", error);
+      console.error("Error creating event:", error)
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   // If `isOpen` is false, don't render anything
   if (!isOpen) {
-    return null;
+    return null
   }
 
   return (
@@ -212,7 +203,7 @@ const CreateEventModal: React.FC<CreateEventModalProps> = ({
       }
       action={onClose}
     />
-  );
-};
+  )
+}
 
-export default CreateEventModal;
+export default CreateEventModal

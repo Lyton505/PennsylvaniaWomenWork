@@ -8,8 +8,8 @@ import { error } from "console";
 export const createUser = async (req: Request, res: Response) => {
   const {
     sub, // Auth0 user ID
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     username,
     email,
     role,
@@ -20,7 +20,7 @@ export const createUser = async (req: Request, res: Response) => {
     meetings,
   } = req.body;
 
-  if (!sub || !firstName || !lastName || !username || !email || !role) {
+  if (!sub || !first_name || !last_name || !username || !email || !role) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -35,8 +35,8 @@ export const createUser = async (req: Request, res: Response) => {
 
     const newUser = new User({
       _id: sub, // ✅ Store Auth0 sub as `_id`
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       username,
       email,
       role,
@@ -149,9 +149,6 @@ export const addMeeting = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Add the meeting to the user's meetings array
-    user.meetings.push({ name: meeting, notes });
-
     // Save the updated user document
     await user.save();
 
@@ -242,23 +239,15 @@ export const updateUser = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const getCurrentUserById = async (req: Request, res: Response) => {
-  const { user_id } = req.params; // ✅ Get from URL param instead of query
-
-  if (!user_id) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
-
   try {
-    const user = await User.findOne({ user_id }); // 🔹 Use `findOne` instead of `findById`
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ message: "Error fetching user", error });
+    const sub = decodeURIComponent(req.params.auth_id);
+    console.log("Searching for user with sub:", sub);
+    const user = await User.findOne({ auth_id: sub });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
   }
 };
