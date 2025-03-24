@@ -26,7 +26,7 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
   const params = {
     Bucket: bucketName,
     Key: objectKey,
-    Expires: 60 * 5, // URL expires in 5 minutes
+    Expires: 3600,
   };
 
   try {
