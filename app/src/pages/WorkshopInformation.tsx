@@ -7,23 +7,22 @@ import Icon from "../components/Icon";
 import { useNavigate, useLocation } from "react-router-dom";
 import { api } from "../api";
 
-
 const getIconForFile = (filename: string) => {
-  const extension = filename.split(".").pop()?.toLowerCase()
+  const extension = filename.split(".").pop()?.toLowerCase();
   switch (extension) {
     case "pdf":
-      return pdf
+      return pdf;
     case "doc":
     case "docx":
-      return docx
+      return docx;
     case "mp4":
     case "mov":
     case "avi":
-      return video
+      return video;
     default:
-      return docx
+      return docx;
   }
-}
+};
 
 interface Workshop {
   _id: string;
@@ -61,19 +60,21 @@ const WorkshopInformation = () => {
     // call endpoint to get all resources for a workshop
     const fetchResources = async () => {
       try {
-        const {data: resourceList} = await api.get(`/api/resource/get-resource-by-workshop/${workshopId}`);
+        const { data: resourceList } = await api.get(
+          `/api/resource/get-resource-by-workshop/${workshopId}`,
+        );
         const resourcesWithURL = await Promise.all(
           resourceList.map(async (res: any) => {
-            const {data} = await api.get(`/api/resource/getURL/${res.s3id}`);
-            return {...res, url: data.signedUrl};
-          })
-        )
+            const { data } = await api.get(`/api/resource/getURL/${res.s3id}`);
+            return { ...res, url: data.signedUrl };
+          }),
+        );
         setResources(resourcesWithURL);
       } catch (error) {
         console.error("Error getting resources:", error);
       }
     };
-  
+
     fetchResources();
   }, []);
 
@@ -96,7 +97,10 @@ const WorkshopInformation = () => {
           <div className="row gx-3 gy-3">
             {resources.map((file) => (
               <div key={file._id} className="col-lg-2">
-                <div className="Card" onClick={() => window.open(file.url, "_blank")}>
+                <div
+                  className="Card"
+                  onClick={() => window.open(file.url, "_blank")}
+                >
                   {" "}
                   {/* Ensure Card is inside col-lg-2 */}
                   <div className="WorkshopInfo-image">

@@ -46,7 +46,7 @@ const MentorDashboard = () => {
       return;
     }
 
-    if (!userId || user.role !== "mentor") {
+    if (!userId || (user.role !== "mentor" && user.role !== "staff")) {
       setError("Only mentors can view mentees.");
       setLoading(false);
       return;
@@ -55,11 +55,19 @@ const MentorDashboard = () => {
 
     const fetchMentees = async () => {
       try {
-        const response = await api.get(`/api/mentor/${user._id}/mentees`);
-        console.log("response", response.data);
-        setMentees(
-          Array.isArray(response.data.mentees) ? response.data.mentees : [],
-        );
+        const endpoint =
+          user.role === "staff"
+            ? "/api/mentee/all-mentees"
+            : `/api/mentor/${user._id}/mentees`;
+
+        const response = await api.get(endpoint);
+
+        const menteeData =
+          user.role === "staff"
+            ? response.data // getAllMentees returns array directly
+            : response.data.mentees; // getMenteesForMentor returns {mentees: [...]}
+
+        setMentees(Array.isArray(menteeData) ? menteeData : []);
         setLoading(false);
       } catch (err) {
         setError("Unable to fetch mentees.");
@@ -197,7 +205,9 @@ const MentorDashboard = () => {
                     marginRight: "48px",
                   }}
                 >
-                  {tab}
+                  {tab === "My Mentees" && user?.role === "staff"
+                    ? "All Mentees"
+                    : tab}
                 </div>
               ))}
             </div>

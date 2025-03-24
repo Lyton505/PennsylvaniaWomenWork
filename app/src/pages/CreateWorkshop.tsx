@@ -72,7 +72,6 @@ const CreateWorkshop = () => {
       // Add associated files (with placeholder s3id for now)
       if (fileDetails.length > 0) {
         for (const file of fileDetails) {
-
           const uploadResponse = await fetch(file.url, {
             method: "PUT",
             body: file.file,
