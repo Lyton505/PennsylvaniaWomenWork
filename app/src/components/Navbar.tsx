@@ -11,17 +11,17 @@ const Navbar = (): ReactElement => {
   const { user } = useUser();
 
   const navItems = [
-    { path: "/mentor", label: "Home", roles: [...tier1Roles, ...tier2Roles] },
-    { path: "/mentee", label: "Home", roles: [...tier1Roles, ...tier3Roles] },
+    { path: "/mentor", label: "Mentor Home", roles: [...tier1Roles, ...tier2Roles] },
+    { path: "/mentee", label: "Mentee Home", roles: [...tier1Roles, ...tier3Roles] },
     {
       path: "/create-workshop",
       label: "Create Workshop",
-      roles: [...tier1Roles, ...tier2Roles],
+      roles: [...tier1Roles],
     },
     {
       path: "/create-meeting",
       label: "Create Meeting",
-      roles: [...tier1Roles, ...tier2Roles],
+      roles: [...tier1Roles],
     },
     {
       path: "/profile",

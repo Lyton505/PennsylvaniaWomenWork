@@ -6,17 +6,13 @@ import CreateEventModal from "../components/CreateEvent";
 import Event, { EventData } from "../components/Event";
 import { useUser } from "../contexts/UserContext";
 import { api } from "../api";
+import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles";
 
 interface Mentee {
   _id: string;
   first_name: string;
   last_name: string;
   email: string;
-}
-
-interface MenteeInformationElements {
-  id: number;
-  menteeName: string;
 }
 
 interface CourseInformationElements {
@@ -58,7 +54,7 @@ const MentorDashboard = () => {
         const response = await api.get(`/api/mentor/${user._id}/mentees`);
         console.log("response", response.data);
         setMentees(
-          Array.isArray(response.data.mentees) ? response.data.mentees : [],
+          Array.isArray(response.data.mentees) ? response.data.mentees : []
         );
         setLoading(false);
       } catch (err) {
@@ -100,7 +96,7 @@ const MentorDashboard = () => {
 
         return acc;
       },
-      {} as { [key: string]: EventData[] },
+      {} as { [key: string]: EventData[] }
     );
 
   const menteeGridData = Array.isArray(mentees) // Parse mentee data
@@ -269,14 +265,16 @@ const MentorDashboard = () => {
               />
             ))}
 
-            <div
-              className="Button Button-color--blue-1000"
-              onClick={() => {
-                setCreateEventModal(true);
-              }}
-            >
-              Add New Event
-            </div>
+            {user && tier1Roles.includes(user.role) && (
+              <div
+                className="Button Button-color--blue-1000"
+                onClick={() => {
+                  setCreateEventModal(true);
+                }}
+              >
+                Add New Event
+              </div>
+            )}
           </div>
         </div>
       </div>
