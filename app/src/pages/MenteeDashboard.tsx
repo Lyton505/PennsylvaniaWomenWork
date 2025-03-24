@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from "react"
-import Navbar from "../components/Navbar"
-import Modal from "../components/Modal"
-import { useNavigate } from "react-router-dom"
-import { api } from "../api"
-import Event, { EventData } from "../components/Event"
-import { useUser } from "../contexts/UserContext"
-import { useAuth0 } from "@auth0/auth0-react"
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Modal from "../components/Modal";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api";
+import Event, { EventData } from "../components/Event";
+import { useUser } from "../contexts/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface CourseInformationElements {
-  id: string
-  courseName: string
+  id: string;
+  courseName: string;
 }
 
 const MenteeDashboard = () => {
-  const navigate = useNavigate()
-  const [events, setEvents] = useState<EventData[]>([])
-  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([])
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
-  const { user } = useUser()
-  const userId = user?._id
+  const navigate = useNavigate();
+  const [events, setEvents] = useState<EventData[]>([]);
+  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const { user } = useUser();
+  const userId = user?._id;
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId) return;
 
     const fetchData = async () => {
       try {
         const [eventsResponse, workshopsResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
           api.get(`/api/workshop/user/${userId}`),
-        ])
+        ]);
 
         setEvents(
           eventsResponse.data.map((event: any) => ({
@@ -39,53 +39,53 @@ const MenteeDashboard = () => {
             description: event.description,
             date: event.date,
             calendarLink: event.calendarLink,
-          }))
-        )
+          })),
+        );
 
         setWorkshops(
           workshopsResponse.data.map((workshop: any) => ({
             id: workshop._id,
             courseName: workshop.name,
-          }))
-        )
+          })),
+        );
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("Error fetching data:", error);
       }
-    }
+    };
 
-    fetchData()
-  }, [userId])
+    fetchData();
+  }, [userId]);
 
   const handleClick = (id: string) => {
-    navigate(`/mentee/course-information/${id}`)
-  }
+    navigate(`/mentee/course-information/${id}`);
+  };
 
   const eventsByMonth: { [key: string]: EventData[] } = events
     .sort(
       (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
     ) // Sort events chronologically
     .reduce(
       (acc, event) => {
-        const eventDate = new Date(event.startTime)
-        const month = eventDate.toLocaleString("default", { month: "long" })
+        const eventDate = new Date(event.startTime);
+        const month = eventDate.toLocaleString("default", { month: "long" });
 
         if (!acc[month]) {
-          acc[month] = []
+          acc[month] = [];
         }
         acc[month].push({
           ...event,
           formattedDate: eventDate.toDateString(),
-        })
+        });
 
-        return acc
+        return acc;
       },
-      {} as { [key: string]: EventData[] }
-    )
+      {} as { [key: string]: EventData[] },
+    );
 
   const handleEventClick = (event: EventData) => {
-    setSelectedEvent(event)
-  }
+    setSelectedEvent(event);
+  };
 
   return (
     <>
@@ -153,7 +153,7 @@ const MenteeDashboard = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MenteeDashboard
+export default MenteeDashboard;

@@ -1,27 +1,27 @@
-import express from "express"
+import express from "express";
 import {
   createWorkshop,
   getWorkshop,
   getWorkshopsByUserId,
   generatePresignedUrl,
   getAllWorkshops,
-} from "../controllers/workshopController"
+} from "../controllers/workshopController";
 
-const router = express.Router()
+const router = express.Router();
 
 // Route to create a workshop
-router.post("/create-workshop", createWorkshop)
+router.post("/create-workshop", createWorkshop);
 
 // route to get all workshops
-router.get("/get-workshops", getAllWorkshops)
+router.get("/get-workshops", getAllWorkshops);
 
 // Route to get workshops by user ID -- not wired
-router.get("/user/:userId", getWorkshopsByUserId)
+router.get("/user/:userId", getWorkshopsByUserId);
 
 // Route to generate a presigned URL for S3
-router.get("/generate-presigned-url/:file_name", generatePresignedUrl)
+router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
 
 // Route to get a specific workshop -- not wired
-router.get("/:id", getWorkshop)
+router.get("/:id", getWorkshop);
 
-export default router
+export default router;

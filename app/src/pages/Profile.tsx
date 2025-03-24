@@ -1,18 +1,18 @@
-import React from "react"
-import Navbar from "../components/Navbar"
-import { useUser } from "../contexts/UserContext"
-import { useAuth0 } from "@auth0/auth0-react"
-import { useEffect } from "react"
+import React from "react";
+import Navbar from "../components/Navbar";
+import { useUser } from "../contexts/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 
 const Profile = () => {
-  const { user: auth0User, logout } = useAuth0()
-  const { user, error, loading } = useUser()
+  const { user: auth0User, logout } = useAuth0();
+  const { user, error, loading } = useUser();
 
   // use effect dump user data to console
   useEffect(() => {
-    console.log("auth0User", auth0User?.sub)
-    console.log("user", user)
-  })
+    console.log("auth0User", auth0User?.sub);
+    console.log("user", user);
+  });
 
   return (
     <>
@@ -72,7 +72,7 @@ const Profile = () => {
               <div
                 className="Button Button-color--blue-1000 Margin-top--20"
                 onClick={() => {
-                  logout()
+                  logout();
                 }}
               >
                 Log Out
@@ -84,7 +84,7 @@ const Profile = () => {
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;

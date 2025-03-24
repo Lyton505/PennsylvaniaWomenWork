@@ -7,7 +7,6 @@ import { api } from "../api"; // Ensure this points to your configured API insta
 interface CreateMeetingFormValues {
   username: string;
   meeting: string;
-  notes: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -17,7 +16,6 @@ interface CreateMeetingFormValues {
 const initialValues: CreateMeetingFormValues = {
   username: "",
   meeting: "",
-  notes: "",
   date: "",
   startTime: "",
   endTime: "",
@@ -68,7 +66,6 @@ const CreateMeeting = () => {
       const payload = {
         username: "sample-username", // TODO: Replace with the logged-in user's username
         meeting: values.meeting,
-        notes: values.notes,
         date: baseDate.toISOString(),
         startTime: startDateTime.toISOString(),
         endTime: endDateTime.toISOString(),
@@ -119,7 +116,7 @@ const CreateMeeting = () => {
                     )}
                   </div>
 
-                  <div className="Form-group">
+                  {/* <div className="Form-group">
                     <label htmlFor="notes">Notes</label>
                     <Field
                       as="textarea"
@@ -133,7 +130,7 @@ const CreateMeeting = () => {
                     {errors.notes && touched.notes && (
                       <div className="Form-error">{errors.notes}</div>
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="Form-group">
                     <label htmlFor="date">Date</label>

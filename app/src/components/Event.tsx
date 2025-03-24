@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 // export interface EventData {
 //   userIds: string[]
@@ -11,20 +11,20 @@ import React from "react"
 //   calendarLink?: string
 // }
 export interface EventData {
-  userIds: string[]
-  date: string
-  startTime: string
-  endTime: string
-  name: string
-  description: string
-  formattedDate?: string
-  calendarLink?: string
+  userIds: string[];
+  date: string;
+  startTime: string;
+  endTime: string;
+  name: string;
+  description: string;
+  formattedDate?: string;
+  calendarLink?: string;
 }
 
 interface EventProps {
-  month: string
-  events: EventData[]
-  onEventClick: (event: EventData) => void
+  month: string;
+  events: EventData[];
+  onEventClick: (event: EventData) => void;
 }
 
 const Event = ({ month, events, onEventClick }: EventProps) => {
@@ -49,11 +49,11 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
         }}
       />
       {events.map((event) => {
-        const eventDate = new Date(event.date)
-        const dayOfMonth = eventDate.getDate()
+        const eventDate = new Date(event.date);
+        const dayOfMonth = eventDate.getDate();
         const dayOfWeek = eventDate.toLocaleDateString("en-US", {
           weekday: "short",
-        })
+        });
 
         return (
           <div
@@ -121,10 +121,10 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
               </div>
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default Event
+export default Event;
