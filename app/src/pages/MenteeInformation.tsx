@@ -11,8 +11,8 @@ import { tier1Roles } from "../utils/roles"
 
 interface MenteeInfo {
   _id: string // Mentee's unique ID (MongoDB ObjectID or Auth0 ID)
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   email: string
   role: string // e.g., "mentee"
   mentor?: string // Optional mentor ID assigned to mentee
@@ -31,6 +31,7 @@ const MenteeInformation = () => {
 
   useEffect(() => {
     if (!menteeId) {
+      setError("Mentee ID is missing.")
       setLoading(false)
       return
     }
@@ -81,8 +82,8 @@ const MenteeInformation = () => {
   const getInitials = () => {
     if (!mentee) return ""
     return (
-      mentee.firstName.charAt(0).toUpperCase() +
-      mentee.lastName.charAt(0).toUpperCase()
+      mentee.first_name.charAt(0).toUpperCase() +
+      mentee.last_name.charAt(0).toUpperCase()
     )
   }
 
@@ -110,7 +111,7 @@ const MenteeInformation = () => {
 
           {/* Column 1: Mentee Information Block */}
           <div className="col-lg-4 mb-4">
-            <div className="Block Profile-Block">
+            <div className="Block">
               <div className="Block-header">Mentee Information</div>
               <div className="Block-subtitle">Mentee Details</div>
               <div className="Block-content">
@@ -120,7 +121,7 @@ const MenteeInformation = () => {
                 <div className="Profile-field">
                   <div className="Profile-field-label">Name:</div>
                   <div>
-                    {mentee?.firstName} {mentee?.lastName}
+                    {mentee?.first_name} {mentee?.last_name}
                   </div>
                 </div>
                 <div className="Profile-field">
@@ -140,7 +141,7 @@ const MenteeInformation = () => {
             <div className="Block">
               <div className="Block-header">Mentee Courses</div>
               <div className="Block-subtitle">
-                Courses assigned to {mentee?.firstName}
+                Courses assigned to {mentee?.first_name}
               </div>
               {mentee?.workshops && mentee.workshops.length > 0 ? (
                 <ul className="list-unstyled">
@@ -169,7 +170,7 @@ const MenteeInformation = () => {
             <div className="Block">
               <div className="Block-header">Upcoming Meetings</div>
               <div className="Block-subtitle">
-                Your meetings with {mentee?.firstName}
+                Your meetings with {mentee?.first_name}
               </div>
               {/* Example static meeting item */}
               <div className="d-flex align-items-center mb-3">
