@@ -82,7 +82,7 @@ const WorkshopInformation = () => {
     <>
       <Navbar />
       <div className="WorkshopInfo">
-        <div className="Block">
+        <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
           <div onClick={() => navigate("/home")} className=" Margin-bottom--10">
             <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
           </div>

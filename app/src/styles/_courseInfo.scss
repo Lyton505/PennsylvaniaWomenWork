@@ -129,6 +129,7 @@
   .Tabs {
     display: flex;
     flex-direction: row;
+    
    
     &__tab {
       // cursor: pointer;
@@ -136,6 +137,7 @@
       // font-size: 20px;
       color: var(--pww-color-gray-600);
       transition: all 0.2s ease;
+      margin-right: 40px;
   
       &--active {
         color: var(--pww-color-gray-1000);
@@ -163,5 +165,15 @@
     border-bottom-width: 2px;
     border-bottom-style: solid;
     padding-bottom: 10px;
+
+    &--title {
+      font-size: 30px;
+      color: var(--pww-color-blue-1000);
+      margin-bottom: 20px;
+      border-bottom-color: var(--pww-color-gray-300);
+      border-bottom-width: 2px;
+      border-bottom-style: solid;
+      padding-bottom: 10px;
+    }
   }
 

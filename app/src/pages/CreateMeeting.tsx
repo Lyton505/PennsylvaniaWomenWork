@@ -101,9 +101,9 @@ const CreateMeeting = () => {
   return (
     <>
       <Navbar />
-      <div className="Flex-column Align-items--center Margin-top--20">
-        <div className="Block Create-block">
-          <div className="Block-header">Create Meeting</div>
+        <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
+          <div className = "Margin-bottom--40 Margin-left--40 Margin-right--40 Margin-top--30">
+          <div className="Header--title">Create Meeting</div>
           <div className="Block-subtitle">Add a new meeting</div>
           <div className="Block-body">
             <Formik
@@ -284,8 +284,8 @@ const CreateMeeting = () => {
               )}
             </Formik>
           </div>
+          </div>
         </div>
-      </div>
     </>
   )
 }
