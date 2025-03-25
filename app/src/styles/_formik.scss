@@ -10,11 +10,13 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 10px;
+    width: 100%;
 
     label {
       margin-bottom: 4px;
       font-size: var(--pww-font-size-14);
       font-weight: var(--pww-font-weight-bold);
+      color: var(--pww-color-dark-800);
     }
 
     input,

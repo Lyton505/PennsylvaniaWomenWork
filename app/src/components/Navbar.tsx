@@ -25,7 +25,7 @@ const Navbar = (): ReactElement => {
     },
     {
       path: "/invite",
-      label: "Invite Mentee",
+      label: "Invite User",
       roles: [...tier1Roles],
     },
     {
