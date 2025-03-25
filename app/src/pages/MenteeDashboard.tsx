@@ -56,7 +56,9 @@ const MenteeDashboard = () => {
   }, [userId]);
 
   const handleWorkshopClick = (workshopId: string) => {
-    navigate(`/workshop/${workshopId}`, { state: { workshopId } });
+    navigate(`/mentor/workshop-information`, {
+      state: { workshopId },
+    });
   };
 
   const eventsByMonth: { [key: string]: EventData[] } = events
