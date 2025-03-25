@@ -31,29 +31,29 @@ const MenteeCourseInformation = () => {
   return (
     <>
       <Navbar />
-        <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
-          <div className="Block-header">Resume workshop</div>
-          <div className="Block-subtitle">
-            This course will help you create a professional resume that will
-            stand out to employers.
-          </div>
-          <div className="Block-body">
-            <div className="row">
-              {fakeFiles.map((file) => (
-                <div key={file.id} className="col-lg-2">
-                  <div className="Card-workshop">
-                    {" "}
-                    {/* Ensure Card is inside col-lg-2 */}
-                    <div className="WorkshopInfo-image">
-                      <img src={file.icon} alt={file.type} />
-                    </div>
-                    <div className="WorkshopInfo-title">{file.name}</div>
+      <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
+        <div className="Block-header">Resume workshop</div>
+        <div className="Block-subtitle">
+          This course will help you create a professional resume that will stand
+          out to employers.
+        </div>
+        <div className="Block-body">
+          <div className="row">
+            {fakeFiles.map((file) => (
+              <div key={file.id} className="col-lg-2">
+                <div className="Card-workshop">
+                  {" "}
+                  {/* Ensure Card is inside col-lg-2 */}
+                  <div className="WorkshopInfo-image">
+                    <img src={file.icon} alt={file.type} />
                   </div>
+                  <div className="WorkshopInfo-title">{file.name}</div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
+      </div>
     </>
   );
 };

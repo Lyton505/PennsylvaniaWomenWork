@@ -1,18 +1,18 @@
-import React, { useState } from "react"
-import { Formik, Form, Field } from "formik"
-import * as Yup from "yup"
-import { toast } from "react-hot-toast"
-import { ReactComponent as SendIcon } from "../assets/send.svg"
-import Navbar from "../components/Navbar"
-import AsyncSubmit from "../components/AsyncSubmit"
-import { api } from "../api"
+import React, { useState } from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import { toast } from "react-hot-toast";
+import { ReactComponent as SendIcon } from "../assets/send.svg";
+import Navbar from "../components/Navbar";
+import AsyncSubmit from "../components/AsyncSubmit";
+import { api } from "../api";
 
 const initialValues = {
   name: "",
   email: "",
   verifyEmail: "",
   role: "",
-}
+};
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -23,51 +23,51 @@ const validationSchema = Yup.object().shape({
     .oneOf([Yup.ref("email")], "Emails must match")
     .required("Please verify email"),
   role: Yup.string().required("Role is required"),
-})
+});
 
 const roles = [
   { id: "mentee", label: "Mentee" },
   { id: "mentor", label: "Mentor" },
   { id: "staff", label: "Staff" },
   { id: "board", label: "Board" },
-]
+];
 
 const SampleMenteeInvite = () => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any
+    { setSubmitting, resetForm }: any,
   ) => {
-    console.log("Submitting email invite", values)
-    setIsLoading(true)
+    console.log("Submitting email invite", values);
+    setIsLoading(true);
     try {
       const response = await api.post("/user/send-email", {
         name: values.name,
         email: values.email,
         role: "mentee",
-      })
+      });
 
       if (response.status === 200) {
         toast.success("Invite sent successfully!", {
           duration: 2000,
           position: "top-center",
-        })
-        resetForm()
+        });
+        resetForm();
       } else {
-        throw new Error("Failed to send invite")
+        throw new Error("Failed to send invite");
       }
     } catch (error) {
-      console.error("Error sending invite:", error)
+      console.error("Error sending invite:", error);
       toast.error("Failed to send invite", {
         duration: 2000,
         position: "top-center",
-      })
+      });
     } finally {
-      setIsLoading(false)
-      setSubmitting(false)
+      setIsLoading(false);
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
@@ -172,7 +172,7 @@ const SampleMenteeInvite = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SampleMenteeInvite
+export default SampleMenteeInvite;
