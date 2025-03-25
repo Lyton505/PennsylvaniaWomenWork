@@ -67,6 +67,7 @@ const MentorDashboard = () => {
             : response.data.mentees // getMenteesForMentor returns {mentees: [...]}
 
         setMentees(Array.isArray(menteeData) ? menteeData : [])
+        console.log("menteeData", menteeData)
         setLoading(false)
       } catch (err) {
         setError("Unable to fetch mentees.")
@@ -112,13 +113,6 @@ const MentorDashboard = () => {
       },
       {} as { [key: string]: EventData[] }
     )
-
-  const menteeGridData = Array.isArray(mentees) // Parse mentee data
-    ? mentees.map((mentee) => ({
-        id: mentee._id,
-        menteeName: `${mentee.first_name} ${mentee.last_name}`,
-      }))
-    : [] // Initialize empty array
 
   const handleClick = (menteeId: string) => {
     navigate("/mentor/mentee-information", { state: { menteeId } })
@@ -230,16 +224,16 @@ const MentorDashboard = () => {
                     <p style={{ color: "red" }}>{error}</p>
                   ) : mentees.length > 0 ? (
                     <div className="row gx-3 gy-3">
-                      {menteeGridData.map((mentee) => (
-                        <div className="col-lg-4" key={mentee.id}>
+                      {mentees.map((mentee) => (
+                        <div className="col-lg-4" key={mentee._id}>
                           <div
                             className="Mentor--card"
-                            onClick={() => handleClick(mentee.id)}
+                            onClick={() => handleClick(mentee._id)}
                           >
                             <div className="Mentor--card-color Background-color--teal-1000" />
                             <div className="Padding--10">
                               <div className="Mentor--card-name">
-                                {mentee.menteeName}
+                                {mentee.first_name} {mentee.last_name}
                               </div>
                             </div>
                           </div>
