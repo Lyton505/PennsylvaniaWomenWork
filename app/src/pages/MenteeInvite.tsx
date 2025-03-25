@@ -8,14 +8,16 @@ import AsyncSubmit from "../components/AsyncSubmit"
 import { api } from "../api"
 
 const initialValues = {
-  name: "",
+  firstName: "",
+  lastName: "",
   email: "",
   verifyEmail: "",
   role: "",
 }
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
@@ -43,7 +45,8 @@ const SampleMenteeInvite = () => {
     setIsLoading(true)
     try {
       const response = await api.post("/user/send-email", {
-        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         role: "mentee",
       })
@@ -86,16 +89,29 @@ const SampleMenteeInvite = () => {
             {({ errors, touched, isSubmitting, values, setFieldValue }) => (
               <Form>
                 <div className="Form-group">
-                  <label>Name:</label>
+                  <label>First Name:</label>
                   <Field
                     type="text"
-                    name="name"
-                    placeholder="Enter mentee name"
+                    name="firstName"
+                    placeholder="Enter first name"
                     className="Form-input-box"
-                    autoComplete="name"
+                    autoComplete="given-name"
                   />
-                  {errors.name && touched.name && (
-                    <div className="Form-error">{errors.name}</div>
+                  {errors.firstName && touched.firstName && (
+                    <div className="Form-error">{errors.firstName}</div>
+                  )}
+                </div>
+                <div className="Form-group">
+                  <label>Last Name:</label>
+                  <Field
+                    type="text"
+                    name="lastName"
+                    placeholder="Enter last name"
+                    className="Form-input-box"
+                    autoComplete="family-name"
+                  />
+                  {errors.lastName && touched.lastName && (
+                    <div className="Form-error">{errors.lastName}</div>
                   )}
                 </div>
                 <div className="Form-group">
@@ -111,7 +127,6 @@ const SampleMenteeInvite = () => {
                     <div className="Form-error">{errors.email}</div>
                   )}
                 </div>
-
                 <div className="Form-group">
                   <label>Verify Email Address:</label>
                   <Field
