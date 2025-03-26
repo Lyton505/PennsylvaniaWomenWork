@@ -1,22 +1,20 @@
 import mongoose, { Schema, Document } from "mongoose";
 // interface
-export interface IWorkshop extends Document {
+interface IWorkshop extends Document {
   name: string;
   description: string;
-  s3id: string;
+  s3id?: string; // Optional for now TODO: connect with S3 bucket
   createdAt: Date;
-  mentor: string;
-  mentees: string[]; // Change from single mentee to array of mentees
+
+  // updateContent(newContent: string): Promise<void>;
 }
 
 // workshop schema
-const WorkshopSchema: Schema = new Schema({
+const WorkshopSchema: Schema<IWorkshop> = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  s3id: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-  mentor: { type: String, required: true },
-  mentees: [{ type: String }], // Array of mentee IDs
+  // s3id: { type: String }, // Placeholder for S3 ID
+  // createdAt: { type: Date, default: Date.now },
 });
 
 // update text content of the workshop
@@ -28,4 +26,5 @@ WorkshopSchema.methods.updateContent = async function (
   await this.save();
 };
 // mongoose model
-export const Workshop = mongoose.model<IWorkshop>("Workshop", WorkshopSchema);
+const Workshop = mongoose.model<IWorkshop>("Workshop", WorkshopSchema);
+export { Workshop, IWorkshop };

@@ -63,18 +63,6 @@ export const addWorkshopToMentee = async (req: Request, res: Response) => {
     if (!updatedMentee) {
       return res.status(404).json({ message: "Mentee not found" });
     }
-
-    // Update the workshop document to include the mentee ID
-    await Workshop.findByIdAndUpdate(
-      workshopId,
-      {
-        $addToSet: {
-          mentees: menteeId,
-        },
-      },
-      { new: true },
-    );
-
     // Get full workshop details for response
     const workshops = await Workshop.find({
       _id: { $in: updatedMentee.workshops || [] },
@@ -136,28 +124,6 @@ export const getAllMentees = async (req: Request, res: Response) => {
     res.status(200).json(mentees);
   } catch (error) {
     console.error("Error getting all mentees:", error);
-    res.status(500).json({ message: "Error retrieving mentees", error });
-  }
-};
-
-// Add a method to get all mentees for a workshop
-export const getMenteesForWorkshop = async (req: Request, res: Response) => {
-  try {
-    const { workshopId } = req.params;
-
-    const workshop = await Workshop.findById(workshopId);
-    if (!workshop) {
-      return res.status(404).json({ message: "Workshop not found" });
-    }
-
-    // Get all mentees assigned to this workshop
-    const mentees = await User.find({
-      _id: { $in: workshop.mentees },
-    });
-
-    res.status(200).json(mentees);
-  } catch (error) {
-    console.error("Error getting mentees for workshop:", error);
     res.status(500).json({ message: "Error retrieving mentees", error });
   }
 };
