@@ -42,17 +42,10 @@ export const createResource = async (req: Request, res: Response) => {
 };
 
 export const getResourcesByWorkshopId = async (req: Request, res: Response) => {
-  const { workshopId } = req.params;
-
   try {
+    const { workshopId } = req.params;
     const resources = await Resource.find({ workshopIDs: workshopId });
-
-    if (!resources.length) {
-      return res
-        .status(404)
-        .json({ message: "No resources found for this workshop" });
-    }
-
+   
     res.status(200).json(resources);
   } catch (error) {
     console.error("Error retrieving resources:", error);
