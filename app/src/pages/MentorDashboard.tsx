@@ -6,17 +6,13 @@ import CreateEventModal from "../components/CreateEvent";
 import Event, { EventData } from "../components/Event";
 import { useUser } from "../contexts/UserContext";
 import { api } from "../api";
+import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles";
 
 interface Mentee {
   _id: string;
   first_name: string;
   last_name: string;
   email: string;
-}
-
-interface MenteeInformationElements {
-  id: number;
-  menteeName: string;
 }
 
 interface CourseInformationElements {
@@ -46,7 +42,10 @@ const MentorDashboard = () => {
       return;
     }
 
-    if (!userId || user.role !== "mentor") {
+    if (
+      !userId ||
+      (user.role !== "mentor" && user.role !== "staff" && user.role !== "board")
+    ) {
       setError("Only mentors can view mentees.");
       setLoading(false);
       return;
@@ -55,11 +54,20 @@ const MentorDashboard = () => {
 
     const fetchMentees = async () => {
       try {
-        const response = await api.get(`/api/mentor/${user._id}/mentees`);
-        console.log("response", response.data);
-        setMentees(
-          Array.isArray(response.data.mentees) ? response.data.mentees : [],
-        );
+        const endpoint =
+          user.role === "staff"
+            ? "/api/mentee/all-mentees"
+            : `/api/mentor/${user._id}/mentees`;
+
+        const response = await api.get(endpoint);
+
+        const menteeData =
+          user.role === "staff"
+            ? response.data // getAllMentees returns array directly
+            : response.data.mentees; // getMenteesForMentor returns {mentees: [...]}
+
+        setMentees(Array.isArray(menteeData) ? menteeData : []);
+        console.log("menteeData", menteeData);
         setLoading(false);
       } catch (err) {
         setError("Unable to fetch mentees.");
@@ -84,7 +92,10 @@ const MentorDashboard = () => {
   }, []);
 
   const eventsByMonth: { [key: string]: EventData[] } = events
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort events chronologically
+    .sort(
+      (a, b) =>
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+    ) // Sort events chronologically
     .reduce(
       (acc, event) => {
         const eventDate = new Date(event.date);
@@ -103,13 +114,6 @@ const MentorDashboard = () => {
       {} as { [key: string]: EventData[] },
     );
 
-  const menteeGridData = Array.isArray(mentees) // Parse mentee data
-    ? mentees.map((mentee) => ({
-        id: mentee._id,
-        menteeName: `${mentee.first_name} ${mentee.last_name}`,
-      }))
-    : []; // Initialize empty array
-
   const handleClick = (menteeId: string) => {
     navigate("/mentor/mentee-information", { state: { menteeId } });
   };
@@ -122,6 +126,8 @@ const MentorDashboard = () => {
     name: string;
     description: string;
     date: string;
+    startTime: string;
+    endTime: string;
     userIds: string[];
     calendarLink?: string;
   }) => {
@@ -140,13 +146,19 @@ const MentorDashboard = () => {
     setSelectedEvent(event);
   };
 
+  useEffect(() => {
+    if (user?.role === "board") {
+      setActiveTab("Courses");
+    }
+  }, [user?.role]);
+
   return (
     <>
       <Navbar />
       {selectedEvent && (
         <Modal
           header={selectedEvent.name}
-          subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()} ${new Date(selectedEvent.startTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} - ${new Date(selectedEvent.endTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`}
           body={
             <>
               {selectedEvent.description}
@@ -172,110 +184,116 @@ const MentorDashboard = () => {
           onSubmit={handleCreateEvent} // Pass event creation function
         />
       )}
-
-      <div className="row g-3 Margin--20">
-        <div className="col-lg-8">
-          <div className="Block p-3">
-            <div className="Flex-row Margin-bottom--30">
-              {["My Mentees", "Courses"].map((tab) => (
-                <div
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={
-                    "Cursor--pointer Padding-bottom--8 Margin-right--32 Text-fontSize--20 " +
-                    (activeTab === tab
-                      ? "Border-bottom--blue Text-color--gray-1000"
-                      : "Text-color--gray-600")
-                  }
-                  style={{
-                    cursor: "pointer",
-                    paddingBottom: "8px",
-                    borderBottom:
-                      activeTab === tab
-                        ? "2px solid #0096C0"
-                        : "2px solid transparent",
-                    marginRight: "48px",
-                  }}
-                >
-                  {tab}
+      <div className="container py-4">
+        <div className="row g-3">
+          <div className="col-lg-8">
+            <div className="Block">
+              <div className="Block-header">
+                <div className="Flex-row">
+                  {user?.role === "board" ? (
+                    // Board members only see Courses tab
+                    <div
+                      onClick={() => setActiveTab("Courses")}
+                      className={`tab ${activeTab === "Courses" ? "active" : ""}`}
+                    >
+                      Courses
+                    </div>
+                  ) : (
+                    // Other roles see both tabs
+                    ["My Mentees", "Courses"].map((tab) => (
+                      <div
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`tab ${activeTab === tab ? "active" : ""}`}
+                      >
+                        {tab === "My Mentees" && user?.role === "staff"
+                          ? "All Mentees"
+                          : tab}
+                      </div>
+                    ))
+                  )}
                 </div>
-              ))}
-            </div>
+              </div>
+              <div className="Block-subtitle" />
 
-            {activeTab === "My Mentees" && (
-              <div>
-                {loading ? (
-                  <p>Loading mentees...</p>
-                ) : error ? (
-                  <p style={{ color: "red" }}>{error}</p>
-                ) : mentees.length > 0 ? (
-                  <div className="row gx-3 gy-3">
-                    {menteeGridData.map((mentee) => (
-                      <div className="col-lg-4" key={mentee.id}>
-                        <div
-                          className="Mentor--card"
-                          onClick={() => handleClick(mentee.id)}
-                        >
-                          <div className="Mentor--card-color Background-color--teal-1000" />
-                          <div className="Padding--10">
-                            <h3 className="Text-fontSize--20 Text-color--gray-600">
-                              {mentee.menteeName}
-                            </h3>
+              {activeTab === "My Mentees" && (
+                <div>
+                  {loading ? (
+                    <p>Loading mentees...</p>
+                  ) : error ? (
+                    <p style={{ color: "red" }}>{error}</p>
+                  ) : mentees.length > 0 ? (
+                    <div className="row gx-3 gy-3">
+                      {mentees.map((mentee) => (
+                        <div className="col-lg-4" key={mentee._id}>
+                          <div
+                            className="Mentor--card"
+                            onClick={() => handleClick(mentee._id)}
+                          >
+                            <div className="Mentor--card-color Background-color--teal-1000" />
+                            <div className="Padding--10">
+                              <div className="Mentor--card-name">
+                                {mentee.first_name} {mentee.last_name}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No mentees found.</p>
+                  )}
+                </div>
+              )}
+
+              {activeTab === "Courses" && (
+                <div className="row gx-3 gy-3">
+                  {workshops.map((item) => (
+                    <div className="col-lg-4" key={item._id}>
+                      <div
+                        className="Mentor--card"
+                        onClick={() => handleClickWorkshop(item._id)}
+                      >
+                        <div className="Mentor--card-color Background-color--teal-1000" />
+                        <div className="Padding--10">
+                          <div className="Mentor--card-name">{item.name}</div>
+                          <div className="Mentor--card-description">
+                            {item.description}
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p>No mentees found.</p>
-                )}
-              </div>
-            )}
-
-            {activeTab === "Courses" && (
-              <div className="row gx-3 gy-3">
-                {workshops.map((item) => (
-                  <div className="col-lg-4" key={item._id}>
-                    <div
-                      className="Mentor--card"
-                      onClick={() => handleClickWorkshop(item._id)}
-                    >
-                      <div className="Mentor--card-color Background-color--teal-1000" />
-                      <div className="Padding--10">
-                        <h3 className="Text-fontSize--20 Text-color--gray-600">
-                          {item.name}
-                        </h3>
-                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="col-lg-4">
-          <div className="Block p-3">
-            <div className="Block-header">Upcoming Events</div>
-            <div className="Block-subtitle">
-              Scheduled meetings and workshops
+                  ))}
+                </div>
+              )}
             </div>
-            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <Event
-                key={month}
-                month={month}
-                events={monthEvents}
-                onEventClick={handleEventClick}
-              />
-            ))}
+          </div>
 
-            <div
-              className="Button Button-color--blue-1000"
-              onClick={() => {
-                setCreateEventModal(true);
-              }}
-            >
-              Add New Event
+          <div className="col-lg-4">
+            <div className="Block p-3">
+              <div className="Block-header">Upcoming Events</div>
+              <div className="Block-subtitle">
+                Scheduled meetings and workshops
+              </div>
+              {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+                <Event
+                  key={month}
+                  month={month}
+                  events={monthEvents}
+                  onEventClick={handleEventClick}
+                />
+              ))}
+
+              {user && tier1Roles.includes(user.role) && (
+                <div
+                  className="Button Button-color--blue-1000"
+                  onClick={() => {
+                    setCreateEventModal(true);
+                  }}
+                >
+                  Add New Event
+                </div>
+              )}
             </div>
           </div>
         </div>

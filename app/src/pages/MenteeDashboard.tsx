@@ -7,18 +7,20 @@ import Event, { EventData } from "../components/Event";
 import { useUser } from "../contexts/UserContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
-interface CourseInformationElements {
-  id: string;
-  courseName: string;
+interface Workshop {
+  _id: string;
+  name: string;
+  description: string;
 }
 
 const MenteeDashboard = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState<EventData[]>([]);
-  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([]);
+  const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const { user } = useUser();
   const userId = user?._id;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
@@ -27,41 +29,46 @@ const MenteeDashboard = () => {
       try {
         const [eventsResponse, workshopsResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
-          api.get(`/api/workshop/user/${userId}`),
+          api.get(`/api/mentee/${userId}/workshops`),
         ]);
 
         setEvents(
           eventsResponse.data.map((event: any) => ({
             id: event._id,
             title: event.name,
+            startTime: event.startTime,
+            endTime: event.endTime,
             description: event.description,
             date: event.date,
+            calendarLink: event.calendarLink,
           })),
         );
 
-        setWorkshops(
-          workshopsResponse.data.map((workshop: any) => ({
-            id: workshop._id,
-            courseName: workshop.name,
-          })),
-        );
+        setWorkshops(workshopsResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [userId]);
 
-  const handleClick = (id: string) => {
-    navigate(`/mentee/course-information/${id}`);
+  const handleWorkshopClick = (workshopId: string) => {
+    navigate(`/mentor/workshop-information`, {
+      state: { workshopId },
+    });
   };
 
   const eventsByMonth: { [key: string]: EventData[] } = events
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // Sort events chronologically
+    .sort(
+      (a, b) =>
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+    ) // Sort events chronologically
     .reduce(
       (acc, event) => {
-        const eventDate = new Date(event.date);
+        const eventDate = new Date(event.startTime);
         const month = eventDate.toLocaleString("default", { month: "long" });
 
         if (!acc[month]) {
@@ -81,13 +88,17 @@ const MenteeDashboard = () => {
     setSelectedEvent(event);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Navbar />
       {selectedEvent && (
         <Modal
           header={selectedEvent.name}
-          subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()}`}
+          subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()} ${new Date(selectedEvent.startTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} - ${new Date(selectedEvent.endTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`}
           body={
             <>
               {selectedEvent.description}
@@ -114,16 +125,17 @@ const MenteeDashboard = () => {
             </div>
             <div className="row gx-3 gy-3">
               {workshops.map((item) => (
-                <div className="col-lg-4" key={item.id}>
+                <div className="col-lg-4" key={item._id}>
                   <div
                     className="Workshop-card"
-                    onClick={() => handleClick(item.id)}
+                    onClick={() => handleWorkshopClick(item._id)}
                   >
                     <div className="Workshop-card-color Background-color--teal-1000" />
                     <div className="Padding--10">
                       <h3 className="Text-fontSize--20 Text-color--gray-600">
-                        {item.courseName}
+                        {item.name}
                       </h3>
+                      <p className="Text-color--gray-400">{item.description}</p>
                     </div>
                   </div>
                 </div>

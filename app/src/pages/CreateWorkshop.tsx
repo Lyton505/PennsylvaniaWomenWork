@@ -72,7 +72,6 @@ const CreateWorkshop = () => {
       // Add associated files (with placeholder s3id for now)
       if (fileDetails.length > 0) {
         for (const file of fileDetails) {
-
           const uploadResponse = await fetch(file.url, {
             method: "PUT",
             body: file.file,
@@ -248,8 +247,8 @@ const CreateWorkshop = () => {
       )}
       <Navbar />
 
-      <div className="Flex-column Align-items--center Margin-top--40">
-        <div className="Block Create-block">
+      <div className="FormWidget">
+        <div className="FormWidget-body Block">
           <div className="Block-header">Create Workshop</div>
           <div className="Block-subtitle">Add a new workshop</div>
           <div className="Block-body">
@@ -260,33 +259,29 @@ const CreateWorkshop = () => {
             >
               {({ errors, touched, isSubmitting }) => (
                 <Form>
-                  <div className="Margin-bottom--30">
-                    <div className="Form-group">
-                      <label htmlFor="name">Workshop Name:</label>
-                      <Field
-                        type="text"
-                        name="name"
-                        placeholder="Name"
-                        className="Form-input-box"
-                      />
-                      {errors.name && touched.name && (
-                        <div className="Form-error">{errors.name}</div>
-                      )}
-                    </div>
+                  <div className="Form-group">
+                    <label htmlFor="name">Workshop Name:</label>
+                    <Field
+                      type="text"
+                      name="name"
+                      placeholder="Name"
+                      className="Form-input-box"
+                    />
+                    {errors.name && touched.name && (
+                      <div className="Form-error">{errors.name}</div>
+                    )}
                   </div>
-                  <div className="Margin-bottom--20">
-                    <div className="Form-group">
-                      <label htmlFor="description">Workshop Description:</label>
-                      <Field
-                        type="text"
-                        name="description"
-                        placeholder="Description"
-                        className="Form-input-box"
-                      />
-                      {errors.description && touched.description && (
-                        <div className="Form-error">{errors.description}</div>
-                      )}
-                    </div>
+                  <div className="Form-group">
+                    <label htmlFor="description">Workshop Description:</label>
+                    <Field
+                      type="text"
+                      name="description"
+                      placeholder="Description"
+                      className="Form-input-box"
+                    />
+                    {errors.description && touched.description && (
+                      <div className="Form-error">{errors.description}</div>
+                    )}
                   </div>
                   {fileDetails.length > 0 && (
                     <div>
