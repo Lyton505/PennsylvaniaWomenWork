@@ -50,6 +50,16 @@ const MentorDashboard = () => {
       return;
     }
 
+    const fetchUserEvents = async () => {
+      try {
+        const response = await api.get(`/api/event/${userId}`);
+        setEvents(response.data);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+        setError("Failed to load events.");
+      }
+    };
+
     if (
       !userId ||
       (user.role !== "mentor" && user.role !== "staff" && user.role !== "board")
@@ -83,6 +93,7 @@ const MentorDashboard = () => {
       }
     };
 
+    fetchUserEvents();
     fetchMentees();
   }, [user, userId]);
 
@@ -114,7 +125,11 @@ const MentorDashboard = () => {
     fetchMentors();
   }, [user]);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const eventsByMonth: { [key: string]: EventData[] } = events
+    .filter((event) => new Date(event.date) >= today)
     .sort(
       (a, b) =>
         new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
@@ -152,6 +167,7 @@ const MentorDashboard = () => {
     startTime: string;
     endTime: string;
     userIds: string[];
+    roles: string[];
     calendarLink?: string;
   }) => {
     try {
