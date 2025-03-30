@@ -26,22 +26,24 @@ const MenteeDashboard = () => {
   const eventDate = selectedEvent ? new Date(selectedEvent.date) : null;
 
   const formattedSubheader =
-      eventDate && start && end
-          ? `${eventDate.toLocaleString("default", {
-              month: "long",
-          })} ${eventDate.getDate()}, ${eventDate.getFullYear()} ${start.toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-          })} - ${end.toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-          })}`
-          : "";
+    eventDate && start && end
+      ? `${eventDate.toLocaleString("default", {
+          month: "long",
+        })} ${eventDate.getDate()}, ${eventDate.getFullYear()} ${start.toLocaleTimeString(
+          "en-US",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          },
+        )} - ${end.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })}`
+      : "";
 
-
-    useEffect(() => {
+  useEffect(() => {
     if (!userId) return;
 
     const fetchData = async () => {
@@ -80,7 +82,11 @@ const MenteeDashboard = () => {
     });
   };
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const eventsByMonth: { [key: string]: EventData[] } = events
+    .filter((event) => new Date(event.date) >= today)
     .sort(
       (a, b) =>
         new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
@@ -110,8 +116,6 @@ const MenteeDashboard = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-
-
 
   return (
     <>

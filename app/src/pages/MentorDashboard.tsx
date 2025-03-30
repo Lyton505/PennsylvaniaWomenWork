@@ -101,7 +101,11 @@ const MentorDashboard = () => {
     fetchWorkshops();
   }, []);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const eventsByMonth: { [key: string]: EventData[] } = events
+    .filter((event) => new Date(event.date) >= today)
     .sort(
       (a, b) =>
         new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
@@ -161,7 +165,6 @@ const MentorDashboard = () => {
     if (user?.role === "board") {
       setActiveTab("Courses");
     }
-
   }, [user?.role]);
 
   return (
