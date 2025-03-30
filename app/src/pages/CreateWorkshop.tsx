@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Navbar from "../components/Navbar";
@@ -33,7 +33,14 @@ const CreateWorkshop = () => {
   const [success, setSuccess] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
   const [fileDetails, setFileDetails] = useState<
-    { title: string; desc: string; url: string; s3id: string; file: any; tags: string[] }[]
+    {
+      title: string;
+      desc: string;
+      url: string;
+      s3id: string;
+      file: any;
+      tags: string[];
+    }[]
   >([]);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -52,7 +59,6 @@ const CreateWorkshop = () => {
     };
     fetchTags();
   }, []);
-
 
   const handleSubmit = async (
     values: any,
@@ -195,116 +201,123 @@ const CreateWorkshop = () => {
               onSubmit={handleFileSumbit}
             >
               {({ setFieldValue, errors, touched, isSubmitting }) => (
-                  <Form>
-                    <div className="Form-group">
-                      <label htmlFor="tags">Tags (select or create new)</label>
-                      <CreatableSelect
-                          components={animatedComponents}
-                          isMulti
-                          options={availableTags.map((tag) => ({label: tag, value: tag}))}
-                          value={selectedTags.map((tag) => ({label: tag, value: tag}))}
-                          onChange={(selectedOptions) =>
-                              setSelectedTags(selectedOptions.map((opt) => opt.value))
-                          }
-                          onCreateOption={(inputValue) => {
-                            const trimmed = inputValue.trim();
-                            if (!trimmed) return;
-                            if (!availableTags.includes(trimmed)) {
-                              setAvailableTags((prev) => [...prev, trimmed]);
-                            }
-                            if (!selectedTags.includes(trimmed)) {
-                              setSelectedTags((prev) => [...prev, trimmed]);
-                            }
-                          }}
-                          placeholder="Select or type to create a tag..."
-                          isClearable={false}
-                          isSearchable
-                          className="Margin-bottom--10"
-                          styles={{
-                            control: (base) => ({
-                              ...base,
-                              borderColor: "#ccc",
-                              boxShadow: "none",
-                            }),
-                          }}
-                          formatCreateLabel={(inputValue) => `Create new tag: "${inputValue}"`}
-                          createOptionPosition="first"
-                      />
-                    </div>
-
-
-                    <div className="Form-group">
-                      <label htmlFor="title">Title</label>
-                      <Field
-                          className="Form-input-box"
-                          type="text"
-                          id="title"
-                          name="title"
-                      />
-                      {errors.title && touched.title && (
-                          <div className="Form-error">{errors.title}</div>
-                      )}
-                    </div>
-                    <div className="Form-group">
-                      <label htmlFor="desc">Description</label>
-                      <Field
-                          as="textarea"
-                          className="Form-input-box text-area"
-                          id="desc"
-                          name="desc"
-                          rows="4"
-                      />
-                      {errors.desc && touched.desc && (
-                          <div className="Form-error">{errors.desc}</div>
-                      )}
-                    </div>
-                    <div className="Form-group">
-                      <label htmlFor="file">Files</label>
-                      <input
-                          className="Form-input-box"
-                          type="file"
-                          id="file"
-                          name="file"
-                          onChange={(event) => {
-                            if (event.currentTarget.files) {
-                              const file = event.currentTarget.files[0];
-                              setFieldValue("file", file);
-                            }
-                          }}
-                      />
-                      {errors.file && touched.file && (
-                          <div className="Form-error">{errors.file}</div>
-                      )}
-                    </div>
-                    <button
-                        type="submit"
-                        className="Button Margin-top--10 Button-color--teal-1000 Width--100"
-                        disabled={
-                            Object.keys(errors).length > 0 ||
-                            !Object.keys(touched).length ||
-                            isSubmitting
+                <Form>
+                  <div className="Form-group">
+                    <label htmlFor="tags">Tags (select or create new)</label>
+                    <CreatableSelect
+                      components={animatedComponents}
+                      isMulti
+                      options={availableTags.map((tag) => ({
+                        label: tag,
+                        value: tag,
+                      }))}
+                      value={selectedTags.map((tag) => ({
+                        label: tag,
+                        value: tag,
+                      }))}
+                      onChange={(selectedOptions) =>
+                        setSelectedTags(selectedOptions.map((opt) => opt.value))
+                      }
+                      onCreateOption={(inputValue) => {
+                        const trimmed = inputValue.trim();
+                        if (!trimmed) return;
+                        if (!availableTags.includes(trimmed)) {
+                          setAvailableTags((prev) => [...prev, trimmed]);
                         }
-                    >
-                      {isSubmitting ? (
-                          <AsyncSubmit loading={isLoading}/>
-                      ) : (
-                          "Upload Files"
-                      )}
-                    </button>
-                    {errorMessage && (
-                        <div className="Form-error">{errorMessage}</div>
-                    )}
+                        if (!selectedTags.includes(trimmed)) {
+                          setSelectedTags((prev) => [...prev, trimmed]);
+                        }
+                      }}
+                      placeholder="Select or type to create a tag..."
+                      isClearable={false}
+                      isSearchable
+                      className="Margin-bottom--10"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: "#ccc",
+                          boxShadow: "none",
+                        }),
+                      }}
+                      formatCreateLabel={(inputValue) =>
+                        `Create new tag: "${inputValue}"`
+                      }
+                      createOptionPosition="first"
+                    />
+                  </div>
 
-                    {fileAdded && (
-                        <div className="Form-success">File added successfully!</div>
+                  <div className="Form-group">
+                    <label htmlFor="title">Title</label>
+                    <Field
+                      className="Form-input-box"
+                      type="text"
+                      id="title"
+                      name="title"
+                    />
+                    {errors.title && touched.title && (
+                      <div className="Form-error">{errors.title}</div>
                     )}
-                  </Form>
+                  </div>
+                  <div className="Form-group">
+                    <label htmlFor="desc">Description</label>
+                    <Field
+                      as="textarea"
+                      className="Form-input-box text-area"
+                      id="desc"
+                      name="desc"
+                      rows="4"
+                    />
+                    {errors.desc && touched.desc && (
+                      <div className="Form-error">{errors.desc}</div>
+                    )}
+                  </div>
+                  <div className="Form-group">
+                    <label htmlFor="file">Files</label>
+                    <input
+                      className="Form-input-box"
+                      type="file"
+                      id="file"
+                      name="file"
+                      onChange={(event) => {
+                        if (event.currentTarget.files) {
+                          const file = event.currentTarget.files[0];
+                          setFieldValue("file", file);
+                        }
+                      }}
+                    />
+                    {errors.file && touched.file && (
+                      <div className="Form-error">{errors.file}</div>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    className="Button Margin-top--10 Button-color--teal-1000 Width--100"
+                    disabled={
+                      Object.keys(errors).length > 0 ||
+                      !Object.keys(touched).length ||
+                      isSubmitting
+                    }
+                  >
+                    {isSubmitting ? (
+                      <AsyncSubmit loading={isLoading} />
+                    ) : (
+                      "Upload Files"
+                    )}
+                  </button>
+                  {errorMessage && (
+                    <div className="Form-error">{errorMessage}</div>
+                  )}
+
+                  {fileAdded && (
+                    <div className="Form-success">File added successfully!</div>
+                  )}
+                </Form>
               )}
             </Formik>
           }
         />
       )}
-      <Navbar/>
+      <Navbar />
 
       <div className="FormWidget">
         <div className="FormWidget-body Block">
@@ -312,26 +325,26 @@ const CreateWorkshop = () => {
           <div className="Block-subtitle">Add a new workshop</div>
           <div className="Block-body">
             <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
             >
-              {({errors, touched, isSubmitting}) => (
-                  <Form>
-                    <div className="Form-group">
-                      <label htmlFor="name">Workshop Name:</label>
-                      <Field
-                          type="text"
-                          name="name"
-                          placeholder="Name"
-                          className="Form-input-box"
-                      />
-                      {errors.name && touched.name && (
-                          <div className="Form-error">{errors.name}</div>
-                      )}
-                    </div>
-                    <div className="Form-group">
-                      <label htmlFor="description">Workshop Description:</label>
+              {({ errors, touched, isSubmitting }) => (
+                <Form>
+                  <div className="Form-group">
+                    <label htmlFor="name">Workshop Name:</label>
+                    <Field
+                      type="text"
+                      name="name"
+                      placeholder="Name"
+                      className="Form-input-box"
+                    />
+                    {errors.name && touched.name && (
+                      <div className="Form-error">{errors.name}</div>
+                    )}
+                  </div>
+                  <div className="Form-group">
+                    <label htmlFor="description">Workshop Description:</label>
                     <Field
                       type="text"
                       name="description"

@@ -28,7 +28,13 @@ export const createResource = async (req: Request, res: Response) => {
   }
 
   try {
-    const newResource = new Resource({ name, description, s3id, workshopIDs, tags });
+    const newResource = new Resource({
+      name,
+      description,
+      s3id,
+      workshopIDs,
+      tags,
+    });
     const savedResource = await newResource.save();
 
     res.status(201).json({
@@ -89,4 +95,3 @@ export const getAllTags = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching tags", error });
   }
 };
-
