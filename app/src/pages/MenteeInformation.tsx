@@ -168,7 +168,7 @@ const MenteeInformation = () => {
   }
 
   const mentorValidationSchema = yup.object({
-    mentorName: yup.string().required("Mentor selection is required"),
+    mentorName: yup.string().required("Volunteer selection is required"),
   })
   const handleMentorSubmit = async (
     values: typeof mentorInitialValues,
@@ -311,7 +311,7 @@ const MenteeInformation = () => {
       </div>
       {isAssignMentorModal && (
         <Modal
-          header={`Assign a mentor for ${mentee?.first_name} ${mentee?.last_name}`}
+          header={`Assign a volunteer for ${mentee?.first_name} ${mentee?.last_name}`}
           action={() => setIsAssignMentorModal(false)}
           body={
             <Formik
@@ -322,19 +322,19 @@ const MenteeInformation = () => {
               {({ errors, touched, isSubmitting }) => (
                 <Form>
                   <div className="Form-group">
-                    <label htmlFor="mentorName">Select Mentor</label>
+                    <label htmlFor="mentorName">Select Volunteer</label>
                     <Field
                       as="select"
                       className="Form-input-box"
                       id="mentorName"
                       name="mentorName"
                     >
-                      <option value="">Select a mentee...</option>
-                      {availableWorkshops.map((workshop: any) => (
-                        <option key={workshop._id} value={workshop._id}>
-                          {workshop.name}
-                        </option>
-                      ))}
+                    <option value="">Select a volunteer...</option>
+                    {mentors.map((mentor: MentorInfo) => (
+                      <option key={mentor._id} value={mentor._id}>
+                        {mentor.first_name} {mentor.last_name}
+                      </option>
+                    ))}
                     </Field>
                     {errors.mentorName && touched.mentorName && (
                       <div className="Form-error">{errors.mentorName}</div>
@@ -346,7 +346,7 @@ const MenteeInformation = () => {
                     className="Button Button-color--teal-1000 Width--100"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Assigning..." : "Assign Workshop"}
+                    {isSubmitting ? "Assigning..." : "Assign Volunteer"}
                   </button>
                 </Form>
               )}
