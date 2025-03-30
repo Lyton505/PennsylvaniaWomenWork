@@ -103,7 +103,7 @@ export const deleteResource = async (req: Request, res: Response) => {
     console.error("Error deleting resource:", error);
     res.status(500).json({ message: "Failed to delete resource", error });
   }
-}
+};
 
 // delete resource utility function
 export const deleteResourcesForWorkshop = async (workshopId: string) => {
@@ -120,17 +120,20 @@ export const deleteResourcesForWorkshop = async (workshopId: string) => {
     }
   }
   await Resource.deleteMany({ workshopIDs: workshopId });
-}
+};
 
-export const deleteResourcesByWorkshopId = async (req: Request, res: Response) => {
+export const deleteResourcesByWorkshopId = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { workshopId } = req.params;
-    
+
     await deleteResourcesForWorkshop(workshopId);
-    
+
     res.status(200).json({ message: "Resources deleted successfully" });
   } catch (error) {
     console.error("Error deleting resources:", error);
     res.status(500).json({ message: "Failed to delete resources", error });
   }
-}
+};

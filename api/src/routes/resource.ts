@@ -4,7 +4,7 @@ import {
   getResourcesByWorkshopId,
   generateRetrievalURL,
   deleteResource,
-  deleteResourcesByWorkshopId
+  deleteResourcesByWorkshopId,
 } from "../controllers/resourceController";
 
 const router = express.Router();
