@@ -3,6 +3,8 @@ import {
   createResource,
   getResourcesByWorkshopId,
   generateRetrievalURL,
+  deleteResource,
+  deleteResourcesByWorkshopId
 } from "../controllers/resourceController";
 
 const router = express.Router();
@@ -15,4 +17,7 @@ router.get("/workshop/:workshopId/resources", getResourcesByWorkshopId);
 
 router.get("/getURL/:objectId", generateRetrievalURL);
 
+router.delete("/delete-resource/:objectId", deleteResource);
+
+router.delete("/delete-resources/:workshopId", deleteResourcesByWorkshopId);
 export default router;

@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { Workshop } from "../model/Workshop"
 import AWS from "aws-sdk"
 import dotenv from "dotenv"
+import { deleteResourcesForWorkshop } from "./resourceController"
 
 dotenv.config()
 
@@ -102,6 +103,8 @@ export const getWorkshopsByUserId = async (req: Request, res: Response) => {
 export const deleteWorkshop = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
+
+    await deleteResourcesForWorkshop(id) // Delete resources associated with the workshop
 
     const deletedWorkshop = await Workshop.findByIdAndDelete(id)
     if (!deletedWorkshop) {

@@ -79,3 +79,58 @@ export const generateRetrievalURL = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const deleteResource = async (req: Request, res: Response) => {
+  try {
+    const { resourceId } = req.params;
+
+    const deletedResource = await Resource.findByIdAndDelete(resourceId);
+
+    if (!deletedResource) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    // Delete the object from S3
+    const params = {
+      Bucket: bucketName as string,
+      Key: deletedResource.s3id,
+    };
+
+    await s3.deleteObject(params).promise();
+
+    res.status(200).json({ message: "Resource deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting resource:", error);
+    res.status(500).json({ message: "Failed to delete resource", error });
+  }
+}
+
+// delete resource utility function
+export const deleteResourcesForWorkshop = async (workshopId: string) => {
+  const resources = await Resource.find({ workshopIDs: workshopId });
+
+  for (const resource of resources) {
+    if (resource.s3id) {
+      const params = {
+        Bucket: bucketName as string,
+        Key: resource.s3id,
+      };
+
+      await s3.deleteObject(params).promise();
+    }
+  }
+  await Resource.deleteMany({ workshopIDs: workshopId });
+}
+
+export const deleteResourcesByWorkshopId = async (req: Request, res: Response) => {
+  try {
+    const { workshopId } = req.params;
+    
+    await deleteResourcesForWorkshop(workshopId);
+    
+    res.status(200).json({ message: "Resources deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting resources:", error);
+    res.status(500).json({ message: "Failed to delete resources", error });
+  }
+}
