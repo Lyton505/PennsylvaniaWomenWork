@@ -1,11 +1,14 @@
-import express from 'express';
-import { generatePresignedUrl, createBoardFile, getBoardFiles } from '../controllers/boardFileController';
-
+import express from "express";
+import {
+  generatePresignedUrl,
+  createBoardFile,
+  getBoardFiles,
+} from "../controllers/boardFileController";
 
 const router = express.Router();
 
 // Route to generate a presigned URL for S3
-router.get('/generate-presigned-url/:file_name', generatePresignedUrl);
+router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
 
 // Route to create a board file
 router.post("/create-board-file", createBoardFile);

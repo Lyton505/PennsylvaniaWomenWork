@@ -74,4 +74,4 @@ export const getBoardFiles = async (req: Request, res: Response) => {
     console.error("Error retrieving board files:", error);
     res.status(500).json({ message: "Error retrieving board files", error });
   }
-}
+};
