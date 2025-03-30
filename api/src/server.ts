@@ -23,5 +23,6 @@ app.use("/api", router);
 
 app.use("/api/workshop", routes.workshop);
 app.use("/api/resource", routes.resource);
+app.use("api/boardFile", routes.boardFile);
 
 app.listen(process.env.PORT || 8000, () => console.log("Server running..."));
