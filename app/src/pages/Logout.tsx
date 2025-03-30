@@ -7,6 +7,8 @@ const Logout = (): ReactElement => {
     // Remove token from localStorage
     localStorage.removeItem("token");
     console.log("User logged out");
+    // clear user from localStorage
+    localStorage.removeItem("user");
   }, []); // Ensure navigate is included in the dependency array
 
   return (

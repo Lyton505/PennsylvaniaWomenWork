@@ -8,19 +8,19 @@ import { error } from "console";
 export const createUser = async (req: Request, res: Response) => {
   const {
     sub, // Auth0 user ID
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     username,
     email,
     role,
-    workshopIDs,
+    workshops,
     menteeInfo,
     meetingSchedule,
     mentorData,
     meetings,
   } = req.body;
 
-  if (!sub || !firstName || !lastName || !username || !email || !role) {
+  if (!sub || !first_name || !last_name || !username || !email || !role) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -35,12 +35,12 @@ export const createUser = async (req: Request, res: Response) => {
 
     const newUser = new User({
       _id: sub, // ✅ Store Auth0 sub as `_id`
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       username,
       email,
       role,
-      workshopIDs: role === "mentor" ? workshopIDs : undefined,
+      workshops: role === "mentor" ? workshops : undefined,
       menteeInfo: role === "mentor" ? menteeInfo : undefined,
       meetingSchedule: role === "mentee" ? meetingSchedule : undefined,
       mentorData: role === "mentee" ? mentorData : undefined,
@@ -149,9 +149,6 @@ export const addMeeting = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Add the meeting to the user's meetings array
-    user.meetings.push({ name: meeting, notes });
-
     // Save the updated user document
     await user.save();
 
@@ -182,8 +179,8 @@ export const getCurrentUser = async (req: Request, res: Response) => {
       _id: user._id.toString(), // Convert MongoDB ObjectId to string
       username: user.username,
       role: user.role,
-      firstName: user.firstName, // Include firstName
-      lastName: user.lastName, // Include lastName
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -199,7 +196,7 @@ export const updateUser = async (req: Request, res: Response) => {
     "username",
     "email",
     "role",
-    "workshopIDs",
+    "workshops",
     "menteeInfo",
     "meetingSchedule",
     "mentorData",
@@ -244,29 +241,13 @@ export const updateUser = async (req: Request, res: Response) => {
 };
 
 export const getCurrentUserById = async (req: Request, res: Response) => {
-  const { user_id } = req.params; // ✅ Auth0 user ID from URL param
-
-  if (!user_id) {
-    return res.status(400).json({ message: "User ID is required" });
-  }
-
   try {
-    // Find user by the `user_id` field, which stores the Auth0 ID
-    const user = await User.findOne({ user_id });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(200).json({
-      _id: user._id, // Return the correct ObjectId
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
-    });
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ message: "Error fetching user", error });
+    const sub = decodeURIComponent(req.params.auth_id);
+    console.log("Searching for user with sub:", sub);
+    const user = await User.findOne({ auth_id: sub });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
   }
 };

@@ -5,6 +5,8 @@ import {
   getWorkshopsByUserId,
   generatePresignedUrl,
   updateWorkshop,
+  getAllWorkshops,
+  getWorkshopById,
 } from "../controllers/workshopController";
 
 const router = express.Router();
@@ -12,8 +14,8 @@ const router = express.Router();
 // Route to create a workshop
 router.post("/create-workshop", createWorkshop);
 
-// Route to get a specific workshop -- not wired
-router.get("/:id", getWorkshop);
+// route to get all workshops
+router.get("/get-workshops", getAllWorkshops);
 
 // Route to get workshops by user ID -- not wired
 router.get("/user/:userId", getWorkshopsByUserId);
@@ -22,5 +24,9 @@ router.get("/user/:userId", getWorkshopsByUserId);
 router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
 
 router.put("/update-workshop/:id", updateWorkshop);
+// Route to get a specific workshop -- not wired
+router.get("/:id", getWorkshop);
+
+router.get("/:workshopId", getWorkshopById);
 
 export default router;

@@ -3,6 +3,7 @@ import {
   createResource,
   getResourcesByWorkshopId,
   generateRetrievalURL,
+  getAllTags,
 } from "../controllers/resourceController";
 
 const router = express.Router();
@@ -11,8 +12,9 @@ const router = express.Router();
 router.post("/create-resource", createResource);
 
 // Route to get resources by workshop ID -- not wired
-router.get("/workshop/:workshopId/resources", getResourcesByWorkshopId);
+router.get("/get-resource-by-workshop/:workshopId", getResourcesByWorkshopId);
 
 router.get("/getURL/:objectId", generateRetrievalURL);
 
+router.get("/all-tags", getAllTags);
 export default router;

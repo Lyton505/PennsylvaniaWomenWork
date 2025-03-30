@@ -1,246 +1,312 @@
-import React, { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import Icon from "../components/Icon"
-import Modal from "../components/Modal"
-import { Formik, Form, Field } from "formik"
-import * as yup from "yup"
-import { api } from "../api"
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Icon from "../components/Icon";
+import Modal from "../components/Modal";
+import { Formik, Form, Field } from "formik";
+import * as yup from "yup";
+import { api } from "../api";
+import { useUser } from "../contexts/UserContext";
+import { tier1Roles } from "../utils/roles";
+import { toast } from "react-hot-toast";
+
+interface Workshop {
+  _id: string;
+  name: string;
+  description: string;
+  mentor: string;
+  mentees: string[];
+}
 
 interface MenteeInfo {
-  _id: string // Mentee's unique ID (MongoDB ObjectID or Auth0 ID)
-  firstName: string
-  lastName: string
-  email: string
-  role: string // e.g., "mentee"
-  mentor?: string // Optional mentor ID assigned to mentee
-  workshops: string[] // List of workshop names
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: string;
+  mentor?: string;
+  workshops: string[]; // Array of workshop names
 }
 
 const MenteeInformation = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const menteeId = location.state?.menteeId
-  const [mentee, setMentee] = useState<MenteeInfo | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("Workshops")
-  const [isModal, setIsModal] = useState(false)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const menteeId = location.state?.menteeId;
+  const [mentee, setMentee] = useState<MenteeInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isModal, setIsModal] = useState(false);
+  const { user } = useUser();
+  const [availableWorkshops, setAvailableWorkshops] = useState([]);
+  const [assignedWorkshops, setAssignedWorkshops] = useState<Workshop[]>([]);
 
   useEffect(() => {
     if (!menteeId) {
-      setError("Mentee ID is missing.")
-      setLoading(false)
-      return
+      setError("Mentee ID is missing.");
+      setLoading(false);
+      return;
     }
 
-    const fetchMentee = async () => {
+    const fetchMenteeData = async () => {
       try {
-        console.log("Fetching mentee data for ID:", menteeId)
-        const response = await api.get(`/api/mentee/get-mentee/${menteeId}`) // ✅ Fetch mentee data
-        setMentee(response.data)
-      } catch (err) {
-        setError("Failed to load mentee details.")
-      } finally {
-        setLoading(false)
-      }
-    }
+        // Fetch mentee details
+        const menteeResponse = await api.get(
+          `/api/mentee/get-mentee/${menteeId}`,
+        );
+        setMentee(menteeResponse.data);
 
-    fetchMentee()
-  }, [menteeId])
+        // Fetch workshops assigned to this mentee
+        const workshopsResponse = await api.get(
+          `/api/mentee/${menteeId}/workshops`,
+        );
+        setAssignedWorkshops(workshopsResponse.data);
+
+        console.log("Mentee data:", menteeResponse.data);
+        console.log("Assigned workshops:", workshopsResponse.data);
+      } catch (err) {
+        setError("Failed to load mentee details.");
+        console.error("Error fetching mentee data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenteeData();
+  }, [menteeId]);
+
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+      try {
+        const response = await api.get("/api/workshop/get-workshops");
+        setAvailableWorkshops(response.data);
+      } catch (err) {
+        console.error("Error fetching workshops:", err);
+      }
+    };
+    fetchWorkshops();
+  }, []);
 
   const initialValues = {
     courseName: "",
-    startDate: "",
-    description: "",
-  }
+  };
 
   const validationSchema = yup.object({
-    courseName: yup.string().required("Course name is required"),
-    startDate: yup.date().required("Start date is required"),
-    description: yup.string().required("Course description is required"),
-  })
+    courseName: yup.string().required("Course selection is required"),
+  });
 
   const handleSubmit = async (
     values: typeof initialValues,
-    { setSubmitting }: any
+    { setSubmitting }: any,
   ) => {
     try {
-      console.log(values)
-      setIsModal(false)
+      if (!menteeId) {
+        throw new Error("Mentee ID is missing");
+      }
+
+      console.log(
+        "Assigning workshop:",
+        values.courseName,
+        "to mentee:",
+        menteeId,
+      );
+
+      const payload = {
+        workshopId: values.courseName,
+      };
+
+      console.log("Sending payload:", payload);
+
+      const response = await api.put(
+        `/api/mentee/${menteeId}/add-workshop`,
+        payload,
+      );
+
+      console.log("Assignment response:", response);
+
+      if (response.status === 200) {
+        toast.success("Workshop assigned successfully!");
+        const updatedMentee = await api.get(
+          `/api/mentee/get-mentee/${menteeId}`,
+        );
+        setMentee(updatedMentee.data);
+        setIsModal(false);
+      } else {
+        throw new Error("Failed to assign workshop");
+      }
     } catch (error) {
-      console.error("Error assigning course:", error)
+      console.error("Error assigning workshop:", error);
+      toast.error("Failed to assign workshop");
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false)
+  };
+
+  // Compute initials for the mentee's avatar
+  const getInitials = () => {
+    if (!mentee) return "";
+    return (
+      mentee.first_name.charAt(0).toUpperCase() +
+      mentee.last_name.charAt(0).toUpperCase()
+    );
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
     <>
       <Navbar />
-      <div className="Mentee-info-block">
-        <div onClick={() => navigate("/home")} className=" Margin-bottom--10">
-          <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
-        </div>
-        <div className="Flex-row--mentee-info">
-          <div>
-            <div className="Mentee-name--text">
-              {mentee?.firstName} {mentee?.lastName}
-            </div>
-            <div className="Mentee-role--text">
-              {mentee?.role || "No role assigned"}
+      <div className="container mt-4">
+        <div className="row">
+          {/* Back Button */}
+          <div
+            className="col-lg-12 mb-4"
+            onClick={() => navigate("/home")}
+            style={{ cursor: "pointer" }}
+          >
+            <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
+          </div>
+
+          {/* Column 1: Mentee Information Block */}
+          <div className="col-lg-4 mb-4">
+            <div className="Block">
+              <div className="Block-header">Mentee Information</div>
+              <div className="Block-subtitle">Mentee Details</div>
+              <div className="Block-content">
+                <div className="Profile-avatar">
+                  <div className="Profile-initials">{getInitials()}</div>
+                </div>
+                <div className="Profile-field">
+                  <div className="Profile-field-label">Name:</div>
+                  <div>
+                    {mentee?.first_name} {mentee?.last_name}
+                  </div>
+                </div>
+                <div className="Profile-field">
+                  <div className="Profile-field-label">Role:</div>
+                  <div>{mentee?.role}</div>
+                </div>
+                <div className="Profile-field">
+                  <div className="Profile-field-label">Email:</div>
+                  <div>{mentee?.email}</div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="Flex-row--mentee-description">
-          <div className="Mentee-info--text">Information</div>
-        </div>
-        {/* <div className="Flex-row--mentee-bio">
-          <div className="Mentee-description--text">
-            {mentee.description || "No description available."}
-          </div>
-        </div> */}
-
-        <div>
-          <div>
-            <div className="Flex-row--mentee-tabs">
-              {["Workshops", "Meetings", "Schedule New"].map((tab) => (
-                <div
-                  key={tab}
-                  className={`Mentee-tabs__tab ${activeTab === tab ? "Mentee-tabs__tab--active" : ""}`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab}
+          {/* Column 2: Mentee Courses */}
+          <div className="col-lg-4 mb-4">
+            <div className="Block">
+              <div className="Block-header">Mentee Courses</div>
+              <div className="Block-subtitle">
+                Courses assigned to {mentee?.first_name}
+              </div>
+              {assignedWorkshops.length > 0 ? (
+                <div className="Flex-col">
+                  {assignedWorkshops.map((workshop) => (
+                    <div key={workshop._id} className="Profile-field">
+                      {workshop.name}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-
-            {activeTab === "Workshops" && (
-              <div>
-                <div className="Workshop-header">Current Workshops</div>
-                <div className="List-style--none Margin-left--80">
-                  {mentee?.workshops && mentee.workshops.length > 0 ? (
-                    mentee.workshops.map((workshop: string, index: number) => (
-                      <div key={index} className="Course-list-element">
-                        <div className="Course-list-bullet" />
-                        {workshop}
-                      </div>
-                    ))
-                  ) : (
-                    <p>No workshops assigned.</p>
-                  )}
-                </div>
-                <div
-                  className="Button Button-color--teal-1000 Margin-left--80"
+              ) : (
+                <p>No courses assigned.</p>
+              )}
+              {(user?.role === "staff" || user?.role === "mentor") && (
+                <button
+                  className="Button Button-color--blue-1000 Width--100"
                   onClick={() => setIsModal(true)}
                 >
-                  Assign New Courses
-                </div>
+                  Assign New Course
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Column 3: Upcoming Meetings */}
+          <div className="col-lg-4 mb-4">
+            <div className="Block">
+              <div className="Block-header">Upcoming Meetings</div>
+              <div className="Block-subtitle">
+                Your meetings with {mentee?.first_name}
               </div>
-            )}
-
-            {isModal && (
-              <Modal
-                header="Assign New Course"
-                subheader="Add a new course for this mentee"
-                action={() => setIsModal(false)}
-                body={
-                  <Formik
-                    initialValues={initialValues}
-                    validationSchema={validationSchema}
-                    onSubmit={handleSubmit}
-                  >
-                    {({ errors, touched, isSubmitting }) => (
-                      <Form>
-                        <div className="Form-group">
-                          <label htmlFor="courseName">Course Name</label>
-                          <Field
-                            className="Form-input-box"
-                            type="text"
-                            id="courseName"
-                            name="courseName"
-                            placeholder="Enter course name"
-                          />
-                          {errors.courseName && touched.courseName && (
-                            <div className="Form-error">
-                              {errors.courseName}
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="Form-group">
-                          <label htmlFor="startDate">Start Date</label>
-                          <Field
-                            className="Form-input-box"
-                            type="date"
-                            id="startDate"
-                            name="startDate"
-                          />
-                          {errors.startDate && touched.startDate && (
-                            <div className="Form-error">{errors.startDate}</div>
-                          )}
-                        </div>
-
-                        <div className="Form-group">
-                          <label htmlFor="description">Description</label>
-                          <Field
-                            className="Form-input-box"
-                            as="textarea"
-                            id="description"
-                            name="description"
-                            rows="3"
-                            placeholder="Enter course description"
-                          />
-                          {errors.description && touched.description && (
-                            <div className="Form-error">
-                              {errors.description}
-                            </div>
-                          )}
-                        </div>
-
-                        <button
-                          type="submit"
-                          className="Button Button-color--teal-1000 Width--100"
-                          disabled={isSubmitting}
-                        >
-                          Assign Course
-                        </button>
-                      </Form>
-                    )}
-                  </Formik>
-                }
-              />
-            )}
-
-            {activeTab === "Meetings" && (
-              <div>
-                <div className="Calendar-upcoming">Upcoming</div>
-                <div className="Flex-row-calendar">
-                  <div className="Calendar-block">
-                    <div className="Calendar-day">Wed</div>
-                    <div className="Calendar-date">25</div>
-                  </div>
-                  <div>
-                    <div className="Calendar-event">Mock Interview Session</div>
-                    <div className="Calendar-description">
-                      Practice your interview skills with an industry
-                      professional
-                    </div>
+              {/* Example static meeting item */}
+              <div className="d-flex align-items-center mb-3">
+                <div className="me-3 text-center" style={{ width: "40px" }}>
+                  <div className="text-muted">Wed</div>
+                  <div style={{ fontSize: "1.5rem", color: "#343a40" }}>25</div>
+                </div>
+                <div>
+                  <div>Mock Interview Session</div>
+                  <div className="text-muted" style={{ fontSize: "0.9rem" }}>
+                    Practice your interview skills with a professional.
                   </div>
                 </div>
-                <div
-                  className="Button Button-color--teal-1000 Width--40"
-                  onClick={() => navigate("/create-meeting")}
-                >
-                  Add New Meeting Notes
-                </div>
               </div>
-            )}
+              <button
+                className="Button Button-color--blue-1000 Width--100"
+                onClick={() => navigate("/create-meeting")}
+              >
+                Add New Meeting
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </>
-  )
-}
 
-export default MenteeInformation
+      {isModal && (
+        <Modal
+          header="Assign New Course"
+          subheader="Add a new course for this mentee"
+          action={() => setIsModal(false)}
+          body={
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ errors, touched, isSubmitting }) => (
+                <Form>
+                  <div className="Form-group">
+                    <label htmlFor="courseName">Select Workshop</label>
+                    <Field
+                      as="select"
+                      className="Form-input-box"
+                      id="courseName"
+                      name="courseName"
+                    >
+                      <option value="">Select a workshop...</option>
+                      {availableWorkshops.map((workshop: any) => (
+                        <option key={workshop._id} value={workshop._id}>
+                          {workshop.name}
+                        </option>
+                      ))}
+                    </Field>
+                    {errors.courseName && touched.courseName && (
+                      <div className="Form-error">{errors.courseName}</div>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="Button Button-color--teal-1000 Width--100"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Assigning..." : "Assign Workshop"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          }
+        />
+      )}
+    </>
+  );
+};
+
+export default MenteeInformation;

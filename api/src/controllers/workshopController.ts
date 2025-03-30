@@ -26,7 +26,7 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
   const params = {
     Bucket: bucketName,
     Key: objectKey,
-    Expires: 60 * 5, // URL expires in 5 minutes
+    Expires: 3600,
   };
 
   try {
@@ -125,5 +125,36 @@ export const updateWorkshop = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error updating workshop:", error);
     res.status(500).json({ message: "Failed to update workshop", error });
+  }
+};
+
+// get all workshops
+export const getAllWorkshops = async (req: Request, res: Response) => {
+  try {
+    const workshops = await Workshop.find();
+
+    if (workshops.length === 0) {
+      return res.status(404).json({ message: "No workshops found" });
+    }
+
+    res.status(200).json(workshops);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving workshops", error });
+  }
+};
+
+export const getWorkshopById = async (req: Request, res: Response) => {
+  try {
+    const { workshopId } = req.params;
+    const workshop = await Workshop.findById(workshopId);
+
+    if (!workshop) {
+      return res.status(404).json({ message: "Workshop not found" });
+    }
+
+    res.status(200).json(workshop);
+  } catch (error) {
+    console.error("Error fetching workshop:", error);
+    res.status(500).json({ message: "Error retrieving workshop", error });
   }
 };
