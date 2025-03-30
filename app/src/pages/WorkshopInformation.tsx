@@ -42,6 +42,7 @@ const WorkshopInformation = () => {
   const [resources, setResources] = useState<any[]>([]);
   const [workshop, setWorkshop] = React.useState<Workshop | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useUser();
 
   // get workshop information by id
@@ -72,6 +73,13 @@ const WorkshopInformation = () => {
         const { data: resourceList } = await api.get(
           `/api/resource/get-resource-by-workshop/${workshopId}`,
         );
+
+        if (!resourceList || resourceList.length === 0) {
+          setResources([]);
+          setError("No resources found.");
+          return;
+        }
+
         const resourcesWithURL = await Promise.all(
           resourceList.map(async (res: any) => {
             const { data } = await api.get(`/api/resource/getURL/${res.s3id}`);
@@ -80,7 +88,9 @@ const WorkshopInformation = () => {
         );
         setResources(resourcesWithURL);
       } catch (error) {
-        console.error("Error getting resources:", error);
+        setError("Error fetching resources.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -114,21 +124,27 @@ const WorkshopInformation = () => {
           <div className="Block-subtitle">{workshop?.description}</div>
 
           <div className="row gx-3 gy-3">
-            {resources.map((file) => (
-              <div key={file._id} className="col-lg-2">
-                <div
-                  className="Card"
-                  onClick={() => window.open(file.url, "_blank")}
-                >
-                  {" "}
-                  {/* Ensure Card is inside col-lg-2 */}
-                  <div className="WorkshopInfo-image">
-                    <img src={getIconForFile(file.s3id)} alt={file.type} />
+            {loading ? (
+              <p>Loading resources...</p>
+            ) : error ? (
+              <p style={{ color: "red", marginLeft: "15px" }}>{error}</p>
+            ) : (
+              resources.map((file) => (
+                <div key={file._id} className="col-lg-2">
+                  <div
+                    className="Card"
+                    onClick={() => window.open(file.url, "_blank")}
+                  >
+                    {" "}
+                    {/* Ensure Card is inside col-lg-2 */}
+                    <div className="WorkshopInfo-image">
+                      <img src={getIconForFile(file.s3id)} alt={file.type} />
+                    </div>
+                    <div className="WorkshopInfo-title">{file.name}</div>
                   </div>
-                  <div className="WorkshopInfo-title">{file.name}</div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

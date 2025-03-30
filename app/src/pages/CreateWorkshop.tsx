@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Navbar from "../components/Navbar";
@@ -7,6 +7,10 @@ import Modal from "../components/Modal";
 import AsyncSubmit from "../components/AsyncSubmit";
 import { useNavigate } from "react-router-dom";
 import { url } from "inspector";
+import CreatableSelect from "react-select/creatable";
+import makeAnimated from "react-select/animated";
+
+const animatedComponents = makeAnimated();
 
 const initialValues = {
   name: "",
@@ -29,10 +33,32 @@ const CreateWorkshop = () => {
   const [success, setSuccess] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
   const [fileDetails, setFileDetails] = useState<
-    { title: string; desc: string; url: string; s3id: string; file: any }[]
+    {
+      title: string;
+      desc: string;
+      url: string;
+      s3id: string;
+      file: any;
+      tags: string[];
+    }[]
   >([]);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [newTagInput, setNewTagInput] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const { data } = await api.get("/api/resource/all-tags");
+        setAvailableTags(data || []);
+      } catch (err) {
+        console.error("Failed to load tags:", err);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const handleSubmit = async (
     values: any,
@@ -84,6 +110,7 @@ const CreateWorkshop = () => {
             description: file.desc,
             s3id: file.s3id, // Placeholder
             workshopIDs: [workshop.workshop._id], // Link resource to this workshop
+            tags: file.tags,
           });
         }
       }
@@ -147,6 +174,7 @@ const CreateWorkshop = () => {
         url: url, // TODO: change
         s3id: objectKey, // TODO: change
         file: file,
+        tags: selectedTags,
       };
       setFileDetails((prevDetails) => [...prevDetails, newFile]);
       setFileAdded(true);
@@ -174,6 +202,52 @@ const CreateWorkshop = () => {
             >
               {({ setFieldValue, errors, touched, isSubmitting }) => (
                 <Form>
+                  <div className="Form-group">
+                    <label htmlFor="tags">Tags (select or create new)</label>
+                    <CreatableSelect
+                      components={animatedComponents}
+                      isMulti
+                      options={availableTags.map((tag) => ({
+                        label: tag,
+                        value: tag,
+                      }))}
+                      value={selectedTags.map((tag) => ({
+                        label: tag,
+                        value: tag,
+                      }))}
+                      onChange={(selectedOptions: any) =>
+                        setSelectedTags(
+                          selectedOptions.map((opt: any) => opt.value),
+                        )
+                      }
+                      onCreateOption={(inputValue: any) => {
+                        const trimmed = inputValue.trim();
+                        if (!trimmed) return;
+                        if (!availableTags.includes(trimmed)) {
+                          setAvailableTags((prev) => [...prev, trimmed]);
+                        }
+                        if (!selectedTags.includes(trimmed)) {
+                          setSelectedTags((prev) => [...prev, trimmed]);
+                        }
+                      }}
+                      placeholder="Select or type to create a tag..."
+                      isClearable={false}
+                      isSearchable
+                      className="Margin-bottom--10"
+                      styles={{
+                        control: (base: any) => ({
+                          ...base,
+                          borderColor: "#ccc",
+                          boxShadow: "none",
+                        }),
+                      }}
+                      formatCreateLabel={(inputValue: any) =>
+                        `Create new tag: "${inputValue}"`
+                      }
+                      createOptionPosition="first"
+                    />
+                  </div>
+
                   <div className="Form-group">
                     <label htmlFor="title">Title</label>
                     <Field
