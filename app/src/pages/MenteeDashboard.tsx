@@ -56,7 +56,7 @@ const MenteeDashboard = () => {
   }, [userId]);
 
   const handleWorkshopClick = (workshopId: string) => {
-    navigate(`/mentor/workshop-information`, {
+    navigate(`/volunteer/workshop-information`, {
       state: { workshopId },
     });
   };
@@ -116,9 +116,10 @@ const MenteeDashboard = () => {
           action={() => setSelectedEvent(null)}
         />
       )}
-      <div className="row g-3 Margin--20">
+      <div className="container py-4">
+      <div className="row g-3">
         <div className="col-lg-8">
-          <div className="Block p-3">
+          <div className="Block">
             <div className="Block-header">My Courses</div>
             <div className="Block-subtitle">
               Select a course to access materials.
@@ -127,15 +128,15 @@ const MenteeDashboard = () => {
               {workshops.map((item) => (
                 <div className="col-lg-4" key={item._id}>
                   <div
-                    className="Workshop-card"
+                    className="Mentor--card"
                     onClick={() => handleWorkshopClick(item._id)}
                   >
-                    <div className="Workshop-card-color Background-color--teal-1000" />
+                    <div className="Mentor--card-color Background-color--teal-1000" />
                     <div className="Padding--10">
-                      <h3 className="Text-fontSize--20 Text-color--gray-600">
-                        {item.name}
-                      </h3>
-                      <p className="Text-color--gray-400">{item.description}</p>
+                    <div className="Mentor--card-name">{item.name}</div>
+                          <div className="Mentor--card-description">
+                            {item.description}
+                          </div>
                     </div>
                   </div>
                 </div>
@@ -157,6 +158,7 @@ const MenteeDashboard = () => {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </>
   );

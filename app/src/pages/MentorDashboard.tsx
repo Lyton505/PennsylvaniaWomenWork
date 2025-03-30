@@ -70,7 +70,7 @@ const MentorDashboard = () => {
         console.log("menteeData", menteeData);
         setLoading(false);
       } catch (err) {
-        setError("Unable to fetch mentees.");
+        setError("Unable to fetch participants.");
         setLoading(false);
       }
     };
@@ -115,11 +115,11 @@ const MentorDashboard = () => {
     );
 
   const handleClick = (menteeId: string) => {
-    navigate("/mentor/mentee-information", { state: { menteeId } });
+    navigate("/volunteer/participant-information", { state: { menteeId } });
   };
 
   const handleClickWorkshop = (id: string) => {
-    navigate("/mentor/workshop-information", { state: { workshopId: id } });
+    navigate("/volunteer/workshop-information", { state: { workshopId: id } });
   };
 
   const handleCreateEvent = async (eventData: {
@@ -146,11 +146,19 @@ const MentorDashboard = () => {
     setSelectedEvent(event);
   };
 
+  
+
   useEffect(() => {
     if (user?.role === "board") {
       setActiveTab("Courses");
+    } else if (user?.role === "mentor") {
+      setActiveTab("My Participants");
+    } else if (user?.role === "staff") {
+      setActiveTab("My Participants");
     }
   }, [user?.role]);
+
+
 
   return (
     <>
@@ -200,14 +208,14 @@ const MentorDashboard = () => {
                     </div>
                   ) : (
                     // Other roles see both tabs
-                    ["My Mentees", "Courses"].map((tab) => (
+                    ["My Participants", "Courses"].map((tab) => (
                       <div
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`tab ${activeTab === tab ? "active" : ""}`}
                       >
-                        {tab === "My Mentees" && user?.role === "staff"
-                          ? "All Mentees"
+                        {tab === "My Participants" && user?.role === "staff"
+                          ? "All Participants"
                           : tab}
                       </div>
                     ))
@@ -216,7 +224,7 @@ const MentorDashboard = () => {
               </div>
               <div className="Block-subtitle" />
 
-              {activeTab === "My Mentees" && (
+              {activeTab === "My Participants" && (
                 <div>
                   {loading ? (
                     <p>Loading mentees...</p>
@@ -235,6 +243,9 @@ const MentorDashboard = () => {
                               <div className="Mentor--card-name">
                                 {mentee.first_name} {mentee.last_name}
                               </div>
+                              <div className="Mentor--card-description">
+                                {mentee.email}
+                          </div>
                             </div>
                           </div>
                         </div>
