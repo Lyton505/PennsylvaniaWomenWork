@@ -39,6 +39,7 @@ const MenteeInformation = () => {
   const { user } = useUser();
   const [availableWorkshops, setAvailableWorkshops] = useState([]);
   const [assignedWorkshops, setAssignedWorkshops] = useState<Workshop[]>([]);
+  const [isAssignMentorModal, setIsAssignMentorModal] = useState(false);
 
   useEffect(() => {
     if (!menteeId) {
@@ -94,6 +95,8 @@ const MenteeInformation = () => {
     courseName: yup.string().required("Course selection is required"),
   });
 
+
+
   const handleSubmit = async (
     values: typeof initialValues,
     { setSubmitting }: any,
@@ -139,6 +142,19 @@ const MenteeInformation = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+  const mentorInitialValues = {
+    mentorName: "",
+  };
+
+  const mentorValidationSchema = yup.object({
+    mentorName: yup.string().required("Mentor selection is required"),
+  });
+  const handleMentorSubmit = async (
+    values: typeof mentorInitialValues,
+    { setSubmitting }: any,
+  ) => {
+    console.log("Mentor values:", values);
   };
 
   // Compute initials for the mentee's avatar
@@ -194,6 +210,19 @@ const MenteeInformation = () => {
                 <div className="Profile-field">
                   <div className="Profile-field-label">Email:</div>
                   <div>{mentee?.email}</div>
+                </div>
+                <div className="Profile-field">
+                  {mentee?.mentor ? (
+                    <>
+                      <div className="Profile-field-label">Mentor:</div>
+                      <div>{mentee?.mentor}</div>
+                    </>
+                  ) : (
+                    <div className="Button Button-color--blue-1000 Width--100"
+                    onClick={() => setIsAssignMentorModal(true)}>
+                      Assign Mentor
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -258,7 +287,53 @@ const MenteeInformation = () => {
           </div>
         </div>
       </div>
+      {isAssignMentorModal && (
+        <Modal
+          header={`Assign a mentor for ${mentee?.first_name} ${mentee?.last_name}`}
+     
+          action={() => setIsAssignMentorModal(false)}
+          body={
+            <Formik
+              initialValues={mentorInitialValues}
+              validationSchema={mentorValidationSchema}
+              onSubmit={handleMentorSubmit}
+            >
+              {({ errors, touched, isSubmitting }) => (
+                <Form>
+                  <div className="Form-group">
+                    <label htmlFor="mentorName">Select Mentor</label>
+                    <Field
+                      as="select"
+                      className="Form-input-box"
+                      id="mentorName"
+                      name="mentorName"
+                    >
+                      <option value="">Select a mentee...</option>
+                      {availableWorkshops.map((workshop: any) => (
+                        <option key={workshop._id} value={workshop._id}>
+                          {workshop.name}
+                        </option>
+                      ))}
+                    </Field>
+                    {errors.mentorName && touched.mentorName && (
+                      <div className="Form-error">{errors.mentorName}</div>
+                    )}
+                  </div>
 
+                  <button
+                    type="submit"
+                    className="Button Button-color--teal-1000 Width--100"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Assigning..." : "Assign Workshop"}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          }
+        />
+
+      )}
       {isModal && (
         <Modal
           header="Assign New Course"
