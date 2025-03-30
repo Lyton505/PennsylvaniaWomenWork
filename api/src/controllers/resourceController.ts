@@ -134,6 +134,9 @@ export const deleteResourcesByWorkshopId = async (
   } catch (error) {
     console.error("Error deleting resources:", error);
     res.status(500).json({ message: "Failed to delete resources", error });
+  }
+};
+
 export const getAllTags = async (req: Request, res: Response) => {
   try {
     const tags = await Resource.distinct("tags");

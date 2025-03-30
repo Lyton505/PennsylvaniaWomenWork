@@ -117,6 +117,8 @@ export const deleteWorkshop = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error deleting workshop:", error);
     res.status(500).json({ message: "Failed to delete workshop", error });
+  }
+};
 // get all workshops
 
 export const getAllWorkshops = async (req: Request, res: Response) => {
