@@ -146,11 +146,15 @@ const MentorDashboard = () => {
     setSelectedEvent(event)
   }
 
+  
+
   useEffect(() => {
     if (user?.role === "board") {
       setActiveTab("Courses")
     }
   }, [user?.role])
+
+
 
   return (
     <>
@@ -200,14 +204,14 @@ const MentorDashboard = () => {
                     </div>
                   ) : (
                     // Other roles see both tabs
-                    ["My Mentees", "Courses"].map((tab) => (
+                    ["My Participants", "Courses"].map((tab) => (
                       <div
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={`tab ${activeTab === tab ? "active" : ""}`}
                       >
-                        {tab === "My Mentees" && user?.role === "staff"
-                          ? "All Mentees"
+                        {tab === "My Participants" && user?.role === "staff"
+                          ? "All Participants"
                           : tab}
                       </div>
                     ))
@@ -216,7 +220,7 @@ const MentorDashboard = () => {
               </div>
               <div className="Block-subtitle" />
 
-              {activeTab === "My Mentees" && (
+              {activeTab === "My Participants" && (
                 <div>
                   {loading ? (
                     <p>Loading mentees...</p>
@@ -237,7 +241,7 @@ const MentorDashboard = () => {
                               </div>
                               <div className="Mentor--card-description">
                                 {mentee.email}
-                              </div>
+                          </div>
                             </div>
                           </div>
                         </div>

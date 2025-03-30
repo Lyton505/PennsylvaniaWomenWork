@@ -197,8 +197,8 @@ const MenteeInformation = () => {
           {/* Column 1: Mentee Information Block */}
           <div className="col-lg-4 mb-4">
             <div className="Block">
-              <div className="Block-header">Mentee Information</div>
-              <div className="Block-subtitle">Mentee Details</div>
+              <div className="Block-header">Participant Information</div>
+              <div className="Block-subtitle">Participant Details</div>
               <div className="Block-content">
                 <div className="Profile-avatar">
                   <div className="Profile-initials">{getInitials()}</div>
@@ -224,7 +224,7 @@ const MenteeInformation = () => {
           {/* Column 2: Mentee Courses */}
           <div className="col-lg-4 mb-4">
             <div className="Block">
-              <div className="Block-header">Mentee Courses</div>
+              <div className="Block-header">Participant Courses</div>
               <div className="Block-subtitle">
                 Courses assigned to {mentee?.first_name}
               </div>
