@@ -15,7 +15,7 @@ const s3 = new AWS.S3();
 const bucketName = process.env.S3_BUCKET_NAME;
 
 export const createResource = async (req: Request, res: Response) => {
-  const { name, description, s3id, workshopIDs } = req.body;
+  const { name, description, s3id, workshopIDs, tags } = req.body;
 
   if (
     !name ||
@@ -28,7 +28,7 @@ export const createResource = async (req: Request, res: Response) => {
   }
 
   try {
-    const newResource = new Resource({ name, description, s3id, workshopIDs });
+    const newResource = new Resource({ name, description, s3id, workshopIDs, tags });
     const savedResource = await newResource.save();
 
     res.status(201).json({
@@ -79,3 +79,14 @@ export const generateRetrievalURL = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getAllTags = async (req: Request, res: Response) => {
+  try {
+    const tags = await Resource.distinct("tags");
+    res.status(200).json(tags);
+  } catch (error) {
+    console.error("Error fetching tags:", error);
+    res.status(500).json({ message: "Error fetching tags", error });
+  }
+};
+
