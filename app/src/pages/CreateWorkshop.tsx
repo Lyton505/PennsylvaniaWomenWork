@@ -15,12 +15,14 @@ const animatedComponents = makeAnimated();
 const initialValues = {
   name: "",
   description: "",
+  imageUpload: null,
 };
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
+  imageUpload: Yup.mixed(),
 });
 
 const CreateWorkshop = () => {
@@ -62,7 +64,7 @@ const CreateWorkshop = () => {
 
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any,
+    { setSubmitting, resetForm }: any
   ) => {
     setSubmitting(true);
     try {
@@ -92,7 +94,7 @@ const CreateWorkshop = () => {
       // const { data: workshop } = await api.post("/api/create-workshop", payload);
       const { data: workshop } = await api.post(
         "/api/workshop/create-workshop",
-        payload,
+        payload
       );
       console.log("Workshop created:", workshop);
       // Add associated files (with placeholder s3id for now)
@@ -144,7 +146,7 @@ const CreateWorkshop = () => {
 
   const handleFileSumbit = async (
     values: any,
-    { resetForm, setFieldValue }: any,
+    { resetForm, setFieldValue }: any
   ) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -162,7 +164,7 @@ const CreateWorkshop = () => {
       ]);
 
       const response = await api.get(
-        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`,
+        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`
       );
 
       const { url, objectKey } = response.data;
@@ -217,7 +219,7 @@ const CreateWorkshop = () => {
                       }))}
                       onChange={(selectedOptions: any) =>
                         setSelectedTags(
-                          selectedOptions.map((opt: any) => opt.value),
+                          selectedOptions.map((opt: any) => opt.value)
                         )
                       }
                       onCreateOption={(inputValue: any) => {
@@ -355,6 +357,18 @@ const CreateWorkshop = () => {
                     />
                     {errors.description && touched.description && (
                       <div className="Form-error">{errors.description}</div>
+                    )}
+                  </div>
+                  <div className="Form-group">
+                    <label htmlFor="imageUpload">Workshop cover Image:</label>
+                    <Field
+                      type="file"
+                      name="imageUpload"
+                      className="Form-input-box"
+                      accept="image/*"
+                    />
+                    {errors.imageUpload && touched.imageUpload && (
+                      <div className="Form-error">{errors.imageUpload}</div>
                     )}
                   </div>
                   {fileDetails.length > 0 && (
