@@ -4,6 +4,8 @@ interface IEvent extends Document {
   name: string;
   description: string;
   date: Date;
+  startTime: Date;
+  endTime: Date;
   users: Schema.Types.ObjectId[];
   calendarLink: string;
 }
@@ -12,6 +14,8 @@ const EventSchema: Schema<IEvent> = new Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   date: { type: Date, required: true },
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
   users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
   calendarLink: { type: String, required: false },
 });
