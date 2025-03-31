@@ -22,7 +22,7 @@ const WorkshopSchema: Schema<IWorkshop> = new Schema({
 // update text content of the workshop
 // TODO: is this needed ???
 WorkshopSchema.methods.updateContent = async function (
-  newContent: string
+  newContent: string,
 ): Promise<void> {
   this.textContent = newContent;
   await this.save();
