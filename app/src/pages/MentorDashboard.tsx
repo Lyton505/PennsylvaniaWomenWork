@@ -26,6 +26,8 @@ interface CourseInformationElements {
   coverImageS3id: string;
 }
 
+type ImageUrlMap = Record<string, string | null>;
+
 const MentorDashboard = () => {
   const navigate = useNavigate();
   const [mentees, setMentees] = useState<Mentee[]>([]);
@@ -35,6 +37,7 @@ const MentorDashboard = () => {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [createEventModal, setCreateEventModal] = useState(false);
   const [events, setEvents] = useState<EventData[]>([]);
+  const [imageUrls, setImageUrls] = useState<ImageUrlMap>({});
   const { user } = useUser();
   const [workshops, setWorkshops] = useState<CourseInformationElements[]>([]);
   const userId = user?._id;
@@ -85,12 +88,38 @@ const MentorDashboard = () => {
       try {
         const response = await api.get(`/api/workshop/get-workshops`);
         setWorkshops(response.data);
+        fetchImageUrls(response.data);
       } catch (err) {
         setError("Unable to fetch workshops.");
       }
     };
     fetchWorkshops();
   }, []);
+
+  const fetchImageUrls = async (workshopsData: any) => {
+    const urls: ImageUrlMap = {};
+
+    await Promise.all(
+      workshopsData.map(async (item: any) => {
+        if (item.coverImageS3id) {
+          try {
+            const res = await api.get(
+              `/api/resource/getURL/${item.coverImageS3id}`
+            );
+            urls[item.coverImageS3id] = res.data.signedUrl;
+          } catch (error) {
+            console.error(
+              `Error fetching image for ${item.coverImageS3id}:`,
+              error
+            );
+            urls[item.coverImageS3id] = null;
+          }
+        }
+      })
+    );
+
+    setImageUrls(urls);
+  };
 
   const eventsByMonth: { [key: string]: EventData[] } = events
     .sort(
@@ -258,11 +287,11 @@ const MentorDashboard = () => {
                         className="Mentor--card"
                         onClick={() => handleClickWorkshop(item._id)}
                       >
-                        {item.coverImageS3id ? (
+                        {imageUrls[item.coverImageS3id] ? (
                           <div
                             className="Mentor--card-image"
                             style={{
-                              backgroundImage: `url(https://${process.env.REACT_APP_S3_BUCKET_NAME}.s3.${process.env.REACT_APP_AWS_REGION}.amazonaws.com/${item.coverImageS3id})`,
+                              backgroundImage: `url(${imageUrls[item.coverImageS3id]})`,
                               backgroundSize: "cover",
                               backgroundPosition: "center",
                               height: "120px",
