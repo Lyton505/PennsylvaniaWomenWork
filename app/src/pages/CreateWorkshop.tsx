@@ -86,7 +86,7 @@ const CreateWorkshop = () => {
 
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any
+    { setSubmitting, resetForm }: any,
   ) => {
     setSubmitting(true);
     try {
@@ -119,10 +119,9 @@ const CreateWorkshop = () => {
       // const { data: workshop } = await api.post("/api/create-workshop", payload);
       const { data: workshop } = await api.post(
         "/api/workshop/create-workshop",
-        payload
+        payload,
       );
       console.log("Workshop created:", workshop);
-
       // Add associated files (with placeholder s3id for now)
       if (fileDetails.length > 0) {
         for (const file of fileDetails) {
@@ -142,7 +141,6 @@ const CreateWorkshop = () => {
           });
         }
       }
-
       //alert("Workshop created successfully!");
       resetForm();
       setFileDetails([]); // Clear file details
@@ -173,7 +171,7 @@ const CreateWorkshop = () => {
 
   const handleFileSumbit = async (
     values: any,
-    { resetForm, setFieldValue }: any
+    { resetForm, setFieldValue }: any,
   ) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -191,7 +189,7 @@ const CreateWorkshop = () => {
       ]);
 
       const response = await api.get(
-        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`
+        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`,
       );
 
       const { url, objectKey } = response.data;
@@ -246,7 +244,7 @@ const CreateWorkshop = () => {
                       }))}
                       onChange={(selectedOptions: any) =>
                         setSelectedTags(
-                          selectedOptions.map((opt: any) => opt.value)
+                          selectedOptions.map((opt: any) => opt.value),
                         )
                       }
                       onCreateOption={(inputValue: any) => {
