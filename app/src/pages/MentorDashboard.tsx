@@ -298,7 +298,7 @@ const MentorDashboard = () => {
                             }}
                           />
                         ) : (
-                          <div className="Mentor--card-color Background-color--teal-200" />
+                          <div className="Mentor--card-color Background-color--teal-1000" />
                         )}
                         <div className="Padding--10">
                           <div className="Mentor--card-name">{item.name}</div>
