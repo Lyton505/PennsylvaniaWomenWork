@@ -42,6 +42,16 @@ const MentorDashboard = () => {
       return
     }
 
+    const fetchUserEvents = async () => {
+      try {
+        const response = await api.get(`/api/event/${userId}`);
+        setEvents(response.data);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+        setError("Failed to load events.");
+      }
+    };
+
     if (
       !userId ||
       (user.role !== "mentor" && user.role !== "staff" && user.role !== "board")
@@ -73,10 +83,10 @@ const MentorDashboard = () => {
         setError("Unable to fetch mentees.")
         setLoading(false)
       }
-    }
-
-    fetchMentees()
-  }, [user, userId])
+    };
+    fetchUserEvents();
+    fetchMentees();
+  }, [user, userId]);
 
   // call endpoint to get all workshops
   useEffect(() => {
@@ -91,7 +101,11 @@ const MentorDashboard = () => {
     fetchWorkshops()
   }, [])
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const eventsByMonth: { [key: string]: EventData[] } = events
+    .filter((event) => new Date(event.date) >= today)
     .sort(
       (a, b) =>
         new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
@@ -123,13 +137,14 @@ const MentorDashboard = () => {
   }
 
   const handleCreateEvent = async (eventData: {
-    name: string
-    description: string
-    date: string
-    startTime: string
-    endTime: string
-    userIds: string[]
-    calendarLink?: string
+    name: string;
+    description: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    // userIds: string[];
+    roles: string[];
+    calendarLink?: string;
   }) => {
     try {
       const response = await api.post(`/api/event`, eventData)
