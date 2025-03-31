@@ -4,6 +4,7 @@ import {
   getWorkshop,
   getWorkshopsByUserId,
   generatePresignedUrl,
+  deleteWorkshop,
   getAllWorkshops,
   getWorkshopById,
 } from "../controllers/workshopController";
@@ -13,6 +14,8 @@ const router = express.Router();
 // Route to create a workshop
 router.post("/create-workshop", createWorkshop);
 
+// Route to get a specific workshop -- not wired
+router.get("/:id", getWorkshop);
 // route to get all workshops
 router.get("/get-workshops", getAllWorkshops);
 
@@ -22,8 +25,7 @@ router.get("/user/:userId", getWorkshopsByUserId);
 // Route to generate a presigned URL for S3
 router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
 
-// Route to get a specific workshop -- not wired
-router.get("/:id", getWorkshop);
+router.delete("/delete-workshop/:id", deleteWorkshop);
 
 router.get("/:workshopId", getWorkshopById);
 

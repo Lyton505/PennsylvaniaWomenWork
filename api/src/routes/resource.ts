@@ -3,6 +3,8 @@ import {
   createResource,
   getResourcesByWorkshopId,
   generateRetrievalURL,
+  deleteResource,
+  deleteResourcesByWorkshopId,
   getAllTags,
 } from "../controllers/resourceController";
 
@@ -15,6 +17,10 @@ router.post("/create-resource", createResource);
 router.get("/get-resource-by-workshop/:workshopId", getResourcesByWorkshopId);
 
 router.get("/getURL/:objectId", generateRetrievalURL);
+
+router.delete("/delete-resource/:objectId", deleteResource);
+
+router.delete("/delete-resources/:workshopId", deleteResourcesByWorkshopId);
 
 router.get("/all-tags", getAllTags);
 export default router;
