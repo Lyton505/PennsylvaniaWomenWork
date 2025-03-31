@@ -131,8 +131,8 @@ const WorkshopInformation = () => {
             ) : (
               resources.map((file) => (
                 <div key={file._id} className="col-lg-2">
-                  <div 
-                    className="Card" 
+                  <div
+                    className="Card"
                     onClick={() => window.open(file.url, "_blank")}
                   >
                     {" "}

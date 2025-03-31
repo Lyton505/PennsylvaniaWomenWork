@@ -215,10 +215,12 @@ const CreateWorkshop = () => {
                         label: tag,
                         value: tag,
                       }))}
-                      onChange={(selectedOptions) =>
-                        setSelectedTags(selectedOptions.map((opt) => opt.value))
+                      onChange={(selectedOptions: any) =>
+                        setSelectedTags(
+                          selectedOptions.map((opt: any) => opt.value),
+                        )
                       }
-                      onCreateOption={(inputValue) => {
+                      onCreateOption={(inputValue: any) => {
                         const trimmed = inputValue.trim();
                         if (!trimmed) return;
                         if (!availableTags.includes(trimmed)) {
@@ -233,13 +235,13 @@ const CreateWorkshop = () => {
                       isSearchable
                       className="Margin-bottom--10"
                       styles={{
-                        control: (base) => ({
+                        control: (base: any) => ({
                           ...base,
                           borderColor: "#ccc",
                           boxShadow: "none",
                         }),
                       }}
-                      formatCreateLabel={(inputValue) =>
+                      formatCreateLabel={(inputValue: any) =>
                         `Create new tag: "${inputValue}"`
                       }
                       createOptionPosition="first"
