@@ -51,7 +51,6 @@ export const getResourcesByWorkshopId = async (req: Request, res: Response) => {
   try {
     const { workshopId } = req.params;
     const resources = await Resource.find({ workshopIDs: workshopId });
-
     res.status(200).json(resources);
   } catch (error) {
     console.error("Error retrieving resources:", error);

@@ -4,6 +4,7 @@ import {
   getWorkshop,
   getWorkshopsByUserId,
   generatePresignedUrl,
+  updateWorkshop,
   deleteWorkshop,
   getAllWorkshops,
   getWorkshopById,
@@ -24,6 +25,11 @@ router.get("/user/:userId", getWorkshopsByUserId);
 
 // Route to generate a presigned URL for S3
 router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
+
+router.put("/update-workshop/:id", updateWorkshop);
+
+// Route to get a specific workshop -- not wired
+router.get("/:id", getWorkshop);
 
 router.delete("/delete-workshop/:id", deleteWorkshop);
 
