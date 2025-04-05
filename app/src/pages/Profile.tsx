@@ -2,10 +2,8 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import { useUser } from "../contexts/UserContext";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  const navigate = useNavigate();
   const { user: auth0User, logout } = useAuth0();
   const { user, error, loading } = useUser();
 
@@ -55,11 +53,7 @@ const Profile = () => {
               <div
                 className="Button Button-color--blue-1000 Margin-top--20"
                 onClick={() => {
-                  logout({
-                    async openUrl() {
-                      await navigate("/logout");
-                    },
-                  });
+                  logout();
                 }}
               >
                 Log Out

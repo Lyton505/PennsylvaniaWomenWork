@@ -92,11 +92,7 @@ const Navbar = (): ReactElement => {
             <div
               className="Button Button-color--teal-1000"
               onClick={() => {
-                logout({
-                  async openUrl() {
-                    await navigate("/logout");
-                  },
-                });
+                logout();
               }}
             >
               Log Out
