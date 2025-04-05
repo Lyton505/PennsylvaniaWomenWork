@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import Icon from "../components/Icon"
-import Modal from "../components/Modal"
-import { Formik, Form, Field } from "formik"
-import * as yup from "yup"
-import { api } from "../api"
-import { useUser } from "../contexts/UserContext"
-import { tier1Roles } from "../utils/roles"
-import { toast } from "react-hot-toast"
-import { set } from "react-hook-form"
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Icon from "../components/Icon";
+import Modal from "../components/Modal";
+import { Formik, Form, Field } from "formik";
+import * as yup from "yup";
+import { api } from "../api";
+import { useUser } from "../contexts/UserContext";
+import { tier1Roles } from "../utils/roles";
+import { toast } from "react-hot-toast";
+import { set } from "react-hook-form";
 
 
 interface Workshop {
@@ -38,24 +38,24 @@ interface MentorInfo {
 }
 
 const MenteeInformation = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const menteeId = location.state?.menteeId
-  const [mentee, setMentee] = useState<MenteeInfo | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [isModal, setIsModal] = useState(false)
-  const { user } = useUser()
-  const [availableWorkshops, setAvailableWorkshops] = useState([])
-  const [assignedWorkshops, setAssignedWorkshops] = useState<Workshop[]>([])
-  const [mentors, setMentors] = useState<MentorInfo[]>([])
-  const [isAssignMentorModal, setIsAssignMentorModal] = useState(false)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const menteeId = location.state?.menteeId;
+  const [mentee, setMentee] = useState<MenteeInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isModal, setIsModal] = useState(false);
+  const { user } = useUser();
+  const [availableWorkshops, setAvailableWorkshops] = useState([]);
+  const [assignedWorkshops, setAssignedWorkshops] = useState<Workshop[]>([]);
+  const [mentors, setMentors] = useState<MentorInfo[]>([]);
+  const [isAssignMentorModal, setIsAssignMentorModal] = useState(false);
 
   useEffect(() => {
     if (!menteeId) {
-      console.log("Mentee ID is missing.")
-      setLoading(false)
-      return
+      console.log("Mentee ID is missing.");
+      setLoading(false);
+      return;
     }
 
     const fetchMenteeData = async () => {
@@ -125,9 +125,9 @@ const MenteeInformation = () => {
   ) => {
     try {
       if (!menteeId) {
-        console.error("Mentee ID is missing.")
-        setSubmitting(false)
-        return
+        console.error("Mentee ID is missing.");
+        setSubmitting(false);
+        return;
       }
 
       console.log(
@@ -166,20 +166,20 @@ const MenteeInformation = () => {
     } finally {
       setSubmitting(false);
     }
-  }
+  };
   const mentorInitialValues = {
     mentorName: "",
-  }
+  };
 
   const mentorValidationSchema = yup.object({
     mentorName: yup.string().required("Volunteer selection is required"),
-  })
+  });
   const handleMentorSubmit = async (
     values: typeof mentorInitialValues,
-    { setSubmitting }: any
+    { setSubmitting }: any,
   ) => {
-    console.log("Mentor values:", values)
-  }
+    console.log("Mentor values:", values);
+  };
 
   // Compute initials for the mentee's avatar
   const getInitials = () => {
