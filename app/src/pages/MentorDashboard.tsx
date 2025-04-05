@@ -166,7 +166,7 @@ const MentorDashboard = () => {
     date: string;
     startTime: string;
     endTime: string;
-    userIds: string[];
+    userIds?: string[];
     roles: string[];
     calendarLink?: string;
   }) => {
