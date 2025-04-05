@@ -48,19 +48,18 @@ const MentorDashboard = () => {
 
     const fetchUserEvents = async () => {
       try {
-        const response = await api.get(`/api/event/${userId}`);
-        setEvents(response.data);
+        const response = await api.get(`/api/event/${userId}`)
+        setEvents(response.data)
       } catch (err) {
-        console.error("Error fetching events:", err);
-        setError("Failed to load events.");
+        console.log("Failed to load events.")
       }
-    };
+    }
 
     if (
       !userId ||
       (user.role !== "mentor" && user.role !== "staff" && user.role !== "board")
     ) {
-      setError("Only mentors can view mentees.")
+      console.log("Only mentors can view mentees.")
       setLoading(false)
       return
     }
@@ -84,13 +83,12 @@ const MentorDashboard = () => {
         console.log("menteeData", menteeData)
         setLoading(false)
       } catch (err) {
-        setError("Unable to fetch mentees.")
         setLoading(false)
       }
-    };
-    fetchUserEvents();
-    fetchMentees();
-  }, [user, userId]);
+    }
+    fetchUserEvents()
+    fetchMentees()
+  }, [user, userId])
 
   // call endpoint to get all workshops
   useEffect(() => {
@@ -100,14 +98,14 @@ const MentorDashboard = () => {
         setWorkshops(response.data)
         fetchImageUrls(response.data)
       } catch (err) {
-        setError("Unable to fetch workshops.")
+        console.log("Unable to fetch workshops.")
       }
     };
     fetchWorkshops()
   }, [])
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   const fetchImageUrls = async (workshopsData: any) => {
     const urls: ImageUrlMap = {};
@@ -167,14 +165,14 @@ const MentorDashboard = () => {
   }
 
   const handleCreateEvent = async (eventData: {
-    name: string;
-    description: string;
-    date: string;
-    startTime: string;
-    endTime: string;
+    name: string
+    description: string
+    date: string
+    startTime: string
+    endTime: string
     // userIds: string[];
-    roles: string[];
-    calendarLink?: string;
+    roles: string[]
+    calendarLink?: string
   }) => {
     try {
       const response = await api.post(`/api/event`, eventData)
@@ -183,7 +181,7 @@ const MentorDashboard = () => {
       setEvents((prev) => [...prev, response.data.event])
       setCreateEventModal(false)
     } catch (error) {
-      setError("Error creating event.")
+      console.log("Error creating event.")
     }
   }
 
@@ -267,7 +265,7 @@ const MentorDashboard = () => {
                     <p>Loading mentees...</p>
                   ) : error ? (
                     <p style={{ color: "red" }}>{error}</p>
-                  ) : mentees.length > 0 ? (
+                  ) : mentees.length === 0 ? null : ( // We don't show anything here to avoid flicker. You can also use `null` instead.
                     <div className="row gx-3 gy-3">
                       {mentees.map((mentee) => (
                         <div className="col-lg-4" key={mentee._id}>
@@ -288,8 +286,6 @@ const MentorDashboard = () => {
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <p>No mentees found.</p>
                   )}
                 </div>
               )}
