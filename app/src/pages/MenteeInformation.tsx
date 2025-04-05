@@ -11,7 +11,6 @@ import { tier1Roles } from "../utils/roles";
 import { toast } from "react-hot-toast";
 import { set } from "react-hook-form";
 
-
 interface Workshop {
   _id: string;
   name: string;
