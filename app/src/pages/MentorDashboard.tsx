@@ -15,6 +15,13 @@ interface Mentee {
   email: string;
 }
 
+interface Mentor {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
 interface CourseInformationElements {
   _id: string;
   name: string;
@@ -31,6 +38,7 @@ type ImageUrlMap = Record<string, string | null>;
 const MentorDashboard = () => {
   const navigate = useNavigate();
   const [mentees, setMentees] = useState<Mentee[]>([]);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("My Mentees");
@@ -104,6 +112,21 @@ const MentorDashboard = () => {
     fetchWorkshops();
   }, []);
 
+  useEffect(() => {
+    const fetchMentors = async () => {
+      if (user?.role === "staff" || user?.role === "board") {
+        try {
+          const response = await api.get(`/api/mentor/all-mentors`);
+          setMentors(response.data);
+        } catch (err) {
+          console.error("Unable to fetch mentors.");
+        }
+      }
+    };
+
+    fetchMentors();
+  }, [user]);
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -170,7 +193,7 @@ const MentorDashboard = () => {
     date: string;
     startTime: string;
     endTime: string;
-    // userIds: string[];
+    userIds?: string[];
     roles: string[];
     calendarLink?: string;
   }) => {
@@ -243,7 +266,13 @@ const MentorDashboard = () => {
                     </div>
                   ) : (
                     // Other roles see both tabs
-                    ["My Mentees", "Courses"].map((tab) => (
+                    [
+                      "My Mentees",
+                      ...(user?.role === "staff" || user?.role === "board"
+                        ? ["All Mentors"]
+                        : []),
+                      "Courses",
+                    ].map((tab) => (
                       <div
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -289,6 +318,30 @@ const MentorDashboard = () => {
                   )}
                 </div>
               )}
+
+              {(user?.role === "staff" || user?.role === "board") &&
+                activeTab === "All Mentors" && (
+                  <div>
+                    {mentors.length > 0 ? (
+                      <div className="row gx-3 gy-3">
+                        {mentors.map((mentor) => (
+                          <div className="col-lg-4" key={mentor._id}>
+                            <div className="Mentor--card">
+                              <div className="Mentor--card-color Background-color--teal-1000" />
+                              <div className="Padding--10">
+                                <div className="Mentor--card-name">
+                                  {mentor.first_name} {mentor.last_name}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p>No mentors found.</p>
+                    )}
+                  </div>
+                )}
 
               {activeTab === "Courses" && (
                 <div className="row gx-3 gy-3">
