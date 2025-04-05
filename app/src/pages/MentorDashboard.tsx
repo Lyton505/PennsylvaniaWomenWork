@@ -264,7 +264,7 @@ const MentorDashboard = () => {
                     <p>Loading mentees...</p>
                   ) : error ? (
                     <p style={{ color: "red" }}>{error}</p>
-                  ) : mentees.length > 0 ? (
+                  ) : mentees.length === 0 ? null : ( // We don't show anything here to avoid flicker. You can also use `null` instead.
                     <div className="row gx-3 gy-3">
                       {mentees.map((mentee) => (
                         <div className="col-lg-4" key={mentee._id}>
@@ -285,8 +285,6 @@ const MentorDashboard = () => {
                         </div>
                       ))}
                     </div>
-                  ) : (
-                    <p>No mentees found.</p>
                   )}
                 </div>
               )}
