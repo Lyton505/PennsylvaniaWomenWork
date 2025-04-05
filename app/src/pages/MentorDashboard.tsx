@@ -44,19 +44,18 @@ const MentorDashboard = () => {
 
     const fetchUserEvents = async () => {
       try {
-        const response = await api.get(`/api/event/${userId}`);
-        setEvents(response.data);
+        const response = await api.get(`/api/event/${userId}`)
+        setEvents(response.data)
       } catch (err) {
-        console.error("Error fetching events:", err);
-        setError("Failed to load events.");
+        console.log("Failed to load events.")
       }
-    };
+    }
 
     if (
       !userId ||
       (user.role !== "mentor" && user.role !== "staff" && user.role !== "board")
     ) {
-      setError("Only mentors can view mentees.")
+      console.log("Only mentors can view mentees.")
       setLoading(false)
       return
     }
@@ -80,13 +79,12 @@ const MentorDashboard = () => {
         console.log("menteeData", menteeData)
         setLoading(false)
       } catch (err) {
-        setError("Unable to fetch mentees.")
         setLoading(false)
       }
-    };
-    fetchUserEvents();
-    fetchMentees();
-  }, [user, userId]);
+    }
+    fetchUserEvents()
+    fetchMentees()
+  }, [user, userId])
 
   // call endpoint to get all workshops
   useEffect(() => {
@@ -95,14 +93,14 @@ const MentorDashboard = () => {
         const response = await api.get(`/api/workshop/get-workshops`)
         setWorkshops(response.data)
       } catch (err) {
-        setError("Unable to fetch workshops.")
+        console.log("Unable to fetch workshops.")
       }
     }
     fetchWorkshops()
   }, [])
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   const eventsByMonth: { [key: string]: EventData[] } = events
     .filter((event) => new Date(event.date) >= today)
@@ -137,14 +135,14 @@ const MentorDashboard = () => {
   }
 
   const handleCreateEvent = async (eventData: {
-    name: string;
-    description: string;
-    date: string;
-    startTime: string;
-    endTime: string;
+    name: string
+    description: string
+    date: string
+    startTime: string
+    endTime: string
     // userIds: string[];
-    roles: string[];
-    calendarLink?: string;
+    roles: string[]
+    calendarLink?: string
   }) => {
     try {
       const response = await api.post(`/api/event`, eventData)
@@ -153,7 +151,7 @@ const MentorDashboard = () => {
       setEvents((prev) => [...prev, response.data.event])
       setCreateEventModal(false)
     } catch (error) {
-      setError("Error creating event.")
+      console.log("Error creating event.")
     }
   }
 
