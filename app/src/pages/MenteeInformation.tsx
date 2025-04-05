@@ -9,6 +9,7 @@ import { api } from "../api"
 import { useUser } from "../contexts/UserContext"
 import { tier1Roles } from "../utils/roles"
 import { toast } from "react-hot-toast"
+import { set } from "react-hook-form"
 
 interface Workshop {
   _id: string
@@ -51,7 +52,7 @@ const MenteeInformation = () => {
 
   useEffect(() => {
     if (!menteeId) {
-      setError("Mentee ID is missing.")
+      console.log("Mentee ID is missing.")
       setLoading(false)
       return
     }
@@ -123,7 +124,9 @@ const MenteeInformation = () => {
   ) => {
     try {
       if (!menteeId) {
-        throw new Error("Mentee ID is missing")
+        console.error("Mentee ID is missing.")
+        setSubmitting(false)
+        return
       }
 
       console.log(
@@ -208,105 +211,117 @@ const MenteeInformation = () => {
             <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
           </div>
 
-          {/* Column 1: Mentee Information Block */}
-          <div className="col-lg-4 mb-4">
-            <div className="Block">
-              <div className="Block-header">Mentee Information</div>
-              <div className="Block-subtitle">Mentee Details</div>
-              <div className="Block-content">
-                <div className="Profile-avatar">
-                  <div className="Profile-initials">{getInitials()}</div>
-                </div>
-                <div className="Profile-field">
-                  <div className="Profile-field-label">Name:</div>
-                  <div>
-                    {mentee?.first_name} {mentee?.last_name}
+          {/* if there is no menteeid in the store, display message */}
+
+          {!menteeId ? (
+            <div className="col-lg-12 ">No particpant selected.</div>
+          ) : (
+            <>
+              {/* Mentee Information Header */}
+              {/* Column 1: Mentee Information Block */}
+              <div className="col-lg-4 mb-4">
+                <div className="Block">
+                  <div className="Block-header">Mentee Information</div>
+                  <div className="Block-subtitle">Mentee Details</div>
+                  <div className="Block-content">
+                    <div className="Profile-avatar">
+                      <div className="Profile-initials">{getInitials()}</div>
+                    </div>
+                    <div className="Profile-field">
+                      <div className="Profile-field-label">Name:</div>
+                      <div>
+                        {mentee?.first_name} {mentee?.last_name}
+                      </div>
+                    </div>
+                    <div className="Profile-field">
+                      <div className="Profile-field-label">Role:</div>
+                      <div>{mentee?.role}</div>
+                    </div>
+                    <div className="Profile-field">
+                      <div className="Profile-field-label">Email:</div>
+                      <div>{mentee?.email}</div>
+                    </div>
+                    <div className="Profile-field">
+                      {mentee?.mentor ? (
+                        <>
+                          <div className="Profile-field-label">Mentor:</div>
+                          <div>{mentee?.mentor}</div>
+                        </>
+                      ) : (
+                        <div
+                          className="Button Button-color--blue-1000 Width--100"
+                          onClick={() => setIsAssignMentorModal(true)}
+                        >
+                          Assign Mentor
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                <div className="Profile-field">
-                  <div className="Profile-field-label">Role:</div>
-                  <div>{mentee?.role}</div>
-                </div>
-                <div className="Profile-field">
-                  <div className="Profile-field-label">Email:</div>
-                  <div>{mentee?.email}</div>
-                </div>
-                <div className="Profile-field">
-                  {mentee?.mentor ? (
-                    <>
-                      <div className="Profile-field-label">Mentor:</div>
-                      <div>{mentee?.mentor}</div>
-                    </>
-                  ) : (
-                    <div
-                      className="Button Button-color--blue-1000 Width--100"
-                      onClick={() => setIsAssignMentorModal(true)}
-                    >
-                      Assign Mentor
+              </div>
+              {/* Column 2: Mentee Courses */}
+              <div className="col-lg-4 mb-4">
+                <div className="Block">
+                  <div className="Block-header">Mentee Courses</div>
+                  <div className="Block-subtitle">
+                    Courses assigned to {mentee?.first_name}
+                  </div>
+                  {assignedWorkshops.length > 0 ? (
+                    <div className="Flex-col">
+                      {assignedWorkshops.map((workshop) => (
+                        <div key={workshop._id} className="Profile-field">
+                          {workshop.name}
+                        </div>
+                      ))}
                     </div>
+                  ) : (
+                    <p>No courses assigned.</p>
+                  )}
+                  {(user?.role === "staff" || user?.role === "mentor") && (
+                    <button
+                      className="Button Button-color--blue-1000 Width--100"
+                      onClick={() => setIsModal(true)}
+                    >
+                      Assign New Course
+                    </button>
                   )}
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Column 2: Mentee Courses */}
-          <div className="col-lg-4 mb-4">
-            <div className="Block">
-              <div className="Block-header">Mentee Courses</div>
-              <div className="Block-subtitle">
-                Courses assigned to {mentee?.first_name}
-              </div>
-              {assignedWorkshops.length > 0 ? (
-                <div className="Flex-col">
-                  {assignedWorkshops.map((workshop) => (
-                    <div key={workshop._id} className="Profile-field">
-                      {workshop.name}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>No courses assigned.</p>
-              )}
-              {(user?.role === "staff" || user?.role === "mentor") && (
-                <button
-                  className="Button Button-color--blue-1000 Width--100"
-                  onClick={() => setIsModal(true)}
-                >
-                  Assign New Course
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Column 3: Upcoming Meetings */}
-          <div className="col-lg-4 mb-4">
-            <div className="Block">
-              <div className="Block-header">Upcoming Meetings</div>
-              <div className="Block-subtitle">
-                Your meetings with {mentee?.first_name}
-              </div>
-              {/* Example static meeting item */}
-              <div className="d-flex align-items-center mb-3">
-                <div className="me-3 text-center" style={{ width: "40px" }}>
-                  <div className="text-muted">Wed</div>
-                  <div style={{ fontSize: "1.5rem", color: "#343a40" }}>25</div>
-                </div>
-                <div>
-                  <div>Mock Interview Session</div>
-                  <div className="text-muted" style={{ fontSize: "0.9rem" }}>
-                    Practice your interview skills with a professional.
+              {/* Column 3: Upcoming Meetings */}
+              <div className="col-lg-4 mb-4">
+                <div className="Block">
+                  <div className="Block-header">Upcoming Meetings</div>
+                  <div className="Block-subtitle">
+                    Your meetings with {mentee?.first_name}
                   </div>
+                  {/* Example static meeting item */}
+                  <div className="d-flex align-items-center mb-3">
+                    <div className="me-3 text-center" style={{ width: "40px" }}>
+                      <div className="text-muted">Wed</div>
+                      <div style={{ fontSize: "1.5rem", color: "#343a40" }}>
+                        25
+                      </div>
+                    </div>
+                    <div>
+                      <div>Mock Interview Session</div>
+                      <div
+                        className="text-muted"
+                        style={{ fontSize: "0.9rem" }}
+                      >
+                        Practice your interview skills with a professional.
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    className="Button Button-color--blue-1000 Width--100"
+                    onClick={() => navigate("/create-meeting")}
+                  >
+                    Add New Meeting
+                  </button>
                 </div>
-              </div>
-              <button
-                className="Button Button-color--blue-1000 Width--100"
-                onClick={() => navigate("/create-meeting")}
-              >
-                Add New Meeting
-              </button>
-            </div>
-          </div>
+              </div>{" "}
+            </>
+          )}
         </div>
       </div>
       {isAssignMentorModal && (
@@ -329,12 +344,12 @@ const MenteeInformation = () => {
                       id="mentorName"
                       name="mentorName"
                     >
-                    <option value="">Select a volunteer...</option>
-                    {mentors.map((mentor: MentorInfo) => (
-                      <option key={mentor._id} value={mentor._id}>
-                        {mentor.first_name} {mentor.last_name}
-                      </option>
-                    ))}
+                      <option value="">Select a volunteer...</option>
+                      {mentors.map((mentor: MentorInfo) => (
+                        <option key={mentor._id} value={mentor._id}>
+                          {mentor.first_name} {mentor.last_name}
+                        </option>
+                      ))}
                     </Field>
                     {errors.mentorName && touched.mentorName && (
                       <div className="Form-error">{errors.mentorName}</div>
