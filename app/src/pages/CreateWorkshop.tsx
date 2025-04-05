@@ -43,7 +43,7 @@ const validationSchema = Yup.object().shape({
 
         const supportedFormats = ["image/jpeg", "image/png"];
         return supportedFormats.includes((value as File).type);
-      }
+      },
     ),
 });
 
@@ -95,7 +95,7 @@ const CreateWorkshop = () => {
       if (values.imageUpload) {
         // Get presigned URL for the cover image
         const coverImageResponse = await api.get(
-          `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`
+          `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`,
         );
 
         const { url: coverImageUrl, objectKey: coverImageObjectKey } =
