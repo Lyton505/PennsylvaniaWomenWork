@@ -109,6 +109,7 @@ const WorkshopInformation = () => {
   const deleteWorkshop = async () => {
     try {
       // TODO: Add API call to delete workshop
+      await api.delete(`/api/workshop/delete-workshop/${workshop?._id}`);
       console.log("Deleting workshop:", workshop?._id);
       setShowDeleteModal(false);
     } catch (error) {
