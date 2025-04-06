@@ -7,7 +7,7 @@ import Icon from "../components/Icon";
 import { useNavigate, useLocation } from "react-router-dom";
 import { api } from "../api";
 import { useUser } from "../contexts/UserContext";
-
+import Modal from "../components/Modal";
 const getIconForFile = (filename: string) => {
   const extension = filename.split(".").pop()?.toLowerCase();
   switch (extension) {
@@ -44,6 +44,8 @@ const WorkshopInformation = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useUser();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
 
   // get workshop information by id
   const getWorkshop = async () => {
@@ -104,7 +106,15 @@ const WorkshopInformation = () => {
   if (!workshop) {
     return <div>Workshop not found</div>;
   }
-
+  const deleteWorkshop = async () => {
+    try {
+      // TODO: Add API call to delete workshop
+      console.log("Deleting workshop:", workshop?._id);
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error("Error deleting workshop:", error);
+    }
+  };
   return (
     <>
       <Navbar />
@@ -115,12 +125,45 @@ const WorkshopInformation = () => {
         <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
           <div className="Block-header Flex-row">
             {workshop?.name}
-            {(user?.role === "mentor" || user?.role === "staff") && (
-              <div className="Button Button-color--blue-1000 Margin-left--auto">
-                Add New Files
-              </div>
-            )}
+            <div className="Flex-row Margin-left--auto" style={{ gap: '10px' }}>
+              {(user?.role === "mentor" || user?.role === "staff") && (
+                <div className="Button Button-color--blue-1000">
+                  Add New Files
+                </div>
+              )}
+              {user?.role === "staff" && (
+                <div className="Button Button-color--blue-1000"
+                onClick={() => setShowDeleteModal(true)}>
+                  Delete Workshop
+                </div>
+              )}
+            </div>
           </div>
+          {showDeleteModal && (
+            <Modal
+              header="Delete Workshop"
+              subheader="Are you sure you want to delete this workshop?"
+              body={
+                <div className="Flex-row" style={{ gap: '10px' }}>
+                  <button 
+                    className="Button Button-color--blue-1000"
+                    onClick={() => {
+                      deleteWorkshop();
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button 
+                    className="Button Button-color--gray-700"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              }
+              action={() => setShowDeleteModal(false)}
+            />
+          )}
           <div className="Block-subtitle">{workshop?.description}</div>
 
           <div className="row gx-3 gy-3">
