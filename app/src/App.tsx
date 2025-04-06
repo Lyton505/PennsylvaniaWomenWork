@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import SampleMenteeInvite from "./pages/MenteeInvite";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MentorInformation from "./pages/MentorInformation";
+import BoardDashboard from "./pages/BoardDashboard";
 import { tier1Roles, tier2Roles, tier3Roles } from "./utils/roles";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useUser } from "./contexts/UserContext";
@@ -53,7 +54,12 @@ function App(): ReactElement {
               element={<MenteeDashboard />}
               allowedRoles={[...tier1Roles, ...tier3Roles]}
             />
-          ) : (
+          ) : user?.role === "board" ? (
+          <ProtectedRoute
+            element={<BoardDashboard />}
+            allowedRoles={[...tier1Roles]}
+          />     
+          ) :  (
             <ProtectedRoute
               element={<MentorDashboard />}
               allowedRoles={[...tier1Roles, ...tier2Roles]}
@@ -72,15 +78,16 @@ function App(): ReactElement {
         }
       />
 
-      <Route
-        path="/participant"
+`     <Route
+        path="/volunteer"
         element={
           <ProtectedRoute
-            element={<MenteeDashboard />}
-            allowedRoles={[...tier1Roles, ...tier3Roles]}
+            element={<MentorDashboard />}
+            allowedRoles={[...tier1Roles, ...tier2Roles]}
           />
         }
       />
+
 
       <Route path="/confirmLogout" element={<ConfirmLogout />} />
 
