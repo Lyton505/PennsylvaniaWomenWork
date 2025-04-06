@@ -180,11 +180,11 @@ const MentorDashboard = () => {
     );
 
   const handleClick = (menteeId: string) => {
-    navigate("/mentor/mentee-information", { state: { menteeId } });
+    navigate("/volunteer/participant-information", { state: { menteeId } });
   };
 
   const handleClickWorkshop = (id: string) => {
-    navigate("/mentor/workshop-information", { state: { workshopId: id } });
+    navigate("/volunteer/workshop-information", { state: { workshopId: id } });
   };
 
   const handleCreateEvent = async (eventData: {
@@ -217,6 +217,10 @@ const MentorDashboard = () => {
   useEffect(() => {
     if (user?.role === "board") {
       setActiveTab("Courses");
+    } else if (user?.role === "mentor") {
+      setActiveTab("My Participants");
+    } else if (user?.role === "staff") {
+      setActiveTab("My Participants");
     }
   }, [user?.role]);
 
