@@ -212,8 +212,6 @@ const MentorDashboard = () => {
     setSelectedEvent(event);
   };
 
-  
-
   useEffect(() => {
     if (user?.role === "board") {
       setActiveTab("Courses");
@@ -223,8 +221,6 @@ const MentorDashboard = () => {
       setActiveTab("My Participants");
     }
   }, [user?.role]);
-
-
 
   return (
     <>
@@ -317,7 +313,7 @@ const MentorDashboard = () => {
                               </div>
                               <div className="Mentor--card-description">
                                 {mentee.email}
-                          </div>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -411,6 +407,16 @@ const MentorDashboard = () => {
                   Add New Event
                 </div>
               )}
+
+              {user &&
+                (tier1Roles.includes(user.role) || user.role === "mentor") && (
+                  <div
+                    className="Button Button-color--blue-1000 Margin-top--10"
+                    onClick={() => navigate("/create-meeting")}
+                  >
+                    Schedule Meeting
+                  </div>
+                )}
             </div>
           </div>
         </div>

@@ -142,48 +142,56 @@ const MenteeDashboard = () => {
         />
       )}
       <div className="container py-4">
-      <div className="row g-3">
-        <div className="col-lg-8">
-          <div className="Block">
-            <div className="Block-header">My Courses</div>
-            <div className="Block-subtitle">
-              Select a course to access materials.
-            </div>
-            <div className="row gx-3 gy-3">
-              {workshops.map((item) => (
-                <div className="col-lg-4" key={item._id}>
-                  <div
-                    className="Mentor--card"
-                    onClick={() => handleWorkshopClick(item._id)}
-                  >
-                    <div className="Mentor--card-color Background-color--teal-1000" />
-                    <div className="Padding--10">
-                    <div className="Mentor--card-name">{item.name}</div>
-                          <div className="Mentor--card-description">
-                            {item.description}
-                          </div>
+        <div className="row g-3">
+          <div className="col-lg-8">
+            <div className="Block">
+              <div className="Block-header">My Courses</div>
+              <div className="Block-subtitle">
+                Select a course to access materials.
+              </div>
+              <div className="row gx-3 gy-3">
+                {workshops.map((item) => (
+                  <div className="col-lg-4" key={item._id}>
+                    <div
+                      className="Mentor--card"
+                      onClick={() => handleWorkshopClick(item._id)}
+                    >
+                      <div className="Mentor--card-color Background-color--teal-1000" />
+                      <div className="Padding--10">
+                        <div className="Mentor--card-name">{item.name}</div>
+                        <div className="Mentor--card-description">
+                          {item.description}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4">
+            <div className="Block p-3">
+              <div className="Block-header">Upcoming Events</div>
+              <div className="Block-subtitle">Select an event to register.</div>
+              {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
+                <Event
+                  key={month}
+                  month={month}
+                  events={monthEvents}
+                  onEventClick={handleEventClick}
+                />
               ))}
+
+              {/* Add Schedule Meeting button for mentees */}
+              <div
+                className="Button Button-color--blue-1000 Margin-top--10"
+                onClick={() => navigate("/create-meeting")}
+              >
+                Schedule Meeting
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-lg-4">
-          <div className="Block p-3">
-            <div className="Block-header">Upcoming Events</div>
-            <div className="Block-subtitle">Select an event to register.</div>
-            {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-              <Event
-                key={month}
-                month={month}
-                events={monthEvents}
-                onEventClick={handleEventClick}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
       </div>
     </>
   );
