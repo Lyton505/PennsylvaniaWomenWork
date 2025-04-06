@@ -190,6 +190,7 @@ const WorkshopInformation = () => {
       ]);
 
       resetForm();
+      setIsModal(false);
     } catch (error) {
       console.error("Error adding file:", error);
       setErrorMessage("Failed to add file. Please try again.");
