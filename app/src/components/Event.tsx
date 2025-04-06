@@ -37,6 +37,7 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
           marginBottom: "15px",
         }}
       />
+
       {events.map((event) => {
         const eventDate = new Date(event.date);
         const dayOfMonth = eventDate.getDate();
@@ -44,15 +45,35 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
           weekday: "short",
         });
 
+        // Format time range
+        const formattedStart = new Date(event.startTime).toLocaleTimeString(
+          "en-US",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          },
+        );
+        const formattedEnd = new Date(event.endTime).toLocaleTimeString(
+          "en-US",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          },
+        );
+        const timeRange = `${formattedStart} – ${formattedEnd}`;
+
         return (
           <div
-            key={event.name}
+            key={event.name + event.date}
             onClick={() => onEventClick(event)}
             style={{
               display: "flex",
               alignItems: "center",
-              padding: "8px",
+              padding: "12px 8px",
               cursor: "pointer",
+              borderBottom: "1px solid var(--pww-color-gray-300)",
             }}
           >
             <div
@@ -60,6 +81,7 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                justifyContent: "center",
                 minWidth: "60px",
               }}
             >
@@ -75,18 +97,14 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
               <div
                 style={{
                   fontSize: "14px",
-                  color: "var(--pww-color-gray-1000)",
+                  color: "var(--pww-color-gray-600)",
                   textTransform: "uppercase",
                 }}
               >
                 {dayOfWeek}
               </div>
-              <div
-                style={{ fontSize: "30px", color: "var(--pww-color-gray-800)" }}
-              >
-                {dayOfMonth}
-              </div>
             </div>
+
             <div style={{ flexGrow: 1, paddingLeft: "20px" }}>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <span
@@ -106,6 +124,15 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
                   }}
                 >
                   {event.description}
+                </span>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "var(--pww-color-gray-500)",
+                    marginTop: "4px",
+                  }}
+                >
+                  {timeRange}
                 </span>
               </div>
             </div>
