@@ -177,7 +177,36 @@ const MenteeInformation = () => {
     values: typeof mentorInitialValues,
     { setSubmitting }: any,
   ) => {
-    console.log("Mentor values:", values);
+    try {
+      if (!menteeId) {
+        toast.error("No mentee selected");
+        setSubmitting(false);
+        return;
+      }
+
+      const response = await api.put(
+        `/api/mentor/${values.mentorName}/assign-mentee`,
+        {
+          menteeId: menteeId,
+        },
+      );
+
+      if (response.status === 200) {
+        toast.success("Mentor assigned successfully");
+        // Refresh mentee data to show new mentor
+        const menteeResponse = await api.get(
+          `/api/mentee/get-mentee/${menteeId}`,
+        );
+        setMentee(menteeResponse.data);
+      }
+
+      setIsAssignMentorModal(false);
+    } catch (error) {
+      console.error("Error assigning mentor:", error);
+      toast.error("Failed to assign mentor");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Compute initials for the mentee's avatar
