@@ -7,6 +7,7 @@ import Modal from "../components/Modal";
 import AsyncSubmit from "../components/AsyncSubmit";
 import { useNavigate } from "react-router-dom";
 import { url } from "inspector";
+import { toast } from "react-hot-toast";
 import CreatableSelect from "react-select/creatable";
 import makeAnimated from "react-select/animated";
 
@@ -29,6 +30,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
   imageUpload: Yup.mixed()
+    .nullable()
     .test("fileSize", "File size is too large", (value) => {
       if (!value) return true;
 
@@ -117,10 +119,15 @@ const CreateWorkshop = () => {
         coverImageS3id,
       };
       // const { data: workshop } = await api.post("/api/create-workshop", payload);
-      const { data: workshop } = await api.post(
+      const { data: workshop, status } = await api.post(
         "/api/workshop/create-workshop",
         payload,
       );
+
+      if (status === 201) {
+        toast.success("Workshop created successfully!");
+      }
+
       console.log("Workshop created:", workshop);
       // Add associated files (with placeholder s3id for now)
       if (fileDetails.length > 0) {
@@ -151,7 +158,8 @@ const CreateWorkshop = () => {
       //navigate("/workshops");
     } catch (error) {
       console.error("Error creating workshop:", error);
-      alert("Failed to create workshop. Please try again.");
+      // alert("Failed to create workshop. Please try again.");
+      toast.error("Failed to create workshop. Please try again.");
     } finally {
       setSubmitting(false);
     }
