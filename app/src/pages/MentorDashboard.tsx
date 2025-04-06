@@ -275,9 +275,9 @@ const MentorDashboard = () => {
                   ) : (
                     // Other roles see both tabs
                     [
-                      "My Mentees",
+                      "My Participants",
                       ...(user?.role === "staff" || user?.role === "board"
-                        ? ["All Mentors"]
+                        ? ["All Volunteers"]
                         : []),
                       "Courses",
                     ].map((tab) => (
@@ -328,7 +328,7 @@ const MentorDashboard = () => {
               )}
 
               {(user?.role === "staff" || user?.role === "board") &&
-                activeTab === "All Mentors" && (
+                activeTab === "All Volunteers" && (
                   <div>
                     {mentors.length > 0 ? (
                       <div className="row gx-3 gy-3">

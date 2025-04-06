@@ -117,7 +117,7 @@ function App(): ReactElement {
       />
 
       <Route
-        path="/mentee/mentor-information"
+        path="/particpant/volunteer-information"
         element={
           <ProtectedRoute
             element={<MentorInformation />}
@@ -127,7 +127,7 @@ function App(): ReactElement {
       />
 
       <Route
-        path="/mentor/workshop-information"
+        path="/volunteer/workshop-information"
         element={
           <ProtectedRoute
             element={<WorkshopInformation />}
