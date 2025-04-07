@@ -6,6 +6,8 @@ import { api } from "../api";
 import Event, { EventData } from "../components/Event";
 import { useUser } from "../contexts/UserContext";
 import { useAuth0 } from "@auth0/auth0-react";
+import '../styles/_components.scss';
+
 
 interface File {
   _id: string;
@@ -26,6 +28,28 @@ const BoardDashboard = () => {
   const start = selectedEvent ? new Date(selectedEvent.startTime) : null;
   const end = selectedEvent ? new Date(selectedEvent.endTime) : null;
   const eventDate = selectedEvent ? new Date(selectedEvent.date) : null;
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const possibleTags = ["planning", "governance", "strategy"]; 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+
+
+
+
+  // const filteredFiles = files.filter(file => 
+  //   selectedTags.length === 0 || 
+  //   selectedTags.some(tag => file.tags.includes(tag))
+  // );
+  const filteredFiles = files.filter(file => {
+    const matchesTags = selectedTags.length === 0 || 
+      selectedTags.some(tag => file.tags.includes(tag));
+    
+    const matchesSearch = file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesTags && matchesSearch;
+  });
 
   const formattedSubheader =
     eventDate && start && end
@@ -160,8 +184,78 @@ const BoardDashboard = () => {
               <div className="Block-subtitle">
                 Select a file to access materials.
               </div>
+              <div className="Form-group">
+                <input
+                  type="text"
+                  className="Form-input-box"
+                  placeholder="Search files..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <div className="Form-group" style={{ position: 'relative' }}>
+                <button 
+                  className="Button Button-color--blue-1000"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  type="button"
+                >
+                  Filter by Tags ▼
+                </button>
+                
+                {isDropdownOpen && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '40px',
+                    left: 0,
+                    zIndex: 1000,
+                    backgroundColor: 'white',
+                    border: '1px solid var(--pww-color-gray-300)',
+                    borderRadius: '4px',
+                    padding: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    minWidth: '200px'
+                  }}>
+                    {possibleTags.map(tag => (
+                      <div 
+                        key={tag}
+                        className="Flex-row Align-items--center Gap--10 Padding--5 Hover--background-gray-100 Cursor--pointer"
+                        onClick={() => {
+                          setSelectedTags(prev => 
+                            prev.includes(tag) 
+                              ? prev.filter(t => t !== tag)
+                              : [...prev, tag]
+                          );
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedTags.includes(tag)}
+                          onChange={() => {}} // Handle change in onClick above
+                          style={{ cursor: 'pointer' }}
+                        />
+                        <span>{tag}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Display selected tags */}
+                <div className="Flex-row Flex-wrap Gap--10 Margin-top--10">
+                  {selectedTags.map(tag => (
+                    <div 
+                      key={tag}
+                      className="Filter-tag Filter-tag--removable"
+                      onClick={() => setSelectedTags(prev => prev.filter(t => t !== tag))}
+                    >
+                      {tag} ✕
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+
               <div className="row gx-3 gy-3">
-                {files.map((item) => (
+                {filteredFiles.map((item) => (
                   <div
                     className="col-lg-4"
                     key={item._id}
