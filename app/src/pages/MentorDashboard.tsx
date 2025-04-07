@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom"
 import Modal from "../components/Modal"
-import CreateEventModal from "../components/CreateEvent"
 import Event, { EventData } from "../components/Event"
 import { useUser } from "../contexts/UserContext"
 import { api } from "../api"
@@ -44,7 +43,6 @@ const MentorDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
-  const [createEventModal, setCreateEventModal] = useState(false)
   const [events, setEvents] = useState<EventData[]>([])
   const { user } = useUser()
   const [workshops, setWorkshops] = useState<CourseInformationElements[]>([])
@@ -192,27 +190,6 @@ const MentorDashboard = () => {
     navigate("/volunteer/workshop-information", { state: { workshopId: id } })
   }
 
-  const handleCreateEvent = async (eventData: {
-    name: string
-    description: string
-    date: string
-    startTime: string
-    endTime: string
-    userIds?: string[]
-    roles: string[]
-    calendarLink?: string
-  }) => {
-    try {
-      const response = await api.post(`/api/event`, eventData)
-      console.log(response.data.event)
-
-      setEvents((prev) => [...prev, response.data.event])
-      setCreateEventModal(false)
-    } catch (error) {
-      console.log("Error creating event.")
-    }
-  }
-
   const handleEventClick = (event: EventData) => {
     setSelectedEvent(event)
   }
@@ -274,13 +251,6 @@ const MentorDashboard = () => {
         />
       )}
 
-      {createEventModal && (
-        <CreateEventModal
-          isOpen={createEventModal}
-          onClose={() => setCreateEventModal(false)}
-          onSubmit={handleCreateEvent} // Pass event creation function
-        />
-      )}
       <div className="container py-4">
         <div className="row g-3">
           <div className="col-lg-8">
@@ -412,7 +382,7 @@ const MentorDashboard = () => {
                   <div
                     className="Button Button-color--blue-1000"
                     onClick={() => {
-                      setCreateEventModal(true)
+                      navigate("/create-event")
                     }}
                     style={{ flexGrow: 1 }}
                   >

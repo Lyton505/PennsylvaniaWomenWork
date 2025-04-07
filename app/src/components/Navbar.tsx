@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import { useUser } from "../contexts/UserContext"
 import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles"
+import path from "path"
 
 const Navbar = (): ReactElement => {
   const navigate = useNavigate()
@@ -21,6 +22,12 @@ const Navbar = (): ReactElement => {
     {
       path: "/create-meeting",
       label: "Create Meeting",
+      roles: [...tier1Roles],
+    },
+    // create event is only for board
+    {
+      path: "/create-event",
+      label: "Create Event",
       roles: [...tier1Roles],
     },
     {
