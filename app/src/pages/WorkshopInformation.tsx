@@ -346,87 +346,94 @@ const WorkshopInformation = () => {
         />
       )}
       <Navbar />
-      <div className="WorkshopInfo">
-        <div onClick={() => navigate("/home")} className=" Margin-bottom--10">
-          <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
-        </div>
-        <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
-          <div className="Block-header Flex-row">
-            {workshop?.name}
-            <div className="Flex-row Margin-left--auto">
-              <div style={{ gap: "10px" }}>
-                {user?.role === "staff" && (
+      {/* <div className="WorkshopInfo"> */}
+      <div className="container mt-4">
+        <div className="row">
+          <div
+            className="col-lg-12 mb-4"
+            onClick={() => navigate("/home")}
+            style={{ cursor: "pointer" }}
+          >
+            <Icon glyph="chevron-left" className="Text-colorHover--teal-1000" />
+          </div>
+          <div className="Block ">
+            <div className="Block-header Flex-row">
+              {workshop?.name}
+              <div className="Flex-row Margin-left--auto">
+                <div style={{ gap: "10px" }}>
+                  {user?.role === "staff" && (
+                    <div
+                      // className="Button Button-color--red-1000"
+                      className="Text-color--gray-1000 Text-colorHover--red-1000 Margin-right--10"
+                      onClick={() => setShowDeleteModal(true)}
+                    >
+                      <Icon glyph="trash" />
+                    </div>
+                  )}
+                </div>
+                {(user?.role === "mentor" || user?.role === "staff") && (
                   <div
-                    // className="Button Button-color--red-1000"
-                    className="Text-color--gray-1000 Text-colorHover--red-1000 Margin-right--10"
-                    onClick={() => setShowDeleteModal(true)}
+                    className="Button Button-color--blue-1000 Margin-left--auto"
+                    onClick={() => setIsModal(true)}
                   >
-                    <Icon glyph="trash" />
+                    Add New Files
                   </div>
                 )}
               </div>
-              {(user?.role === "mentor" || user?.role === "staff") && (
-                <div
-                  className="Button Button-color--blue-1000 Margin-left--auto"
-                  onClick={() => setIsModal(true)}
-                >
-                  Add New Files
-                </div>
+            </div>
+            {showDeleteModal && (
+              <Modal
+                header="Delete Workshop"
+                subheader="Are you sure you want to delete this workshop?"
+                body={
+                  <div className="Flex-row" style={{ gap: "10px" }}>
+                    <button
+                      className="Button Button-color--gray-1000 Button--hollow"
+                      onClick={() => setShowDeleteModal(false)}
+                      style={{ flexGrow: 1 }}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      className="Button Button-color--red-1000"
+                      style={{ flexGrow: 1 }}
+                      onClick={() => {
+                        deleteWorkshop()
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                }
+                action={() => setShowDeleteModal(false)}
+              />
+            )}
+            <div className="Block-subtitle">{workshop?.description}</div>
+
+            <div className="row gx-3 gy-3">
+              {loading ? (
+                <p>Loading resources...</p>
+              ) : error ? (
+                <p style={{ color: "red", marginLeft: "15px" }}>{error}</p>
+              ) : (
+                resources.map((file) => (
+                  <div key={file._id} className="col-lg-2">
+                    <div
+                      className="Card"
+                      onClick={() => window.open(file.url, "_blank")}
+                    >
+                      {" "}
+                      {/* Ensure Card is inside col-lg-2 */}
+                      <div className="WorkshopInfo-image">
+                        <img src={getIconForFile(file.s3id)} alt={file.type} />
+                      </div>
+                      <div className="WorkshopInfo-title">{file.name}</div>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
-          </div>
-          {showDeleteModal && (
-            <Modal
-              header="Delete Workshop"
-              subheader="Are you sure you want to delete this workshop?"
-              body={
-                <div className="Flex-row" style={{ gap: "10px" }}>
-                  <button
-                    className="Button Button-color--gray-1000 Button--hollow"
-                    onClick={() => setShowDeleteModal(false)}
-                    style={{ flexGrow: 1 }}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    className="Button Button-color--red-1000"
-                    style={{ flexGrow: 1 }}
-                    onClick={() => {
-                      deleteWorkshop()
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              }
-              action={() => setShowDeleteModal(false)}
-            />
-          )}
-          <div className="Block-subtitle">{workshop?.description}</div>
-
-          <div className="row gx-3 gy-3">
-            {loading ? (
-              <p>Loading resources...</p>
-            ) : error ? (
-              <p style={{ color: "red", marginLeft: "15px" }}>{error}</p>
-            ) : (
-              resources.map((file) => (
-                <div key={file._id} className="col-lg-2">
-                  <div
-                    className="Card"
-                    onClick={() => window.open(file.url, "_blank")}
-                  >
-                    {" "}
-                    {/* Ensure Card is inside col-lg-2 */}
-                    <div className="WorkshopInfo-image">
-                      <img src={getIconForFile(file.s3id)} alt={file.type} />
-                    </div>
-                    <div className="WorkshopInfo-title">{file.name}</div>
-                  </div>
-                </div>
-              ))
-            )}
           </div>
         </div>
       </div>

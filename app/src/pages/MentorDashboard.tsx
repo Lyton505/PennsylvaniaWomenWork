@@ -41,7 +41,6 @@ const MentorDashboard = () => {
   const [mentors, setMentors] = useState<Mentor[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("My Mentees")
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
   const [createEventModal, setCreateEventModal] = useState(false)
   const [events, setEvents] = useState<EventData[]>([])
@@ -49,6 +48,10 @@ const MentorDashboard = () => {
   const [workshops, setWorkshops] = useState<CourseInformationElements[]>([])
   const userId = user?._id
   const [imageUrls, setImageUrls] = useState<ImageUrlMap>({})
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem("activeTab") || "My Mentees"
+  })
+
   useEffect(() => {
     if (!user) {
       return
@@ -220,14 +223,20 @@ const MentorDashboard = () => {
   }
 
   useEffect(() => {
-    if (user?.role === "board") {
-      setActiveTab("Courses")
-    } else if (user?.role === "mentor") {
-      setActiveTab("My Participants")
-    } else if (user?.role === "staff") {
-      setActiveTab("My Participants")
+    const storedTab = localStorage.getItem("activeTab")
+    if (!storedTab) {
+      if (user?.role === "board") {
+        handleTabClick("Courses")
+      } else if (user?.role === "mentor" || user?.role === "staff") {
+        handleTabClick("My Participants")
+      }
     }
   }, [user?.role])
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab)
+    localStorage.setItem("activeTab", tab)
+  }
 
   return (
     <>
@@ -270,7 +279,7 @@ const MentorDashboard = () => {
                   {user?.role === "board" ? (
                     // Board members only see Courses tab
                     <div
-                      onClick={() => setActiveTab("Courses")}
+                      onClick={() => handleTabClick("Courses")}
                       className={`tab ${activeTab === "Courses" ? "active" : ""}`}
                     >
                       Courses
@@ -286,7 +295,7 @@ const MentorDashboard = () => {
                     ].map((tab) => (
                       <div
                         key={tab}
-                        onClick={() => setActiveTab(tab)}
+                        onClick={() => handleTabClick(tab)}
                         className={`tab ${activeTab === tab ? "active" : ""}`}
                       >
                         {tab === "My Participants" && user?.role === "staff"
