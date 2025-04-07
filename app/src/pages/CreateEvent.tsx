@@ -1,16 +1,16 @@
-import React from "react"
-import Navbar from "../components/Navbar"
-import { Formik, Form, Field, FormikHelpers } from "formik"
-import * as yup from "yup"
+import React from "react";
+import Navbar from "../components/Navbar";
+import { Formik, Form, Field, FormikHelpers } from "formik";
+import * as yup from "yup";
 
 interface CreateEventFormValues {
-  name: string
-  description: string
-  date: string
-  startTime: string
-  endTime: string
-  invitationLink: string
-  roles: string[]
+  name: string;
+  description: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  invitationLink: string;
+  roles: string[];
 }
 
 const initialValues: CreateEventFormValues = {
@@ -21,14 +21,14 @@ const initialValues: CreateEventFormValues = {
   endTime: "",
   invitationLink: "",
   roles: [],
-}
+};
 
 const roles = [
   { id: "mentor", label: "Mentor" },
   { id: "mentee", label: "Mentee" },
   { id: "staff", label: "Staff" },
   { id: "board", label: "Board" },
-]
+];
 
 const getValidationSchema = (useTime: boolean) =>
   yup.object().shape({
@@ -46,38 +46,38 @@ const getValidationSchema = (useTime: boolean) =>
             "is-after-start",
             "End time must be after start time",
             function (endTime) {
-              const { startTime } = this.parent
-              return !startTime || !endTime || startTime < endTime
-            }
+              const { startTime } = this.parent;
+              return !startTime || !endTime || startTime < endTime;
+            },
           )
       : yup.string().nullable(),
     invitationLink: yup
       .string()
       .url("Must be a valid URL")
       .required("Invitation link is required"),
-  })
+  });
 
 const CreateEvent = () => {
-  const [useTime, setUseTime] = React.useState(false)
+  const [useTime, setUseTime] = React.useState(false);
 
   const handleSubmit = async (
     values: CreateEventFormValues,
-    { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>
+    { setSubmitting, resetForm }: FormikHelpers<CreateEventFormValues>,
   ) => {
     try {
-      const baseDate = new Date(values.date)
+      const baseDate = new Date(values.date);
 
-      let startDateTime: Date | null = null
-      let endDateTime: Date | null = null
+      let startDateTime: Date | null = null;
+      let endDateTime: Date | null = null;
 
       if (useTime) {
-        const [startHours, startMinutes] = values.startTime.split(":")
-        startDateTime = new Date(baseDate)
-        startDateTime.setHours(parseInt(startHours), parseInt(startMinutes))
+        const [startHours, startMinutes] = values.startTime.split(":");
+        startDateTime = new Date(baseDate);
+        startDateTime.setHours(parseInt(startHours), parseInt(startMinutes));
 
-        const [endHours, endMinutes] = values.endTime.split(":")
-        endDateTime = new Date(baseDate)
-        endDateTime.setHours(parseInt(endHours), parseInt(endMinutes))
+        const [endHours, endMinutes] = values.endTime.split(":");
+        endDateTime = new Date(baseDate);
+        endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
       }
 
       const eventData = {
@@ -88,16 +88,16 @@ const CreateEvent = () => {
         endTime: endDateTime?.toISOString() || null,
         roles: values.roles,
         calendarLink: values.invitationLink,
-      }
+      };
 
-      console.log("Submitting Event Data:", eventData)
-      resetForm()
+      console.log("Submitting Event Data:", eventData);
+      resetForm();
     } catch (error) {
-      console.error("Error creating event:", error)
+      console.error("Error creating event:", error);
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <>
@@ -261,7 +261,7 @@ const CreateEvent = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default CreateEvent
+export default CreateEvent;

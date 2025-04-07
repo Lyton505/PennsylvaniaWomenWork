@@ -1,81 +1,84 @@
-import React, { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import Navbar from "../components/Navbar"
-import Icon from "../components/Icon"
-import { api } from "../api"
-import toast from "react-hot-toast"
-import ConfirmActionModal from "../components/ConfirmActionModal"
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Icon from "../components/Icon";
+import { api } from "../api";
+import toast from "react-hot-toast";
+import ConfirmActionModal from "../components/ConfirmActionModal";
+import { useProfileImage } from "../utils/custom-hooks";
 
 interface Mentee {
-  _id: string
-  first_name: string
-  last_name: string
-  email: string
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
 }
 
 interface Mentor {
-  _id: string
-  first_name: string
-  last_name: string
-  email: string
-  role: string
-  mentees: Mentee[]
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: string;
+  mentees: Mentee[];
+  profile_picture_id: string;
 }
 
 const VolunteerInformation = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const mentorId = location.state?.volunteerId // assuming volunteerId is really mentorId now
-  const [mentor, setMentor] = useState<Mentor | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const mentorId = location.state?.volunteerId; // assuming volunteerId is really mentorId now
+  const [mentor, setMentor] = useState<Mentor | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const profileImage = useProfileImage(mentor?.profile_picture_id);
 
   useEffect(() => {
     if (!mentorId) {
-      setError("Mentor ID is missing.")
-      setLoading(false)
-      return
+      setError("Mentor ID is missing.");
+      setLoading(false);
+      return;
     }
 
     const fetchMentorData = async () => {
       try {
-        const response = await api.get(`/api/mentor/get-mentor/${mentorId}`)
-        setMentor(response.data)
-        console.log("Mentor data:", response.data)
+        const response = await api.get(`/api/mentor/get-mentor/${mentorId}`);
+        setMentor(response.data);
+        console.log("Mentor data:", response.data);
       } catch (err) {
-        setError("Failed to load mentor details.")
-        console.error("Error fetching mentor data:", err)
+        setError("Failed to load mentor details.");
+        console.error("Error fetching mentor data:", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchMentorData()
-  }, [mentorId])
+    fetchMentorData();
+  }, [mentorId]);
 
   const getInitials = () => {
-    if (!mentor) return ""
+    if (!mentor) return "";
     return (
       mentor.first_name.charAt(0).toUpperCase() +
       mentor.last_name.charAt(0).toUpperCase()
-    )
-  }
+    );
+  };
 
   const handleDeleteMentor = async (mentorId: string) => {
     try {
-      await api.delete(`/api/mentor/delete-mentor/${mentorId}`)
-      navigate("/home")
-      toast.success("Mentor deleted successfully.")
+      await api.delete(`/api/mentor/delete-mentor/${mentorId}`);
+      navigate("/home");
+      toast.success("Mentor deleted successfully.");
     } catch (err) {
-      toast.error("Failed to delete mentor.")
+      toast.error("Failed to delete mentor.");
     } finally {
-      setShowDeleteModal(false)
+      setShowDeleteModal(false);
     }
-  }
+  };
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>{error}</div>
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -86,8 +89,8 @@ const VolunteerInformation = () => {
           message="Are you sure you want to delete this volunteer? This action cannot be undone."
           confirmLabel="Delete"
           onConfirm={() => {
-            handleDeleteMentor(mentorId)
-            setShowDeleteModal(false)
+            handleDeleteMentor(mentorId);
+            setShowDeleteModal(false);
           }}
           onCancel={() => setShowDeleteModal(false)}
           isDanger={true}
@@ -110,9 +113,18 @@ const VolunteerInformation = () => {
               <div className="Block-header">Volunteer Information</div>
               <div className="Block-subtitle">Volunteer Details</div>
               <div className="Block-content">
-                <div className="Profile-avatar">
+                {profileImage ? (
+                  <div
+                    className="Profile-avatar-image"
+                    style={{
+                      backgroundImage: `url(${profileImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+                ) : (
                   <div className="Profile-initials">{getInitials()}</div>
-                </div>
+                )}
                 <div className="Profile-field">
                   <div className="Profile-field-label">Name:</div>
                   <div>
@@ -160,7 +172,7 @@ const VolunteerInformation = () => {
               <button
                 className="Button Button-color--red-1000 Button--hollow Width--100"
                 onClick={() => {
-                  setShowDeleteModal(true)
+                  setShowDeleteModal(true);
                 }}
               >
                 Delete Volunteer
@@ -198,7 +210,7 @@ const VolunteerInformation = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default VolunteerInformation
+export default VolunteerInformation;
