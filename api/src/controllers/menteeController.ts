@@ -73,7 +73,6 @@ export const addWorkshopToMentee = async (req: Request, res: Response) => {
       workshops: workshops,
     };
 
-    console.log("Successfully assigned workshop to mentee");
     res.status(200).json(menteeWithWorkshops);
   } catch (error) {
     console.error("Error in addWorkshopToMentee:", error);

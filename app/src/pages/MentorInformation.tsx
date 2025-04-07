@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Icon from "../components/Icon";
 import { api } from "../api";
+import toast from "react-hot-toast";
+import ConfirmActionModal from "../components/ConfirmActionModal";
+import { useProfileImage } from "../utils/custom-hooks";
 
 interface Mentee {
   _id: string;
@@ -18,6 +21,7 @@ interface Mentor {
   email: string;
   role: string;
   mentees: Mentee[];
+  profile_picture_id: string;
 }
 
 const VolunteerInformation = () => {
@@ -27,6 +31,8 @@ const VolunteerInformation = () => {
   const [mentor, setMentor] = useState<Mentor | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const profileImage = useProfileImage(mentor?.profile_picture_id);
 
   useEffect(() => {
     if (!mentorId) {
@@ -59,11 +65,37 @@ const VolunteerInformation = () => {
     );
   };
 
+  const handleDeleteMentor = async (mentorId: string) => {
+    try {
+      await api.delete(`/api/mentor/delete-mentor/${mentorId}`);
+      navigate("/home");
+      toast.success("Mentor deleted successfully.");
+    } catch (err) {
+      toast.error("Failed to delete mentor.");
+    } finally {
+      setShowDeleteModal(false);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <>
+      {showDeleteModal && (
+        <ConfirmActionModal
+          isOpen={showDeleteModal}
+          title="Delete Volunteer"
+          message="Are you sure you want to delete this volunteer? This action cannot be undone."
+          confirmLabel="Delete"
+          onConfirm={() => {
+            handleDeleteMentor(mentorId);
+            setShowDeleteModal(false);
+          }}
+          onCancel={() => setShowDeleteModal(false)}
+          isDanger={true}
+        />
+      )}
       <Navbar />
       <div className="container mt-4">
         <div className="row">
@@ -78,12 +110,21 @@ const VolunteerInformation = () => {
           {/* Column 1: Mentor Info */}
           <div className="col-lg-4 mb-4">
             <div className="Block">
-              <div className="Block-header">Mentor Information</div>
-              <div className="Block-subtitle">Mentor Details</div>
+              <div className="Block-header">Volunteer Information</div>
+              <div className="Block-subtitle">Volunteer Details</div>
               <div className="Block-content">
-                <div className="Profile-avatar">
+                {profileImage ? (
+                  <div
+                    className="Profile-avatar-image"
+                    style={{
+                      backgroundImage: `url(${profileImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+                ) : (
                   <div className="Profile-initials">{getInitials()}</div>
-                </div>
+                )}
                 <div className="Profile-field">
                   <div className="Profile-field-label">Name:</div>
                   <div>
@@ -120,6 +161,22 @@ const VolunteerInformation = () => {
               ) : (
                 <p>No mentees assigned.</p>
               )}
+            </div>
+
+            {/* new block to delete user */}
+            <div className="Block Margin-top--20">
+              <div className="Block-header">Delete Volunteer</div>
+              <div className="Block-subtitle">
+                Permanently remove this mentor from the system.
+              </div>
+              <button
+                className="Button Button-color--red-1000 Button--hollow Width--100"
+                onClick={() => {
+                  setShowDeleteModal(true);
+                }}
+              >
+                Delete Volunteer
+              </button>
             </div>
           </div>
 

@@ -1,243 +1,221 @@
-import React, { useEffect, useState } from "react"
-import Navbar from "../components/Navbar"
-import { useNavigate } from "react-router-dom"
-import Modal from "../components/Modal"
-import CreateEventModal from "../components/CreateEvent"
-import Event, { EventData } from "../components/Event"
-import { useUser } from "../contexts/UserContext"
-import { api } from "../api"
-import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles"
-import ParticipantCard from "../components/ParticipantCard"
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
+import Modal from "../components/Modal";
+import Event, { EventData } from "../components/Event";
+import { useUser } from "../contexts/UserContext";
+import { api } from "../api";
+import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles";
+import ParticipantCard from "../components/ParticipantCard";
+import FolderCard from "../components/FolderCard";
 
 interface Mentee {
-  _id: string
-  first_name: string
-  last_name: string
-  email: string
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
 }
 
 interface Mentor {
-  _id: string
-  first_name: string
-  last_name: string
-  email: string
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
 }
 
 interface CourseInformationElements {
-  _id: string
-  name: string
-  description: string
-  s3id: string
-  createdAt: string
-  mentor: string
-  mentee: string
-  coverImageS3id: string
+  _id: string;
+  name: string;
+  description: string;
+  s3id: string;
+  createdAt: string;
+  mentor: string;
+  mentee: string;
+  coverImageS3id: string;
 }
 
-type ImageUrlMap = Record<string, string | null>
+type ImageUrlMap = Record<string, string | null>;
 
 const MentorDashboard = () => {
-  const navigate = useNavigate()
-  const [mentees, setMentees] = useState<Mentee[]>([])
-  const [mentors, setMentors] = useState<Mentor[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
-  const [createEventModal, setCreateEventModal] = useState(false)
-  const [events, setEvents] = useState<EventData[]>([])
-  const { user } = useUser()
-  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([])
-  const userId = user?._id
-  const [imageUrls, setImageUrls] = useState<ImageUrlMap>({})
+  const navigate = useNavigate();
+  const [mentees, setMentees] = useState<Mentee[]>([]);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [events, setEvents] = useState<EventData[]>([]);
+  const { user } = useUser();
+  const [workshops, setWorkshops] = useState<CourseInformationElements[]>([]);
+  const userId = user?._id;
+  const [imageUrls, setImageUrls] = useState<ImageUrlMap>({});
   const [activeTab, setActiveTab] = useState(() => {
-    return localStorage.getItem("activeTab") || "My Mentees"
-  })
+    return localStorage.getItem("activeTab") || "My Mentees";
+  });
 
   useEffect(() => {
     if (!user) {
-      return
+      return;
     }
 
     const fetchUserEvents = async () => {
       try {
-        const response = await api.get(`/api/event/${userId}`)
-        setEvents(response.data)
+        const response = await api.get(`/api/event/${userId}`);
+        setEvents(response.data);
       } catch (err) {
-        console.log("Failed to load events.")
+        console.log("Failed to load events.");
       }
-    }
+    };
 
     if (
       !userId ||
       (user.role !== "mentor" && user.role !== "staff" && user.role !== "board")
     ) {
-      console.log("Only mentors can view mentees.")
-      setLoading(false)
-      return
+      console.log("Only mentors can view mentees.");
+      setLoading(false);
+      return;
     }
-    console.log("userId", userId)
+    console.log("userId", userId);
 
     const fetchMentees = async () => {
       try {
         const endpoint =
           user.role === "staff"
             ? "/api/mentee/all-mentees"
-            : `/api/mentor/${user._id}/mentees`
+            : `/api/mentor/${user._id}/mentees`;
 
-        const response = await api.get(endpoint)
+        const response = await api.get(endpoint);
 
         const menteeData =
           user.role === "staff"
             ? response.data // getAllMentees returns array directly
-            : response.data.mentees // getMenteesForMentor returns {mentees: [...]}
+            : response.data.mentees; // getMenteesForMentor returns {mentees: [...]}
 
-        setMentees(Array.isArray(menteeData) ? menteeData : [])
-        console.log("menteeData", menteeData)
-        setLoading(false)
+        setMentees(Array.isArray(menteeData) ? menteeData : []);
+        console.log("menteeData", menteeData);
+        setLoading(false);
       } catch (err) {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchUserEvents()
-    fetchMentees()
-  }, [user, userId])
+    };
+    fetchUserEvents();
+    fetchMentees();
+  }, [user, userId]);
 
   // call endpoint to get all workshops
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
-        const response = await api.get(`/api/workshop/get-workshops`)
-        setWorkshops(response.data)
-        fetchImageUrls(response.data)
+        const response = await api.get(`/api/workshop/get-workshops`);
+        setWorkshops(response.data);
+        fetchImageUrls(response.data);
       } catch (err) {
-        console.log("Unable to fetch workshops.")
+        console.log("Unable to fetch folders.");
       }
-    }
-    fetchWorkshops()
-  }, [])
+    };
+    fetchWorkshops();
+  }, []);
 
   useEffect(() => {
     const fetchMentors = async () => {
       if (user?.role === "staff" || user?.role === "board") {
         try {
-          const response = await api.get(`/api/mentor/all-mentors`)
-          setMentors(response.data)
+          const response = await api.get(`/api/mentor/all-mentors`);
+          setMentors(response.data);
         } catch (err) {
-          console.error("Unable to fetch mentors.")
+          console.error("Unable to fetch mentors.");
         }
       }
-    }
+    };
 
-    fetchMentors()
-  }, [user])
+    fetchMentors();
+  }, [user]);
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const fetchImageUrls = async (workshopsData: any) => {
-    const urls: ImageUrlMap = {}
+    const urls: ImageUrlMap = {};
 
     await Promise.all(
       workshopsData.map(async (item: any) => {
         if (item.coverImageS3id) {
           try {
             const res = await api.get(
-              `/api/resource/getURL/${item.coverImageS3id}`
-            )
-            urls[item.coverImageS3id] = res.data.signedUrl
+              `/api/resource/getURL/${item.coverImageS3id}`,
+            );
+            urls[item.coverImageS3id] = res.data.signedUrl;
           } catch (error) {
             console.error(
               `Error fetching image for ${item.coverImageS3id}:`,
-              error
-            )
-            urls[item.coverImageS3id] = null
+              error,
+            );
+            urls[item.coverImageS3id] = null;
           }
         }
-      })
-    )
+      }),
+    );
 
-    setImageUrls(urls)
-  }
+    setImageUrls(urls);
+  };
 
   const eventsByMonth: { [key: string]: EventData[] } = events
     .filter((event) => new Date(event.date) >= today)
     .sort(
       (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
     ) // Sort events chronologically
     .reduce(
       (acc, event) => {
-        const eventDate = new Date(event.date)
-        const month = eventDate.toLocaleString("default", { month: "long" })
+        const eventDate = new Date(event.date);
+        const month = eventDate.toLocaleString("default", { month: "long" });
 
         if (!acc[month]) {
-          acc[month] = []
+          acc[month] = [];
         }
         acc[month].push({
           ...event,
           formattedDate: eventDate.toDateString(),
-        })
+        });
 
-        return acc
+        return acc;
       },
-      {} as { [key: string]: EventData[] }
-    )
+      {} as { [key: string]: EventData[] },
+    );
 
   const handleClick = (menteeId: string) => {
-    navigate("/volunteer/participant-information", { state: { menteeId } })
-  }
+    navigate("/volunteer/participant-information", { state: { menteeId } });
+  };
 
   const handleClickWorkshop = (id: string) => {
-    navigate("/volunteer/workshop-information", { state: { workshopId: id } })
-  }
-
-  const handleCreateEvent = async (eventData: {
-    name: string
-    description: string
-    date: string
-    startTime: string
-    endTime: string
-    userIds?: string[]
-    roles: string[]
-    calendarLink?: string
-  }) => {
-    try {
-      const response = await api.post(`/api/event`, eventData)
-      console.log(response.data.event)
-
-      setEvents((prev) => [...prev, response.data.event])
-      setCreateEventModal(false)
-    } catch (error) {
-      console.log("Error creating event.")
-    }
-  }
+    navigate("/volunteer/workshop-information", { state: { workshopId: id } });
+  };
 
   const handleEventClick = (event: EventData) => {
-    setSelectedEvent(event)
-  }
+    setSelectedEvent(event);
+  };
 
   const handleMentorClick = (volunteerId: string) => {
-    console.log("Mentor ID:", volunteerId)
+    console.log("Mentor ID:", volunteerId);
     navigate("/particpant/participant-information", {
       state: { volunteerId },
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    const storedTab = localStorage.getItem("activeTab")
+    const storedTab = localStorage.getItem("activeTab");
     if (!storedTab) {
       if (user?.role === "board") {
-        handleTabClick("Courses")
+        handleTabClick("Files");
       } else if (user?.role === "mentor" || user?.role === "staff") {
-        handleTabClick("My Participants")
+        handleTabClick("My Participants");
       }
     }
-  }, [user?.role])
+  }, [user?.role]);
 
   const handleTabClick = (tab: string) => {
-    setActiveTab(tab)
-    localStorage.setItem("activeTab", tab)
-  }
+    setActiveTab(tab);
+    localStorage.setItem("activeTab", tab);
+  };
 
   return (
     <>
@@ -247,30 +225,32 @@ const MentorDashboard = () => {
           header={selectedEvent.name}
           subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()} ${new Date(selectedEvent.startTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} - ${new Date(selectedEvent.endTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`}
           body={
-            <>
+            <div className="Flex-column">
               {selectedEvent.description}
-              <div>
+              <div className="Button Button-color--red-1000 Margin-top--10 Button--hollow">
+                Delete Event
+              </div>
+              {selectedEvent.calendarLink && (
                 <a
                   href={selectedEvent.calendarLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="Button Button-color--blue-1000 Margin-top--10"
+                  style={{
+                    display: "inline-block",
+                    textAlign: "center",
+                    textDecoration: "none",
+                  }}
                 >
                   Add to Calendar
                 </a>
-              </div>
-            </>
+              )}
+            </div>
           }
           action={() => setSelectedEvent(null)}
         />
       )}
 
-      {createEventModal && (
-        <CreateEventModal
-          isOpen={createEventModal}
-          onClose={() => setCreateEventModal(false)}
-          onSubmit={handleCreateEvent} // Pass event creation function
-        />
-      )}
       <div className="container py-4">
         <div className="row g-3">
           <div className="col-lg-8">
@@ -280,10 +260,10 @@ const MentorDashboard = () => {
                   {user?.role === "board" ? (
                     // Board members only see Courses tab
                     <div
-                      onClick={() => handleTabClick("Courses")}
-                      className={`tab ${activeTab === "Courses" ? "active" : ""}`}
+                      onClick={() => handleTabClick("Files")}
+                      className={`tab ${activeTab === "Files" ? "active" : ""}`}
                     >
-                      Courses
+                      Files
                     </div>
                   ) : (
                     // Other roles see both tabs
@@ -292,7 +272,7 @@ const MentorDashboard = () => {
                       ...(user?.role === "staff" || user?.role === "board"
                         ? ["All Volunteers"]
                         : []),
-                      "Courses",
+                      "Files",
                     ].map((tab) => (
                       <div
                         key={tab}
@@ -362,34 +342,16 @@ const MentorDashboard = () => {
                   </div>
                 )}
 
-              {activeTab === "Courses" && (
+              {activeTab === "Files" && (
                 <div className="row gx-3 gy-3">
                   {workshops.map((item) => (
                     <div className="col-lg-4" key={item._id}>
-                      <div
-                        className="Mentor--card"
+                      <FolderCard
+                        name={item.name}
+                        description={item.description}
+                        imageUrl={imageUrls[item.coverImageS3id]}
                         onClick={() => handleClickWorkshop(item._id)}
-                      >
-                        {imageUrls[item.coverImageS3id] ? (
-                          <div
-                            className="Mentor--card-image"
-                            style={{
-                              backgroundImage: `url(${imageUrls[item.coverImageS3id]})`,
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                              height: "120px",
-                            }}
-                          />
-                        ) : (
-                          <div className="Mentor--card-color Background-color--teal-1000" />
-                        )}
-                        <div className="Padding--10">
-                          <div className="Mentor--card-name">{item.name}</div>
-                          <div className="Mentor--card-description">
-                            {item.description}
-                          </div>
-                        </div>
-                      </div>
+                      />
                     </div>
                   ))}
                 </div>
@@ -401,7 +363,7 @@ const MentorDashboard = () => {
             <div className="Block p-3">
               <div className="Block-header">Upcoming Events</div>
               <div className="Block-subtitle">
-                Scheduled meetings and workshops
+                Scheduled meetings and events.
               </div>
               {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
                 <Event
@@ -412,32 +374,40 @@ const MentorDashboard = () => {
                 />
               ))}
 
-              {user && tier1Roles.includes(user.role) && (
-                <div
-                  className="Button Button-color--blue-1000"
-                  onClick={() => {
-                    setCreateEventModal(true)
-                  }}
-                >
-                  Add New Event
-                </div>
-              )}
-
-              {user &&
-                (tier1Roles.includes(user.role) || user.role === "mentor") && (
+              <div
+                className="Flex-row Align-items--center Width--100 Margin-top--10"
+                style={{ gap: "10px" }}
+              >
+                {user && tier1Roles.includes(user.role) && (
                   <div
-                    className="Button Button-color--blue-1000 Margin-top--10"
-                    onClick={() => navigate("/create-meeting")}
+                    className="Button Button-color--blue-1000"
+                    onClick={() => {
+                      navigate("/create-event");
+                    }}
+                    style={{ flexGrow: 1 }}
                   >
-                    Schedule Meeting
+                    Add New Event
                   </div>
                 )}
+
+                {user &&
+                  (tier1Roles.includes(user.role) ||
+                    user.role === "mentor") && (
+                    <div
+                      className="Button Button-color--blue-1000 "
+                      onClick={() => navigate("/create-meeting")}
+                      style={{ flexGrow: 1 }}
+                    >
+                      Schedule Meeting
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MentorDashboard
+export default MentorDashboard;

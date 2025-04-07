@@ -5,6 +5,7 @@ import MenteeDashboard from "./pages/MenteeDashboard";
 import ConfirmLogout from "./pages/ConfirmLogout";
 import CreateWorkshop from "./pages/CreateWorkshop";
 import CreateMeeting from "./pages/CreateMeeting";
+import CreateEvent from "./pages/CreateEvent";
 import MenteeInformation from "./pages/MenteeInformation";
 import WorkshopInformation from "./pages/WorkshopInformation";
 import AuthCallback from "./pages/auth-callback";
@@ -100,6 +101,15 @@ function App(): ReactElement {
           <ProtectedRoute
             element={<CreateMeeting />}
             allowedRoles={[...tier1Roles, ...tier2Roles, ...tier3Roles]}
+          />
+        }
+      />
+      <Route
+        path="/create-event"
+        element={
+          <ProtectedRoute
+            element={<CreateEvent />}
+            allowedRoles={[...tier1Roles]}
           />
         }
       />

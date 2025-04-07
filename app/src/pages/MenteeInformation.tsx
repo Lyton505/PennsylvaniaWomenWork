@@ -11,6 +11,7 @@ import { tier1Roles } from "../utils/roles";
 import { toast } from "react-hot-toast";
 import { set } from "react-hook-form";
 import { useProfileImage } from "../utils/custom-hooks";
+import ConfirmActionModal from "../components/ConfirmActionModal";
 
 interface Workshop {
   _id: string;
@@ -53,7 +54,8 @@ const MenteeInformation = () => {
   const [mentors, setMentors] = useState<MentorInfo[]>([]);
   const [mentorInfo, setMentorInfo] = useState<MentorInfo | null>(null);
   const [isAssignMentorModal, setIsAssignMentorModal] = useState(false);
-  
+  const [deleteModal, setDeleteModal] = useState(false);
+
   const profileImage = useProfileImage(mentee?.profile_picture_id);
 
   useEffect(() => {
@@ -243,8 +245,31 @@ const MenteeInformation = () => {
     return <div>{error}</div>;
   }
 
+  const handleDeleteMentee = async (menteeId: string) => {
+    try {
+      await api.delete(`/api/mentee/delete-mentee/${menteeId}`);
+      navigate("/home");
+    } catch (err) {
+      toast.error("Failed to delete mentee.");
+    } finally {
+      toast.success("Mentee deleted successfully.");
+      setDeleteModal(false);
+    }
+  };
+
   return (
     <>
+      {deleteModal && (
+        <ConfirmActionModal
+          isOpen={deleteModal}
+          title="Delete Participant"
+          message="Are you sure you want to delete this participant? This action cannot be undone."
+          confirmLabel="Delete Volunteer"
+          onConfirm={() => handleDeleteMentee(menteeId)}
+          onCancel={() => setDeleteModal(false)}
+          isDanger
+        />
+      )}
       <Navbar />
       <div className="container mt-4">
         <div className="row">
@@ -271,18 +296,18 @@ const MenteeInformation = () => {
                   <div className="Block-subtitle">Participant Details</div>
                   <div className="Block-content">
                     <div className="Profile-avatar">
-                    {profileImage ? (
-                  <div
-                    className="Profile-avatar-image"
-                    style={{
-                      backgroundImage: `url(${profileImage})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
-                ) : (
-                  <div className="Profile-initials">{getInitials()}</div>
-                )}
+                      {profileImage ? (
+                        <div
+                          className="Profile-avatar-image"
+                          style={{
+                            backgroundImage: `url(${profileImage})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        />
+                      ) : (
+                        <div className="Profile-initials">{getInitials()}</div>
+                      )}
                     </div>
                     <div className="Profile-field">
                       <div className="Profile-field-label">Name:</div>
@@ -353,9 +378,9 @@ const MenteeInformation = () => {
               {/* Column 2: Mentee Courses */}
               <div className="col-lg-4 mb-4">
                 <div className="Block">
-                  <div className="Block-header">Participant Courses</div>
+                  <div className="Block-header">Participant Files</div>
                   <div className="Block-subtitle">
-                    Courses assigned to {mentee?.first_name}
+                    Files assigned to {mentee?.first_name}
                   </div>
                   {assignedWorkshops.length > 0 ? (
                     <div className="Flex-col">
@@ -366,7 +391,7 @@ const MenteeInformation = () => {
                       ))}
                     </div>
                   ) : (
-                    <p>No courses assigned.</p>
+                    <p>No files assigned.</p>
                   )}
                   {(user?.role === "staff" || user?.role === "mentor") && (
                     <button
@@ -376,6 +401,20 @@ const MenteeInformation = () => {
                       Assign New Course
                     </button>
                   )}
+                </div>
+                <div className="Block Margin-top--20">
+                  <div className="Block-header">Delete Participant</div>
+                  <div className="Block-subtitle">
+                    Permanently remove this participant from the system.
+                  </div>
+                  <button
+                    className="Button Button-color--red-1000 Button--hollow Width--100"
+                    onClick={() => {
+                      setDeleteModal(true);
+                    }}
+                  >
+                    Delete Participant
+                  </button>
                 </div>
               </div>
               {/* Column 3: Upcoming Meetings */}

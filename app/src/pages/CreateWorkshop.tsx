@@ -17,18 +17,28 @@ interface FormValues {
   name: string;
   description: string;
   imageUpload: File | null;
+  role: string;
 }
 
 const initialValues: FormValues = {
   name: "",
   description: "",
   imageUpload: null,
+  role: "",
 };
+
+const roles = [
+  { id: "mentee", label: "Participant" },
+  { id: "mentor", label: "Volunteer" },
+  { id: "staff", label: "Staff" },
+  { id: "board", label: "Board" },
+];
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
+
   imageUpload: Yup.mixed()
     .nullable()
     .test("fileSize", "File size is too large", (value) => {
@@ -159,7 +169,7 @@ const CreateWorkshop = () => {
     } catch (error) {
       console.error("Error creating workshop:", error);
       // alert("Failed to create workshop. Please try again.");
-      toast.error("Failed to create workshop. Please try again.");
+      toast.error("Failed to create folder. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -358,7 +368,7 @@ const CreateWorkshop = () => {
 
       <div className="FormWidget">
         <div className="FormWidget-body Block">
-          <div className="Block-header">Create Workshop</div>
+          <div className="Block-header">Create Folder</div>
           <div className="Block-subtitle">Add a new workshop</div>
           <div className="Block-body">
             <Formik
@@ -366,7 +376,7 @@ const CreateWorkshop = () => {
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ errors, touched, isSubmitting, setFieldValue }) => (
+              {({ errors, touched, isSubmitting, setFieldValue, values }) => (
                 <Form>
                   <div className="Form-group">
                     <label htmlFor="name">Workshop Name:</label>
@@ -381,7 +391,7 @@ const CreateWorkshop = () => {
                     )}
                   </div>
                   <div className="Form-group">
-                    <label htmlFor="description">Workshop Description:</label>
+                    <label htmlFor="description">Folder Description:</label>
                     <Field
                       type="text"
                       name="description"
@@ -414,6 +424,34 @@ const CreateWorkshop = () => {
                       <div className="Form-error">{errors.imageUpload}</div>
                     )}
                   </div>
+                  <div className="Form-group">
+                    <label className="Form-label">
+                      Select a Group to Give Access to This File:
+                    </label>
+                    <div className="Role-tags">
+                      {roles.map((role) => (
+                        <div key={role.id} className="Role-tag-item">
+                          <input
+                            type="radio"
+                            id={`role-${role.id}`}
+                            name="role"
+                            className="Role-tag-input"
+                            checked={values.role === role.id}
+                            onChange={() => setFieldValue("role", role.id)}
+                          />
+                          <label
+                            htmlFor={`role-${role.id}`}
+                            className="Role-tag-label"
+                          >
+                            {role.label}
+                          </label>
+                        </div>
+                      ))}
+                      {errors.role && touched.role && (
+                        <div className="Form-error">{errors.role}</div>
+                      )}
+                    </div>
+                  </div>
                   {fileDetails.length > 0 && (
                     <div>
                       <h4>Uploaded Files:</h4>
@@ -440,7 +478,7 @@ const CreateWorkshop = () => {
                       {isSubmitting ? (
                         <AsyncSubmit loading={isSubmitting} />
                       ) : (
-                        "Create Workshop"
+                        "Create Folder"
                       )}
                     </button>
                   </div>
