@@ -10,6 +10,7 @@ import { useUser } from "../contexts/UserContext";
 import { tier1Roles } from "../utils/roles";
 import { toast } from "react-hot-toast";
 import { set } from "react-hook-form";
+import { useProfileImage } from "../utils/custom-hooks";
 
 interface Workshop {
   _id: string;
@@ -27,6 +28,7 @@ interface MenteeInfo {
   role: string;
   mentor?: string;
   workshops: string[]; // Array of workshop names
+  profile_picture_id: string | null;
 }
 
 interface MentorInfo {
@@ -34,6 +36,7 @@ interface MentorInfo {
   first_name: string;
   last_name: string;
   email: string;
+  profile_picture_id: string | null;
 }
 
 const MenteeInformation = () => {
@@ -50,6 +53,8 @@ const MenteeInformation = () => {
   const [mentors, setMentors] = useState<MentorInfo[]>([]);
   const [mentorInfo, setMentorInfo] = useState<MentorInfo | null>(null);
   const [isAssignMentorModal, setIsAssignMentorModal] = useState(false);
+  
+  const profileImage = useProfileImage(mentee?.profile_picture_id);
 
   useEffect(() => {
     if (!menteeId) {
@@ -266,7 +271,18 @@ const MenteeInformation = () => {
                   <div className="Block-subtitle">Participant Details</div>
                   <div className="Block-content">
                     <div className="Profile-avatar">
-                      <div className="Profile-initials">{getInitials()}</div>
+                    {profileImage ? (
+                  <div
+                    className="Profile-avatar-image"
+                    style={{
+                      backgroundImage: `url(${profileImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+                ) : (
+                  <div className="Profile-initials">{getInitials()}</div>
+                )}
                     </div>
                     <div className="Profile-field">
                       <div className="Profile-field-label">Name:</div>

@@ -7,6 +7,7 @@ import Event, { EventData } from "../components/Event"
 import { useUser } from "../contexts/UserContext"
 import { api } from "../api"
 import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles"
+import ParticipantCard from "../components/ParticipantCard"
 
 interface Mentee {
   _id: string
@@ -314,24 +315,21 @@ const MentorDashboard = () => {
                     <p>Loading mentees...</p>
                   ) : error ? (
                     <p style={{ color: "red" }}>{error}</p>
-                  ) : mentees.length === 0 ? null : ( // We don't show anything here to avoid flicker. You can also use `null` instead.
+                  ) : mentees.length === 0 ? (
+                    <p>No participants found.</p>
+                  ) : (
                     <div className="row gx-3 gy-3">
                       {mentees.map((mentee) => (
-                        <div className="col-lg-4" key={mentee._id}>
-                          <div
-                            className="Mentor--card"
+                        <div className="col-lg-6" key={mentee._id}>
+                          <ParticipantCard
+                            firstName={mentee.first_name}
+                            lastName={mentee.last_name}
+                            email={mentee.email}
+                            profilePictureId={
+                              (mentee as any).profile_picture_id
+                            } // cast if type doesn't include it
                             onClick={() => handleClick(mentee._id)}
-                          >
-                            <div className="Mentor--card-color Background-color--teal-1000" />
-                            <div className="Padding--10">
-                              <div className="Mentor--card-name">
-                                {mentee.first_name} {mentee.last_name}
-                              </div>
-                              <div className="Mentor--card-description">
-                                {mentee.email}
-                              </div>
-                            </div>
-                          </div>
+                          />
                         </div>
                       ))}
                     </div>
@@ -345,22 +343,16 @@ const MentorDashboard = () => {
                     {mentors.length > 0 ? (
                       <div className="row gx-3 gy-3">
                         {mentors.map((mentor) => (
-                          <div
-                            className="col-lg-4"
-                            key={mentor._id}
-                            onClick={() => handleMentorClick(mentor._id)}
-                          >
-                            <div className="Mentor--card">
-                              <div className="Mentor--card-color Background-color--teal-1000" />
-                              <div className="Padding--10">
-                                <div className="Mentor--card-name">
-                                  {mentor.first_name} {mentor.last_name}
-                                </div>
-                                <div className="Mentor--card-description">
-                                  {mentor.email}
-                                </div>
-                              </div>
-                            </div>
+                          <div className="col-lg-4" key={mentor._id}>
+                            <ParticipantCard
+                              firstName={mentor.first_name}
+                              lastName={mentor.last_name}
+                              email={mentor.email}
+                              profilePictureId={
+                                (mentor as any).profile_picture_id
+                              }
+                              onClick={() => handleMentorClick(mentor._id)}
+                            />
                           </div>
                         ))}
                       </div>
