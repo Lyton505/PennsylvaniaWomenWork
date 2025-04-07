@@ -5,6 +5,7 @@ import {
   addWorkshopToMentee,
   getMenteeById,
   getAllMentees,
+  getMentorsForMentee,
 } from "../controllers/menteeController";
 import { get } from "http";
 
@@ -19,5 +20,7 @@ router.put("/:menteeId/add-workshop", addWorkshopToMentee);
 router.get("/get-mentee/:menteeId", getMenteeById);
 
 router.get("/all-mentees", getAllMentees);
+
+router.get("/:menteeId/mentors", getMentorsForMentee);
 
 export default router;
