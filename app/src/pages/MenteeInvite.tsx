@@ -28,8 +28,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const roles = [
-  { id: "mentee", label: "Mentee" },
-  { id: "mentor", label: "Mentor" },
+  { id: "mentee", label: "Participant" },
+  { id: "mentor", label: "Volunteer" },
   { id: "staff", label: "Staff" },
   { id: "board", label: "Board" },
 ];
@@ -79,7 +79,7 @@ const SampleMenteeInvite = () => {
         <div className="FormWidget-body Block">
           <div className="Block-header">Send a Network Invite</div>
           <div className="Block-subtitle">
-            Invite a mentee to join your network
+            Invite a participant to join your network
           </div>
           <Formik
             initialValues={initialValues}

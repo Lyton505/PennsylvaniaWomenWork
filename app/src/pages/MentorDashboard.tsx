@@ -180,11 +180,11 @@ const MentorDashboard = () => {
     );
 
   const handleClick = (menteeId: string) => {
-    navigate("/mentor/mentee-information", { state: { menteeId } });
+    navigate("/volunteer/participant-information", { state: { menteeId } });
   };
 
   const handleClickWorkshop = (id: string) => {
-    navigate("/mentor/workshop-information", { state: { workshopId: id } });
+    navigate("/volunteer/workshop-information", { state: { workshopId: id } });
   };
 
   const handleCreateEvent = async (eventData: {
@@ -212,9 +212,20 @@ const MentorDashboard = () => {
     setSelectedEvent(event);
   };
 
+  const handleMentorClick = (volunteerId: string) => {
+    console.log("Mentor ID:", volunteerId);
+    navigate("/particpant/participant-information", {
+      state: { volunteerId },
+    });
+  };
+
   useEffect(() => {
     if (user?.role === "board") {
       setActiveTab("Courses");
+    } else if (user?.role === "mentor") {
+      setActiveTab("My Participants");
+    } else if (user?.role === "staff") {
+      setActiveTab("My Participants");
     }
   }, [user?.role]);
 
@@ -267,9 +278,9 @@ const MentorDashboard = () => {
                   ) : (
                     // Other roles see both tabs
                     [
-                      "My Mentees",
+                      "My Participants",
                       ...(user?.role === "staff" || user?.role === "board"
-                        ? ["All Mentors"]
+                        ? ["All Volunteers"]
                         : []),
                       "Courses",
                     ].map((tab) => (
@@ -278,8 +289,8 @@ const MentorDashboard = () => {
                         onClick={() => setActiveTab(tab)}
                         className={`tab ${activeTab === tab ? "active" : ""}`}
                       >
-                        {tab === "My Mentees" && user?.role === "staff"
-                          ? "All Mentees"
+                        {tab === "My Participants" && user?.role === "staff"
+                          ? "All Participants"
                           : tab}
                       </div>
                     ))
@@ -288,7 +299,7 @@ const MentorDashboard = () => {
               </div>
               <div className="Block-subtitle" />
 
-              {activeTab === "My Mentees" && (
+              {activeTab === "My Participants" && (
                 <div>
                   {loading ? (
                     <p>Loading mentees...</p>
@@ -320,17 +331,24 @@ const MentorDashboard = () => {
               )}
 
               {(user?.role === "staff" || user?.role === "board") &&
-                activeTab === "All Mentors" && (
+                activeTab === "All Volunteers" && (
                   <div>
                     {mentors.length > 0 ? (
                       <div className="row gx-3 gy-3">
                         {mentors.map((mentor) => (
-                          <div className="col-lg-4" key={mentor._id}>
+                          <div
+                            className="col-lg-4"
+                            key={mentor._id}
+                            onClick={() => handleMentorClick(mentor._id)}
+                          >
                             <div className="Mentor--card">
                               <div className="Mentor--card-color Background-color--teal-1000" />
                               <div className="Padding--10">
                                 <div className="Mentor--card-name">
                                   {mentor.first_name} {mentor.last_name}
+                                </div>
+                                <div className="Mentor--card-description">
+                                  {mentor.email}
                                 </div>
                               </div>
                             </div>
@@ -403,6 +421,16 @@ const MentorDashboard = () => {
                   Add New Event
                 </div>
               )}
+
+              {user &&
+                (tier1Roles.includes(user.role) || user.role === "mentor") && (
+                  <div
+                    className="Button Button-color--blue-1000 Margin-top--10"
+                    onClick={() => navigate("/create-meeting")}
+                  >
+                    Schedule Meeting
+                  </div>
+                )}
             </div>
           </div>
         </div>

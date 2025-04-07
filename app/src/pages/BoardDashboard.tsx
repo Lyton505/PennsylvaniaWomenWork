@@ -7,16 +7,18 @@ import Event, { EventData } from "../components/Event";
 import { useUser } from "../contexts/UserContext";
 import { useAuth0 } from "@auth0/auth0-react";
 
-interface Workshop {
+interface File {
   _id: string;
   name: string;
   description: string;
+  tags: string[];
+  s3id: string;
 }
 
-const MenteeDashboard = () => {
+const BoardDashboard = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState<EventData[]>([]);
-  const [workshops, setWorkshops] = useState<Workshop[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const { user } = useUser();
   const userId = user?._id;
@@ -48,10 +50,19 @@ const MenteeDashboard = () => {
 
     const fetchData = async () => {
       try {
-        const [eventsResponse, workshopsResponse] = await Promise.all([
+        const [eventsResponse, filesResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
-          api.get(`/api/mentee/${userId}/workshops`),
+          api.get(`/api/boardFile/get-board-files`),
         ]);
+
+        setFiles(
+          filesResponse.data.map((file: any) => ({
+            name: file.name,
+            description: file.description,
+            s3id: file.s3id,
+            tags: file.tags || [],
+          })),
+        );
 
         setEvents(
           eventsResponse.data.map((event: any) => ({
@@ -65,7 +76,7 @@ const MenteeDashboard = () => {
           })),
         );
 
-        setWorkshops(workshopsResponse.data);
+        setEvents(eventsResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -76,7 +87,7 @@ const MenteeDashboard = () => {
     fetchData();
   }, [userId]);
 
-  const handleWorkshopClick = (workshopId: string) => {
+  const handleFileClick = (workshopId: string) => {
     navigate(`/volunteer/workshop-information`, {
       state: { workshopId },
     });
@@ -145,18 +156,30 @@ const MenteeDashboard = () => {
         <div className="row g-3">
           <div className="col-lg-8">
             <div className="Block">
-              <div className="Block-header">My Courses</div>
+              <div className="Block-header">All Files</div>
               <div className="Block-subtitle">
-                Select a course to access materials.
+                Select a file to access materials.
               </div>
               <div className="row gx-3 gy-3">
-                {workshops.map((item) => (
-                  <div className="col-lg-4" key={item._id}>
-                    <div
-                      className="Mentor--card"
-                      onClick={() => handleWorkshopClick(item._id)}
-                    >
-                      <div className="Mentor--card-color Background-color--teal-1000" />
+                {files.map((item) => (
+                  <div
+                    className="col-lg-4"
+                    key={item._id}
+                    onClick={() => handleFileClick(item._id)}
+                  >
+                    <div className="Mentor--card">
+                      <div className="Mentor--card-color Background-color--teal-1000">
+                        <div className="File-tags-container">
+                          <div className="File-tags">
+                            {item.tags.map((tag, index) => (
+                              <span key={index} className="Tag">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="Padding--10">
                         <div className="Mentor--card-name">{item.name}</div>
                         <div className="Mentor--card-description">
@@ -181,14 +204,6 @@ const MenteeDashboard = () => {
                   onEventClick={handleEventClick}
                 />
               ))}
-
-              {/* Add Schedule Meeting button for mentees */}
-              <div
-                className="Button Button-color--blue-1000 Margin-top--10"
-                onClick={() => navigate("/create-meeting")}
-              >
-                Schedule Meeting
-              </div>
             </div>
           </div>
         </div>
@@ -197,4 +212,4 @@ const MenteeDashboard = () => {
   );
 };
 
-export default MenteeDashboard;
+export default BoardDashboard;

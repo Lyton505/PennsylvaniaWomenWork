@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import Navbar from "../components/Navbar";
 import * as Yup from "yup";
 import { api } from "../api"; // Ensure this points to your configured API instance
 import Icon from "../components/Icon";
+import { useUser } from "../contexts/UserContext";
+import { toast } from "react-hot-toast";
 
 interface CreateMeetingFormValues {
   username: string;
@@ -14,6 +16,13 @@ interface CreateMeetingFormValues {
   calendarLink: string;
   participants: string[];
   role: string[];
+}
+
+interface Mentor {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
 }
 
 const initialValues: CreateMeetingFormValues = {
@@ -58,44 +67,96 @@ const validationSchema = Yup.object().shape({
 });
 
 const CreateMeeting = () => {
+  const { user } = useUser();
   const [newParticipant, setNewParticipant] = useState("");
+  const [participants, setParticipants] = useState<
+    Array<{ _id: string; first_name: string; last_name: string; type: string }>
+  >([]);
+
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      if (!user?._id) return;
+
+      try {
+        // Staff/board can see all users
+        if (user.role === "staff" || user.role === "board") {
+          const [mentorsRes, menteesRes] = await Promise.all([
+            api.get("/api/mentor/all-mentors"),
+            api.get("/api/mentee/all-mentees"),
+          ]);
+
+          const allParticipants = [
+            ...mentorsRes.data.map((m: any) => ({ ...m, type: "Mentor" })),
+            ...menteesRes.data.map((m: any) => ({ ...m, type: "Participant" })),
+          ];
+
+          setParticipants(allParticipants);
+        }
+        // Mentee sees their mentors
+        else if (user.role === "mentee") {
+          const response = await api.get(`/api/mentee/${user._id}/mentors`);
+          if (response.data.mentors) {
+            setParticipants(response.data.mentors);
+          } else {
+            toast.error("No mentors assigned yet");
+          }
+        }
+        // Mentor sees their mentees
+        else if (user.role === "mentor") {
+          const response = await api.get(`/api/mentor/${user._id}/mentees`);
+          if (response.data.mentees) {
+            setParticipants(response.data.mentees);
+          } else {
+            toast.error("No mentees assigned yet");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching participants:", error);
+        toast.error("Failed to load participants");
+      }
+    };
+
+    fetchParticipants();
+  }, [user]);
+
+  const participantLabel =
+    user?.role === "mentee" ? "Select Mentor" : "Select Participant";
+  const participantPlaceholder =
+    user?.role === "mentee" ? "Choose a mentor..." : "Select participant...";
 
   const handleSubmit = async (
     values: CreateMeetingFormValues,
     { setSubmitting, resetForm }: any,
   ) => {
-    setSubmitting(true);
     try {
       const baseDate = new Date(values.date);
-
       const [startHours, startMinutes] = values.startTime.split(":");
+      const [endHours, endMinutes] = values.endTime.split(":");
+
       const startDateTime = new Date(baseDate);
       startDateTime.setHours(parseInt(startHours), parseInt(startMinutes));
 
-      const [endHours, endMinutes] = values.endTime.split(":");
       const endDateTime = new Date(baseDate);
       endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
 
+      // Format payload to match event controller expectations
       const payload = {
-        username: "sample-username", // TODO: Replace with logged-in username
-        meeting: values.meeting,
+        name: values.meeting,
+        description: "Meeting",
         date: baseDate.toISOString(),
         startTime: startDateTime.toISOString(),
         endTime: endDateTime.toISOString(),
-        participants: values.participants,
         calendarLink: values.calendarLink,
-        role: values.role,
+        userIds: [...values.participants, user?._id], // Add mentor's ID to the userIds array
+        roles: [],
       };
 
-      console.log("Submitting payload:", payload); // Debugging log
-
-      await api.post("/user/add-meeting", payload);
-
-      alert("Meeting added successfully!");
-      resetForm(); // Clear the form after successful submission
+      await api.post("/api/event", payload);
+      toast.success("Meeting scheduled successfully!");
+      resetForm();
     } catch (error) {
-      console.error("Error adding meeting:", error);
-      alert("Failed to add meeting. Please try again.");
+      console.error("Error scheduling meeting:", error);
+      toast.error("Failed to schedule meeting");
     } finally {
       setSubmitting(false);
     }
@@ -175,55 +236,69 @@ const CreateMeeting = () => {
                 </div>
 
                 <div className="Form-group">
-                  <label>Participants</label>
+                  <label>{participantLabel}</label>
                   <div className="Flex-row Align-items--center">
-                    <Field
-                      type="text"
-                      value={newParticipant}
-                      onChange={(e: {
-                        target: { value: React.SetStateAction<string> };
-                      }) => setNewParticipant(e.target.value)}
-                      placeholder="Enter participant name"
+                    <select
                       className="Form-input-box"
-                      style={{ flex: 1 }}
-                    />
+                      value={newParticipant}
+                      onChange={(e) => setNewParticipant(e.target.value)}
+                    >
+                      <option value="">{participantPlaceholder}</option>
+                      {participants.map((participant) => (
+                        <option key={participant._id} value={participant._id}>
+                          {participant.first_name} {participant.last_name}
+                          {(user?.role === "staff" || user?.role === "board") &&
+                            ` (${participant.type})`}
+                        </option>
+                      ))}
+                    </select>
                     <div
                       className="Text-colorHover--green-1000"
                       onClick={() => {
-                        if (newParticipant.trim()) {
+                        if (
+                          newParticipant &&
+                          !values.participants.includes(newParticipant)
+                        ) {
                           setFieldValue("participants", [
                             ...values.participants,
-                            newParticipant.trim(),
+                            newParticipant,
                           ]);
                           setNewParticipant("");
                         }
                       }}
-                      style={{ marginLeft: "8px" }}
+                      style={{ marginLeft: "8px", cursor: "pointer" }}
                     >
                       <Icon glyph="plus" />
                     </div>
                   </div>
-                  {errors.participants && touched.participants && (
-                    <div className="Form-error">{errors.participants}</div>
-                  )}
-                  {values.participants && values.participants.length > 0 && (
-                    <ul>
-                      {values.participants.map((participant, index) => (
-                        <li key={index}>
-                          {participant}{" "}
-                          <div
-                            className="Text-colorHover--red-1000"
-                            onClick={() => {
-                              const newParticipants = [...values.participants];
-                              newParticipants.splice(index, 1);
-                              setFieldValue("participants", newParticipants);
-                            }}
-                            style={{ marginLeft: "4px" }}
-                          >
-                            <Icon glyph="times" />
-                          </div>
-                        </li>
-                      ))}
+                  {values.participants.length > 0 && (
+                    <ul className="Selected-participants">
+                      {values.participants.map((participantId) => {
+                        const participant = participants.find(
+                          (p) => p._id === participantId,
+                        );
+                        return (
+                          <li key={participantId}>
+                            {participant
+                              ? `${participant.first_name} ${participant.last_name}`
+                              : participantId}
+                            <div
+                              className="Text-colorHover--red-1000"
+                              onClick={() => {
+                                setFieldValue(
+                                  "participants",
+                                  values.participants.filter(
+                                    (id) => id !== participantId,
+                                  ),
+                                );
+                              }}
+                              style={{ marginLeft: "8px", cursor: "pointer" }}
+                            >
+                              <Icon glyph="times" />
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </div>
