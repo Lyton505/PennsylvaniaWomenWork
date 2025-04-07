@@ -1,26 +1,27 @@
-import React, { type ReactElement } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import MentorDashboard from "./pages/MentorDashboard";
-import MenteeDashboard from "./pages/MenteeDashboard";
-import ConfirmLogout from "./pages/ConfirmLogout";
-import CreateWorkshop from "./pages/CreateWorkshop";
-import CreateMeeting from "./pages/CreateMeeting";
-import MenteeInformation from "./pages/MenteeInformation";
-import WorkshopInformation from "./pages/WorkshopInformation";
-import AuthCallback from "./pages/auth-callback";
-import LoginRedirect from "./pages/LoginRedirect";
-import Logout from "./pages/Logout";
-import Profile from "./pages/Profile";
-import SampleMenteeInvite from "./pages/MenteeInvite";
-import ProtectedRoute from "./components/ProtectedRoute";
-import MentorInformation from "./pages/MentorInformation";
-import { tier1Roles, tier2Roles, tier3Roles } from "./utils/roles";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useUser } from "./contexts/UserContext";
+import React, { type ReactElement } from "react"
+import { Routes, Route, Navigate } from "react-router-dom"
+import MentorDashboard from "./pages/MentorDashboard"
+import MenteeDashboard from "./pages/MenteeDashboard"
+import ConfirmLogout from "./pages/ConfirmLogout"
+import CreateWorkshop from "./pages/CreateWorkshop"
+import CreateMeeting from "./pages/CreateMeeting"
+import MenteeInformation from "./pages/MenteeInformation"
+import WorkshopInformation from "./pages/WorkshopInformation"
+import AuthCallback from "./pages/auth-callback"
+import LoginRedirect from "./pages/LoginRedirect"
+import Logout from "./pages/Logout"
+import Profile from "./pages/Profile"
+import SampleMenteeInvite from "./pages/MenteeInvite"
+import ProtectedRoute from "./components/ProtectedRoute"
+import BoardDashboard from "./pages/BoardDashboard"
+import VolunteerInformation from "./pages/MentorInformation"
+import { tier1Roles, tier2Roles, tier3Roles } from "./utils/roles"
+import { useAuth0 } from "@auth0/auth0-react"
+import { useUser } from "./contexts/UserContext"
 
 function App(): ReactElement {
-  const { isAuthenticated } = useAuth0();
-  const { user } = useUser();
+  const { isAuthenticated } = useAuth0()
+  const { user } = useUser()
 
   if (!isAuthenticated) {
     // Unauthenticated users are directed to the login flow
@@ -32,7 +33,7 @@ function App(): ReactElement {
         <Route path="/" element={<LoginRedirect />} />
         <Route path="*" element={<LoginRedirect />} />
       </Routes>
-    );
+    )
   }
 
   // Authenticated routes are wrapped with ProtectedRoute using RBAC
@@ -40,10 +41,8 @@ function App(): ReactElement {
     <Routes>
       {/* Fallback: any unmatched route redirects to /home */}
       <Route path="*" element={<Navigate to="/home" replace />} />
-
       <Route path="/callback" element={<AuthCallback />} />
       <Route path="/logout" element={<Logout />} />
-
       {/* Home route: different dashboards based on user role */}
       <Route
         path="/home"
@@ -53,6 +52,11 @@ function App(): ReactElement {
               element={<MenteeDashboard />}
               allowedRoles={[...tier1Roles, ...tier3Roles]}
             />
+          ) : user?.role === "board" ? (
+            <ProtectedRoute
+              element={<BoardDashboard />}
+              allowedRoles={[...tier1Roles]}
+            />
           ) : (
             <ProtectedRoute
               element={<MentorDashboard />}
@@ -61,9 +65,8 @@ function App(): ReactElement {
           )
         }
       />
-
       <Route
-        path="/mentor"
+        path="/volunteer"
         element={
           <ProtectedRoute
             element={<MentorDashboard />}
@@ -71,19 +74,17 @@ function App(): ReactElement {
           />
         }
       />
-
+      `{" "}
       <Route
-        path="/mentee"
+        path="/volunteer"
         element={
           <ProtectedRoute
-            element={<MenteeDashboard />}
-            allowedRoles={[...tier1Roles, ...tier3Roles]}
+            element={<MentorDashboard />}
+            allowedRoles={[...tier1Roles, ...tier2Roles]}
           />
         }
       />
-
       <Route path="/confirmLogout" element={<ConfirmLogout />} />
-
       <Route
         path="/create-workshop"
         element={
@@ -93,21 +94,18 @@ function App(): ReactElement {
           />
         }
       />
-
       <Route
         path="/create-meeting"
         element={
           <ProtectedRoute
             element={<CreateMeeting />}
-            allowedRoles={[...tier1Roles]}
+            allowedRoles={[...tier1Roles, ...tier2Roles, ...tier3Roles]}
           />
         }
       />
-
       <Route path="/profile" element={<Profile />} />
-
       <Route
-        path="/mentor/mentee-information"
+        path="/volunteer/participant-information"
         element={
           <ProtectedRoute
             element={<MenteeInformation />}
@@ -115,19 +113,17 @@ function App(): ReactElement {
           />
         }
       />
-
       <Route
-        path="/mentee/mentor-information"
+        path="/particpant/participant-information"
         element={
           <ProtectedRoute
-            element={<MentorInformation />}
-            allowedRoles={tier3Roles}
+            element={<VolunteerInformation />}
+            allowedRoles={tier1Roles}
           />
         }
       />
-
       <Route
-        path="/mentor/workshop-information"
+        path="/volunteer/workshop-information"
         element={
           <ProtectedRoute
             element={<WorkshopInformation />}
@@ -135,7 +131,6 @@ function App(): ReactElement {
           />
         }
       />
-
       <Route
         path="/invite"
         element={
@@ -146,7 +141,7 @@ function App(): ReactElement {
         }
       />
     </Routes>
-  );
+  )
 }
 
-export default App;
+export default App

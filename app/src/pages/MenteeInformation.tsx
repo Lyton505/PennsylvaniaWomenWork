@@ -177,7 +177,36 @@ const MenteeInformation = () => {
     values: typeof mentorInitialValues,
     { setSubmitting }: any,
   ) => {
-    console.log("Mentor values:", values);
+    try {
+      if (!menteeId) {
+        toast.error("No mentee selected");
+        setSubmitting(false);
+        return;
+      }
+
+      const response = await api.put(
+        `/api/mentor/${values.mentorName}/assign-mentee`,
+        {
+          menteeId: menteeId,
+        },
+      );
+
+      if (response.status === 200) {
+        toast.success("Mentor assigned successfully");
+        // Refresh mentee data to show new mentor
+        const menteeResponse = await api.get(
+          `/api/mentee/get-mentee/${menteeId}`,
+        );
+        setMentee(menteeResponse.data);
+      }
+
+      setIsAssignMentorModal(false);
+    } catch (error) {
+      console.error("Error assigning mentor:", error);
+      toast.error("Failed to assign mentor");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Compute initials for the mentee's avatar
@@ -221,8 +250,8 @@ const MenteeInformation = () => {
               {/* Column 1: Mentee Information Block */}
               <div className="col-lg-4 mb-4">
                 <div className="Block">
-                  <div className="Block-header">Mentee Information</div>
-                  <div className="Block-subtitle">Mentee Details</div>
+                  <div className="Block-header">Participant Information</div>
+                  <div className="Block-subtitle">Participant Details</div>
                   <div className="Block-content">
                     <div className="Profile-avatar">
                       <div className="Profile-initials">{getInitials()}</div>
@@ -262,7 +291,7 @@ const MenteeInformation = () => {
               {/* Column 2: Mentee Courses */}
               <div className="col-lg-4 mb-4">
                 <div className="Block">
-                  <div className="Block-header">Mentee Courses</div>
+                  <div className="Block-header">Participant Courses</div>
                   <div className="Block-subtitle">
                     Courses assigned to {mentee?.first_name}
                   </div>
