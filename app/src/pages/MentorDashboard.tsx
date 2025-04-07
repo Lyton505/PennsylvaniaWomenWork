@@ -8,6 +8,7 @@ import { api } from "../api";
 import { tier1Roles, tier2Roles, tier3Roles } from "../utils/roles";
 import ParticipantCard from "../components/ParticipantCard";
 import FolderCard from "../components/FolderCard";
+import { toast } from "react-hot-toast";
 
 interface Mentee {
   _id: string;
@@ -51,6 +52,7 @@ const MentorDashboard = () => {
   const [activeTab, setActiveTab] = useState(() => {
     return localStorage.getItem("activeTab") || "My Mentees";
   });
+  const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -217,6 +219,18 @@ const MentorDashboard = () => {
     localStorage.setItem("activeTab", tab);
   };
 
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      await api.delete(`/api/event/${eventId}`);
+      setEvents(events.filter((event) => event._id !== eventId));
+      setSelectedEvent(null);
+      toast.success("Event deleted successfully");
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast.error("Failed to delete event");
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -227,7 +241,10 @@ const MentorDashboard = () => {
           body={
             <div className="Flex-column">
               {selectedEvent.description}
-              <div className="Button Button-color--red-1000 Margin-top--10 Button--hollow">
+              <div
+                className="Button Button-color--red-1000 Margin-top--10 Button--hollow"
+                onClick={() => handleDeleteEvent(selectedEvent._id)}
+              >
                 Delete Event
               </div>
               {selectedEvent.calendarLink && (

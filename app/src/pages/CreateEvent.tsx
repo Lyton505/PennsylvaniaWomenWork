@@ -2,6 +2,8 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import { Formik, Form, Field, FormikHelpers } from "formik";
 import * as yup from "yup";
+import { api } from "../api"; // Ensure this points to your configured API instance
+import { toast } from "react-hot-toast";
 
 interface CreateEventFormValues {
   name: string;
@@ -9,8 +11,9 @@ interface CreateEventFormValues {
   date: string;
   startTime: string;
   endTime: string;
-  invitationLink: string;
+  calendarLink: string;
   roles: string[];
+  participants: string[];
 }
 
 const initialValues: CreateEventFormValues = {
@@ -19,13 +22,14 @@ const initialValues: CreateEventFormValues = {
   date: "",
   startTime: "",
   endTime: "",
-  invitationLink: "",
+  calendarLink: "",
   roles: [],
+  participants: [],
 };
 
-const roles = [
-  { id: "mentor", label: "Mentor" },
-  { id: "mentee", label: "Mentee" },
+const roleOptions = [
+  { id: "mentee", label: "Participants" },
+  { id: "mentor", label: "Volunteers" },
   { id: "staff", label: "Staff" },
   { id: "board", label: "Board" },
 ];
@@ -51,10 +55,7 @@ const getValidationSchema = (useTime: boolean) =>
             },
           )
       : yup.string().nullable(),
-    invitationLink: yup
-      .string()
-      .url("Must be a valid URL")
-      .required("Invitation link is required"),
+    calendarLink: yup.string().url("Must be a valid URL").nullable(),
   });
 
 const CreateEvent = () => {
@@ -80,20 +81,24 @@ const CreateEvent = () => {
         endDateTime.setHours(parseInt(endHours), parseInt(endMinutes));
       }
 
-      const eventData = {
+      const payload = {
         name: values.name,
         description: values.description,
         date: baseDate.toISOString(),
-        startTime: startDateTime?.toISOString() || null,
-        endTime: endDateTime?.toISOString() || null,
-        roles: values.roles,
-        calendarLink: values.invitationLink,
+        startTime: startDateTime?.toISOString() || baseDate.toISOString(),
+        endTime: endDateTime?.toISOString() || baseDate.toISOString(),
+        expirationDate: !useTime ? baseDate.toISOString() : undefined,
+        userIds: values.participants || [],
+        audienceRoles: values.roles || [],
+        calendarLink: values.calendarLink || undefined,
       };
 
-      console.log("Submitting Event Data:", eventData);
+      await api.post("/api/event", payload);
+      toast.success("Event created successfully!");
       resetForm();
     } catch (error) {
       console.error("Error creating event:", error);
+      toast.error("Failed to create event");
     } finally {
       setSubmitting(false);
     }
@@ -213,21 +218,21 @@ const CreateEvent = () => {
                   </div>
                 )}
                 <div className="Form-group">
-                  <label htmlFor="invitationLink">Calendar Link</label>
+                  <label htmlFor="calendarLink">Calendar Link (optional)</label>
                   <Field
                     type="text"
-                    name="invitationLink"
+                    name="calendarLink"
                     className="Form-input-box"
                     placeholder="https://..."
                   />
-                  {errors.invitationLink && touched.invitationLink && (
-                    <div className="Form-error">{errors.invitationLink}</div>
+                  {errors.calendarLink && touched.calendarLink && (
+                    <div className="Form-error">{errors.calendarLink}</div>
                   )}
                 </div>
                 <div className="Form-group">
                   <label>Audience</label>
                   <div className="Role-tags">
-                    {roles.map((role) => (
+                    {roleOptions.map((role) => (
                       <div key={role.id} className="Role-tag-item">
                         <Field
                           type="checkbox"
