@@ -7,12 +7,11 @@ import { toast } from "react-hot-toast";
 import { set } from "react-hook-form";
 import { useProfileImage } from "../utils/custom-hooks";
 
-
 const Profile = () => {
   const { user: auth0User, logout } = useAuth0();
   const { user, error, loading, setUser } = useUser();
   // const [profileImage, setProfileImage] = useState<string | null>(null);
-  
+
   const profileImage = useProfileImage(user?.profile_picture_id);
 
   // Function to compute initials from first and last name
@@ -33,6 +32,16 @@ const Profile = () => {
 
       if (!values.imageUpload) {
         toast.error("Please select an image");
+        return;
+      } else if (values.imageUpload.size > 1 * 1024 * 1024) {
+        toast.error("Image size exceeds 1MB. Select a smaller image.", {
+          duration: 5000,
+        });
+        return;
+      } else if (
+        !["image/jpeg", "image/png"].includes(values.imageUpload.type)
+      ) {
+        toast.error("Invalid image format. Only JPEG, and PNG are allowed.");
         return;
       }
 
@@ -62,7 +71,6 @@ const Profile = () => {
       };
 
       console.log("payload", payload);
-      console.log("our user", user?.auth_id);
 
       const { status } = await api.put(
         `/api/user/${encodeURIComponent(user!.auth_id)}`,
