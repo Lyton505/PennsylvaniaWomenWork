@@ -99,7 +99,7 @@ function App(): ReactElement {
         element={
           <ProtectedRoute
             element={<CreateMeeting />}
-            allowedRoles={[...tier1Roles]}
+            allowedRoles={[...tier1Roles, ...tier2Roles, ...tier3Roles]}
           />
         }
       />

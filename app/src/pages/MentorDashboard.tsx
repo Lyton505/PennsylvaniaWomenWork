@@ -421,6 +421,16 @@ const MentorDashboard = () => {
                   Add New Event
                 </div>
               )}
+
+              {user &&
+                (tier1Roles.includes(user.role) || user.role === "mentor") && (
+                  <div
+                    className="Button Button-color--blue-1000 Margin-top--10"
+                    onClick={() => navigate("/create-meeting")}
+                  >
+                    Schedule Meeting
+                  </div>
+                )}
             </div>
           </div>
         </div>

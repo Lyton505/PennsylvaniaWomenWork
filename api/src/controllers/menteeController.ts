@@ -127,3 +127,30 @@ export const getAllMentees = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error retrieving mentees", error });
   }
 };
+
+export const getMentorsForMentee = async (req: Request, res: Response) => {
+  try {
+    const { menteeId } = req.params;
+
+    // Find the mentee to get their mentor_id
+    const mentee = await User.findById(menteeId);
+    if (!mentee) {
+      return res.status(404).json({ message: "Mentee not found" });
+    }
+
+    // Find the mentor using mentor_id
+    const mentor = await User.findOne({
+      _id: mentee.mentor_id,
+      role: "mentor",
+    });
+
+    if (!mentor) {
+      return res.status(404).json({ message: "No mentors found" });
+    }
+
+    res.status(200).json({ mentors: [mentor] });
+  } catch (error) {
+    console.error("Error getting mentors for mentee:", error);
+    res.status(500).json({ message: "Error retrieving mentors", error });
+  }
+};
