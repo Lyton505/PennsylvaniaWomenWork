@@ -164,8 +164,8 @@ export const getCurrentUser = async (req: Request, res: Response) => {
       _id: user._id.toString(), // Convert MongoDB ObjectId to string
       username: user.username,
       role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      first_name: user.first_name,
+      last_name: user.last_name,
     });
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -176,8 +176,8 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const allowedFields = [
-    "firstName",
-    "lastName",
+    "first_name",
+    "last_name",
     "username",
     "email",
     "role",
