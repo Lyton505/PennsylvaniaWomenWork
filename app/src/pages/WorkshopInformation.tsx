@@ -353,30 +353,27 @@ const WorkshopInformation = () => {
         <div className="Block Width--70 Margin-left--80 Margin-right--80 Margin-top--40">
           <div className="Block-header Flex-row">
             {workshop?.name}
-            <div className="Flex-row Margin-left--auto" style={{ gap: "10px" }}>
-              {user?.role === "staff" && (
-                <div
-                  // className="Button Button-color--red-1000"
-                  className="Text-color--gray-1000 Text-colorHover--red-1000"
-                  onClick={() => setShowDeleteModal(true)}
-                >
-                  <Icon glyph="trash" />
-                </div>
-              )}
+            <div className="Flex-row Margin-left--auto">
+              <div style={{ gap: "10px" }}>
+                {user?.role === "staff" && (
+                  <div
+                    // className="Button Button-color--red-1000"
+                    className="Text-color--gray-1000 Text-colorHover--red-1000 Margin-right--10"
+                    onClick={() => setShowDeleteModal(true)}
+                  >
+                    <Icon glyph="trash" />
+                  </div>
+                )}
+              </div>
               {(user?.role === "mentor" || user?.role === "staff") && (
-                <div className="Button Button-color--blue-1000">
+                <div
+                  className="Button Button-color--blue-1000 Margin-left--auto"
+                  onClick={() => setIsModal(true)}
+                >
                   Add New Files
                 </div>
               )}
             </div>
-            {(user?.role === "mentor" || user?.role === "staff") && (
-              <div
-                className="Button Button-color--blue-1000 Margin-left--auto"
-                onClick={() => setIsModal(true)}
-              >
-                Add New Files
-              </div>
-            )}
           </div>
           {showDeleteModal && (
             <Modal
