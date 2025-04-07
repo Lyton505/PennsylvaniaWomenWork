@@ -85,7 +85,7 @@ const Profile = () => {
                       color: "#333",
                     }}
                   >
-                    Mentor Info:
+                    Volunteer Info:
                   </div>
                   <div className="Profile-field">
                     <div className="Profile-field-label">Name:</div>

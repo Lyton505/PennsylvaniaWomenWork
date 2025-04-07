@@ -48,6 +48,7 @@ const MenteeInformation = () => {
   const [availableWorkshops, setAvailableWorkshops] = useState([]);
   const [assignedWorkshops, setAssignedWorkshops] = useState<Workshop[]>([]);
   const [mentors, setMentors] = useState<MentorInfo[]>([]);
+  const [mentorInfo, setMentorInfo] = useState<MentorInfo | null>(null);
   const [isAssignMentorModal, setIsAssignMentorModal] = useState(false);
 
   useEffect(() => {
@@ -64,6 +65,17 @@ const MenteeInformation = () => {
           `/api/mentee/get-mentee/${menteeId}`,
         );
         setMentee(menteeResponse.data);
+        // If the mentee has an assigned mentor, fetch mentor details
+        if (menteeResponse.data.mentor_id) {
+          try {
+            const mentorRes = await api.get(
+              `/api/mentor/mentor-for-mentee/${menteeResponse.data._id}`,
+            );
+            setMentorInfo(mentorRes.data);
+          } catch (err) {
+            console.error("Failed to fetch mentor info", err);
+          }
+        }
 
         // Fetch workshops assigned to this mentee
         const workshopsResponse = await api.get(
@@ -270,21 +282,55 @@ const MenteeInformation = () => {
                       <div className="Profile-field-label">Email:</div>
                       <div>{mentee?.email}</div>
                     </div>
-                    <div className="Profile-field">
-                      {mentee?.mentor ? (
-                        <>
-                          <div className="Profile-field-label">Mentor:</div>
-                          <div>{mentee?.mentor}</div>
-                        </>
-                      ) : (
+                    {mentorInfo ? (
+                      <>
+                        <div
+                          style={{
+                            fontWeight: "600",
+                            fontSize: "1rem",
+                            marginTop: "1rem",
+                            marginBottom: "0.5rem",
+                            color: "#333",
+                          }}
+                        >
+                          Volunteer Info:
+                        </div>
+                        <div className="Profile-field">
+                          <div
+                            className="Profile-field-label"
+                            style={{ fontWeight: "500" }}
+                          >
+                            Name:
+                          </div>
+                          <div>
+                            {mentorInfo.first_name} {mentorInfo.last_name}
+                          </div>
+                        </div>
+                        <div className="Profile-field">
+                          <div
+                            className="Profile-field-label"
+                            style={{ fontWeight: "500" }}
+                          >
+                            Email:
+                          </div>
+                          <div>{mentorInfo.email}</div>
+                        </div>
                         <div
                           className="Button Button-color--blue-1000 Width--100"
                           onClick={() => setIsAssignMentorModal(true)}
+                          style={{ marginTop: "1rem" }}
                         >
-                          Assign Mentor
+                          Change Volunteer
                         </div>
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <div
+                        className="Button Button-color--blue-1000 Width--100"
+                        onClick={() => setIsAssignMentorModal(true)}
+                      >
+                        Assign Volunteer
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
