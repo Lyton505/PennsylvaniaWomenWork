@@ -86,7 +86,7 @@ const WorkshopInformation = () => {
     const fetchResources = async () => {
       try {
         const { data: resourceList } = await api.get(
-          `/api/resource/get-resource-by-workshop/${workshopId}`
+          `/api/resource/get-resource-by-workshop/${workshopId}`,
         );
 
         if (!resourceList || resourceList.length === 0) {
@@ -99,7 +99,7 @@ const WorkshopInformation = () => {
           resourceList.map(async (res: any) => {
             const { data } = await api.get(`/api/resource/getURL/${res.s3id}`);
             return { ...res, url: data.signedUrl };
-          })
+          }),
         );
         setResources(resourcesWithURL);
       } catch (error) {
@@ -134,7 +134,7 @@ const WorkshopInformation = () => {
 
   const handleFileSumbit = async (
     values: any,
-    { resetForm, setFieldValue }: any
+    { resetForm, setFieldValue }: any,
   ) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -147,7 +147,7 @@ const WorkshopInformation = () => {
       }
 
       const response = await api.get(
-        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`
+        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`,
       );
 
       const { url, objectKey } = response.data;
@@ -229,7 +229,7 @@ const WorkshopInformation = () => {
                       }))}
                       onChange={(selectedOptions: any) =>
                         setSelectedTags(
-                          selectedOptions.map((opt: any) => opt.value)
+                          selectedOptions.map((opt: any) => opt.value),
                         )
                       }
                       onCreateOption={(inputValue: any) => {
