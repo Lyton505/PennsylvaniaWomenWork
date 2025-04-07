@@ -73,7 +73,7 @@ const WorkshopInformation = () => {
       const response = await api.get(`/api/workshop/${workshopId}`)
       setWorkshop(response.data)
     } catch (error) {
-      console.error("Error fetching workshop:", error)
+      console.error("Error fetching folder:", error)
     } finally {
       setLoading(false)
     }
@@ -119,7 +119,7 @@ const WorkshopInformation = () => {
   }
 
   if (!workshop) {
-    return <div>Workshop not found</div>
+    return <div>Folder not found</div>
   }
   const deleteWorkshop = async () => {
     try {
@@ -383,8 +383,8 @@ const WorkshopInformation = () => {
             </div>
             {showDeleteModal && (
               <Modal
-                header="Delete Workshop"
-                subheader="Are you sure you want to delete this workshop?"
+                header="Delete Folder"
+                subheader="Are you sure you want to delete this folder?"
                 body={
                   <div className="Flex-row" style={{ gap: "10px" }}>
                     <button

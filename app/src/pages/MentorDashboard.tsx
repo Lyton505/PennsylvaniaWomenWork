@@ -110,7 +110,7 @@ const MentorDashboard = () => {
         setWorkshops(response.data)
         fetchImageUrls(response.data)
       } catch (err) {
-        console.log("Unable to fetch workshops.")
+        console.log("Unable to fetch folders.")
       }
     }
     fetchWorkshops()
@@ -227,7 +227,7 @@ const MentorDashboard = () => {
     const storedTab = localStorage.getItem("activeTab")
     if (!storedTab) {
       if (user?.role === "board") {
-        handleTabClick("Courses")
+        handleTabClick("Files")
       } else if (user?.role === "mentor" || user?.role === "staff") {
         handleTabClick("My Participants")
       }
@@ -247,18 +247,27 @@ const MentorDashboard = () => {
           header={selectedEvent.name}
           subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()} ${new Date(selectedEvent.startTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} - ${new Date(selectedEvent.endTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`}
           body={
-            <>
+            <div className="Flex-column">
               {selectedEvent.description}
-              <div>
+              <div className="Button Button-color--red-1000 Margin-top--10 Button--hollow">
+                Delete Event
+              </div>
+              {selectedEvent.calendarLink && (
                 <a
                   href={selectedEvent.calendarLink}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="Button Button-color--blue-1000 Margin-top--10"
+                  style={{
+                    display: "inline-block",
+                    textAlign: "center",
+                    textDecoration: "none",
+                  }}
                 >
                   Add to Calendar
                 </a>
-              </div>
-            </>
+              )}
+            </div>
           }
           action={() => setSelectedEvent(null)}
         />
@@ -280,10 +289,10 @@ const MentorDashboard = () => {
                   {user?.role === "board" ? (
                     // Board members only see Courses tab
                     <div
-                      onClick={() => handleTabClick("Courses")}
-                      className={`tab ${activeTab === "Courses" ? "active" : ""}`}
+                      onClick={() => handleTabClick("Files")}
+                      className={`tab ${activeTab === "Files" ? "active" : ""}`}
                     >
-                      Courses
+                      Files
                     </div>
                   ) : (
                     // Other roles see both tabs
@@ -292,7 +301,7 @@ const MentorDashboard = () => {
                       ...(user?.role === "staff" || user?.role === "board"
                         ? ["All Volunteers"]
                         : []),
-                      "Courses",
+                      "Files",
                     ].map((tab) => (
                       <div
                         key={tab}
@@ -362,7 +371,7 @@ const MentorDashboard = () => {
                   </div>
                 )}
 
-              {activeTab === "Courses" && (
+              {activeTab === "Files" && (
                 <div className="row gx-3 gy-3">
                   {workshops.map((item) => (
                     <div className="col-lg-4" key={item._id}>
@@ -401,7 +410,7 @@ const MentorDashboard = () => {
             <div className="Block p-3">
               <div className="Block-header">Upcoming Events</div>
               <div className="Block-subtitle">
-                Scheduled meetings and workshops
+                Scheduled meetings and events.
               </div>
               {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
                 <Event
@@ -412,26 +421,34 @@ const MentorDashboard = () => {
                 />
               ))}
 
-              {user && tier1Roles.includes(user.role) && (
-                <div
-                  className="Button Button-color--blue-1000"
-                  onClick={() => {
-                    setCreateEventModal(true)
-                  }}
-                >
-                  Add New Event
-                </div>
-              )}
-
-              {user &&
-                (tier1Roles.includes(user.role) || user.role === "mentor") && (
+              <div
+                className="Flex-row Align-items--center Width--100 Margin-top--10"
+                style={{ gap: "10px" }}
+              >
+                {user && tier1Roles.includes(user.role) && (
                   <div
-                    className="Button Button-color--blue-1000 Margin-top--10"
-                    onClick={() => navigate("/create-meeting")}
+                    className="Button Button-color--blue-1000"
+                    onClick={() => {
+                      setCreateEventModal(true)
+                    }}
+                    style={{ flexGrow: 1 }}
                   >
-                    Schedule Meeting
+                    Add New Event
                   </div>
                 )}
+
+                {user &&
+                  (tier1Roles.includes(user.role) ||
+                    user.role === "mentor") && (
+                    <div
+                      className="Button Button-color--blue-1000 "
+                      onClick={() => navigate("/create-meeting")}
+                      style={{ flexGrow: 1 }}
+                    >
+                      Schedule Meeting
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
         </div>
