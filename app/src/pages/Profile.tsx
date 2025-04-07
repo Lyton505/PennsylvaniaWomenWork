@@ -21,7 +21,7 @@ const Profile = () => {
       if (user && user.role === "mentee") {
         try {
           const res = await api.get(
-            `/api/mentor/mentor-for-mentee/${user._id}`,
+            `/api/mentor/mentor-for-mentee/${user._id}`
           );
           setMentorInfo(res.data);
         } catch (err) {
@@ -151,6 +151,29 @@ const Profile = () => {
                 <div className="Profile-field-label">Email:</div>
                 <div>{user.email}</div>
               </div>
+              <div className="Profile-field">
+                <div className="Profile-field-label">
+                  {profileImage ? "Change" : "Add"} profile picture:
+                </div>
+
+                <input
+                  type="file"
+                  id="imageUpload"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) =>
+                    handleImageUpload({ imageUpload: e.target.files?.[0] })
+                  }
+                />
+                <div
+                  className="Button Button-color--blue-1000"
+                  onClick={() =>
+                    document.getElementById("imageUpload")?.click()
+                  }
+                >
+                  {profileImage ? "Change" : "Add"} Profile Picture
+                </div>
+              </div>
               {user.role === "mentee" && mentorInfo && (
                 <div className="Profile-mentor-section">
                   <div
@@ -176,26 +199,6 @@ const Profile = () => {
                   </div>
                 </div>
               )}
-              <div className="Profile-field">
-                <div className="Profile-field-label">Add profile picture:</div>
-                <input
-                  type="file"
-                  id="imageUpload"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={(e) =>
-                    handleImageUpload({ imageUpload: e.target.files?.[0] })
-                  }
-                />
-                <div
-                  className="Button Button-color--blue-1000"
-                  onClick={() =>
-                    document.getElementById("imageUpload")?.click()
-                  }
-                >
-                  Add Image
-                </div>
-              </div>
               <div
                 className="Button Button-color--blue-1000 Margin-top--20"
                 onClick={() => {
