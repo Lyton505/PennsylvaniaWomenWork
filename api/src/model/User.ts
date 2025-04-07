@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   mentor_id: String,
+  profile_picture_id: { type: String, default: null },
   workshops: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workshop" }], // Store workshop IDs
 });
 
