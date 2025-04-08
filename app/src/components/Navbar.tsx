@@ -1,14 +1,14 @@
-import React, { type ReactElement } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import { useAuth0 } from "@auth0/auth0-react"
-import { useUser } from "../contexts/UserContext"
-import { roles } from "../utils/roles"
+import React, { type ReactElement } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from "../contexts/UserContext";
+import { roles } from "../utils/roles";
 
 const Navbar = (): ReactElement => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { isAuthenticated, logout } = useAuth0()
-  const { user } = useUser()
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, logout } = useAuth0();
+  const { user } = useUser();
 
   const navItems = [
     {
@@ -38,24 +38,24 @@ const Navbar = (): ReactElement => {
       label: "Profile",
       roles: [roles.staff, roles.volunteer, roles.participant, roles.board],
     },
-  ]
+  ];
 
   const filteredNavItems = navItems.filter((item) => {
-    if (!user) return false
+    if (!user) return false;
 
     // Handle "Home" tab logic separately
     if (item.label === "Home") {
       if (item.path === "/mentor") {
-        return [roles.staff, roles.volunteer, roles.board].includes(user.role)
+        return [roles.staff, roles.volunteer, roles.board].includes(user.role);
       }
       if (item.path === "/mentee") {
-        return user.role === roles.participant
+        return user.role === roles.participant;
       }
-      return false
+      return false;
     }
 
-    return item.roles.includes(user.role)
-  })
+    return item.roles.includes(user.role);
+  });
 
   return (
     <div className="Navbar">
@@ -105,7 +105,7 @@ const Navbar = (): ReactElement => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
