@@ -6,6 +6,7 @@ import { api } from "../api"
 import { toast } from "react-hot-toast"
 import { set } from "react-hook-form"
 import { useProfileImage } from "../utils/custom-hooks"
+import ConfirmActionModal from "../components/ConfirmActionModal"
 
 const Profile = () => {
   const { user: auth0User, logout } = useAuth0()
@@ -15,6 +16,7 @@ const Profile = () => {
     last_name: string
     email: string
   } | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   useEffect(() => {
     const fetchMentorInfo = async () => {
@@ -108,9 +110,36 @@ const Profile = () => {
     }
   }
 
+  const handleDeleteUser = async () => {
+    // try {
+    //   const response = ""
+    //   if (response.status === 200) {
+    //     toast.success("Account deleted successfully")
+    //     setShowDeleteModal(false)
+    //   } else {
+    //     toast.error("Failed to delete account. Please try again.")
+    //   }
+    // } catch (error) {
+    //   console.error("Error deleting account:", error)
+    //   toast.error("Account deletion failed. Please try again.")
+    // }
+  }
+
   return (
     <>
       <Navbar />
+
+      {showDeleteModal && (
+        <ConfirmActionModal
+          isOpen={showDeleteModal}
+          title="Delete Account"
+          message="Are you sure you want to delete this account? This action cannot be undone."
+          confirmLabel="Delete Account"
+          onConfirm={() => handleDeleteUser()}
+          onCancel={() => setShowDeleteModal(false)}
+          isDanger
+        />
+      )}
       <div className="Profile">
         {loading ? (
           <p>Loading user info...</p>
@@ -205,6 +234,14 @@ const Profile = () => {
                 }}
               >
                 Log Out
+              </div>
+              <div
+                className="Button Button-color--red-1000 Button--hollow Margin-top--10"
+                onClick={() => {
+                  setShowDeleteModal(true)
+                }}
+              >
+                Delete Account
               </div>
             </div>
           </div>

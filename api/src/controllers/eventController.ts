@@ -82,11 +82,8 @@ export const getEventsByUser = async (req: Request, res: Response) => {
       ],
     });
 
-    if (!events.length) {
-      return res.status(404).json({ message: "No events found for this user" });
-    }
-
-    res.status(200).json(events);
+    // ✅ Always return 200 with the events array (even if empty)
+    return res.status(200).json(events);
   } catch (error) {
     console.error("Error retrieving events:", error);
     res.status(500).json({ message: "Error retrieving events", error });
