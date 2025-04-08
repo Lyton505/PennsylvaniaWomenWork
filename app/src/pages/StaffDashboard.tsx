@@ -48,7 +48,7 @@ const StaffDashboard = () => {
   const userId = user?._id
   const [imageUrls, setImageUrls] = useState<ImageUrlMap>({})
   const [activeTab, setActiveTab] = useState(() => {
-    return localStorage.getItem("activeTab") || "My Mentees"
+    return localStorage.getItem("activeTab") || "Files"
   })
 
   useEffect(() => {
@@ -271,34 +271,23 @@ const StaffDashboard = () => {
             <div className="Block">
               <div className="Block-header">
                 <div className="Flex-row">
-                  {user?.role === "board" ? (
-                    // Board members only see Courses tab
+                  {[
+                    "Files",
+                    ...(user?.role === "staff"
+                      ? ["My Participants", "All Volunteers"]
+                      : []),
+                    ...(user?.role === "mentor" ? ["My Participants"] : []),
+                  ].map((tab) => (
                     <div
-                      onClick={() => handleTabClick("Files")}
-                      className={`tab ${activeTab === "Files" ? "active" : ""}`}
+                      key={tab}
+                      onClick={() => handleTabClick(tab)}
+                      className={`tab ${activeTab === tab ? "active" : ""}`}
                     >
-                      Files
+                      {tab === "My Participants" && user?.role === "staff"
+                        ? "All Participants"
+                        : tab}
                     </div>
-                  ) : (
-                    // Other roles see both tabs
-                    [
-                      "My Participants",
-                      ...(user?.role === "staff" || user?.role === "board"
-                        ? ["All Volunteers"]
-                        : []),
-                      "Files",
-                    ].map((tab) => (
-                      <div
-                        key={tab}
-                        onClick={() => handleTabClick(tab)}
-                        className={`tab ${activeTab === tab ? "active" : ""}`}
-                      >
-                        {tab === "My Participants" && user?.role === "staff"
-                          ? "All Participants"
-                          : tab}
-                      </div>
-                    ))
-                  )}
+                  ))}
                 </div>
               </div>
               <div className="Block-subtitle" />
