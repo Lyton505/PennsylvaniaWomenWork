@@ -33,7 +33,7 @@ const BoardDashboard = () => {
   const { user } = useUser();
   const userId = user?._id;
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const possibleTags = ["planning", "governance", "strategy"];
+  const [possibleTags, setPossibleTags] = useState<string[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -95,6 +95,19 @@ const BoardDashboard = () => {
     fetchFiles();
   }, []);
 
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await api.get('/api/board/get-tags');
+        setPossibleTags(response.data);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
   const handleFileClick = (workshopId: string) => {
     navigate(`/volunteer/workshop-information`, {
       state: { workshopId },
@@ -151,11 +164,11 @@ const BoardDashboard = () => {
                       <TagDropdown
                         name="tags"
                         label="Filter"
-                        options={["Finance", "Wellness", "Education", "Tech"]}
+                        options={possibleTags}
                         selected={values.tags}
-                        onChange={(tags: string[]) =>
-                          setFieldValue("tags", tags)
-                        }
+                        onChange={(tags: string[]) => {
+                          setFieldValue("tags", tags);
+                        }}
                       />
 
                       <div className="Form-group">
@@ -164,6 +177,9 @@ const BoardDashboard = () => {
                           name="search"
                           placeholder="Search files..."
                           className="Form-input-box"
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setFieldValue("search", e.target.value);
+                          }}
                         />
                       </div>
                     </div>
