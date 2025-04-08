@@ -98,7 +98,7 @@ const BoardDashboard = () => {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await api.get('/api/board/get-tags');
+        const response = await api.get("/api/board/get-tags");
         setPossibleTags(response.data);
       } catch (error) {
         console.error("Error fetching tags:", error);
@@ -177,7 +177,9 @@ const BoardDashboard = () => {
                           name="search"
                           placeholder="Search files..."
                           className="Form-input-box"
-                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          onChange={(
+                            e: React.ChangeEvent<HTMLInputElement>,
+                          ) => {
                             setFieldValue("search", e.target.value);
                           }}
                         />
