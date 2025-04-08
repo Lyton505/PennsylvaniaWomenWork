@@ -14,21 +14,23 @@ import { useAuth0 } from "@auth0/auth0-react"
 import Icon from "../components/Icon" // Adjust the path based on your project structure
 import TagDropdown from "../components/MultiSelectDropdown"
 import { Formik, Form, Field } from "formik"
+import FolderUI from "../components/FolderUI"
 
 import FolderCard from "../components/FolderCard"
 
-interface File {
+interface Folder {
   _id: string
   name: string
   description: string
-  tags: string[]
   s3id: string
+  coverImageS3id?: string
+  tags?: string[]
 }
 
 const BoardDashboard = () => {
   const navigate = useNavigate()
   const [events, setEvents] = useState<EventData[]>([])
-  const [files, setFiles] = useState<File[]>([])
+  const [folders, setFolders] = useState<Folder[]>([])
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
   const { user } = useUser()
   const userId = user?._id
@@ -41,22 +43,6 @@ const BoardDashboard = () => {
   useEffect(() => {
     setAllTags(["Finance", "Wellness", "Education", "Tech"])
   }, [])
-
-  // const filteredFiles = files.filter(file =>
-  //   selectedTags.length === 0 ||
-  //   selectedTags.some(tag => file.tags.includes(tag))
-  // );
-  const filteredFiles = files.filter((file) => {
-    const matchesTags =
-      selectedTags.length === 0 ||
-      selectedTags.some((tag) => file.tags.includes(tag))
-
-    const matchesSearch =
-      file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      file.description.toLowerCase().includes(searchQuery.toLowerCase())
-
-    return matchesTags && matchesSearch
-  })
 
   const formattedSubheader = selectedEvent
     ? formatEventSubheader(selectedEvent)
@@ -84,7 +70,7 @@ const BoardDashboard = () => {
     const fetchFiles = async () => {
       try {
         const response = await api.get(`/api/board/get-files`)
-        setFiles(
+        setFolders(
           response.data.map((file: any) => ({
             _id: file._id, // <-- this was missing!
             name: file.name,
@@ -149,97 +135,7 @@ const BoardDashboard = () => {
               <div className="Block-subtitle">
                 Select a file to access materials.
               </div>
-              <Formik
-                initialValues={{ tags: [], search: "" }}
-                onSubmit={() => {}}
-              >
-                {({ values, setFieldValue }) => {
-                  const filteredFiles = files.filter((file) => {
-                    const matchesTags =
-                      values.tags.length === 0 ||
-                      values.tags.some((tag: string) => file.tags.includes(tag))
-
-                    const matchesSearch =
-                      file.name
-                        .toLowerCase()
-                        .includes(values.search.toLowerCase()) ||
-                      file.description
-                        .toLowerCase()
-                        .includes(values.search.toLowerCase())
-
-                    return matchesTags && matchesSearch
-                  })
-
-                  return (
-                    <Form>
-                      {/* filter + search row */}
-                      <div className="Flex-row">
-                        <TagDropdown
-                          name="tags"
-                          label="Filter"
-                          options={allTags}
-                          selected={values.tags}
-                          onChange={(tags: string[]) => {
-                            setFieldValue("tags", tags)
-                          }}
-                        />
-
-                        <div className="Form-group">
-                          <Field
-                            type="text"
-                            name="search"
-                            placeholder="Search files..."
-                            className="Form-input-box"
-                            onChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => setFieldValue("search", e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      {/* selected tags row */}
-                      {values.tags.length > 0 && (
-                        <div className="Flex-row Flex-wrap Gap--10 Margin-top--10 Margin-bottom--20">
-                          {values.tags.map((tag) => (
-                            <div
-                              key={tag}
-                              className="Filter-tag Filter-tag--removable"
-                              onClick={() =>
-                                setFieldValue(
-                                  "tags",
-                                  values.tags.filter((t) => t !== tag)
-                                )
-                              }
-                            >
-                              {tag} ✕
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* file cards */}
-                      <div className="row gx-3 gy-3">
-                        {filteredFiles.length === 0 ? (
-                          <div className="col-12">
-                            No files match your filters or search.
-                          </div>
-                        ) : (
-                          filteredFiles.map((item) => (
-                            <div className="col-lg-4" key={item._id}>
-                              <FolderCard
-                                name={item.name}
-                                description={item.description}
-                                tags={item.tags}
-                                onClick={() => handleFileClick(item._id)}
-                              />
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </Form>
-                  )
-                }}
-              </Formik>
+              <FolderUI folders={folders} allTags={allTags} imageUrls={{}} />
             </div>
           </div>
           <div className="col-lg-4">

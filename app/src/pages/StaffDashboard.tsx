@@ -16,6 +16,7 @@ import Event, {
 } from "../components/Event"
 import { Formik, Form, Field } from "formik"
 import TagDropdown from "../components/MultiSelectDropdown"
+import FolderUI from "../components/FolderUI"
 
 interface Mentee {
   _id: string
@@ -225,7 +226,7 @@ const StaffDashboard = () => {
     const storedTab = localStorage.getItem("activeTab")
     if (!storedTab) {
       if (user?.role === "board") {
-        handleTabClick("Files")
+        handleTabClick("Folders")
       } else if (user?.role === "mentor" || user?.role === "staff") {
         handleTabClick("My Participants")
       }
@@ -305,7 +306,7 @@ const StaffDashboard = () => {
               <div className="Block-header">
                 <div className="Flex-row">
                   {[
-                    "Files",
+                    "Folders",
                     ...(user?.role === "staff"
                       ? [
                           "My Participants",
@@ -359,7 +360,7 @@ const StaffDashboard = () => {
               )}
 
               {(user?.role === "staff" || user?.role === "board") &&
-                activeTab === "All Volunteers" && (
+                activeTab === "Volunteers" && (
                   <div>
                     {mentors.length > 0 ? (
                       <div className="row gx-3 gy-3">
@@ -383,7 +384,7 @@ const StaffDashboard = () => {
                   </div>
                 )}
 
-              {activeTab === "All Staff Members" && (
+              {activeTab === "Staff Members" && (
                 <div>
                   {staffMembers.length > 0 ? (
                     <div className="row gx-3 gy-3">
@@ -405,7 +406,7 @@ const StaffDashboard = () => {
                 </div>
               )}
 
-              {activeTab === "All Board Members" && (
+              {activeTab === "Board Members" && (
                 <div>
                   {boardMembers.length > 0 ? (
                     <div className="row gx-3 gy-3">
@@ -427,71 +428,12 @@ const StaffDashboard = () => {
                 </div>
               )}
 
-              {activeTab === "Files" && (
-                <div className="row gx-3 gy-3">
-                  <Formik initialValues={{ tags: [] }} onSubmit={() => {}}>
-                    {({ values, setFieldValue }) => (
-                      <Form>
-                        {/* filter + search row */}
-                        <div className="Flex-row">
-                          <TagDropdown
-                            name="tags"
-                            label="Filter"
-                            options={[
-                              "Finance",
-                              "Wellness",
-                              "Education",
-                              "Tech",
-                            ]}
-                            selected={values.tags}
-                            onChange={(tags: string[]) =>
-                              setFieldValue("tags", tags)
-                            }
-                          />
-
-                          <div className="Form-group">
-                            <Field
-                              type="text"
-                              name="search"
-                              placeholder="Search files..."
-                              className="Form-input-box"
-                            />
-                          </div>
-                        </div>
-
-                        {/* selected tags row */}
-                        {values.tags.length > 0 && (
-                          <div className="Flex-row Flex-wrap Gap--10 Margin-top--10 Margin-bottom--20">
-                            {values.tags.map((tag) => (
-                              <div
-                                key={tag}
-                                className="Filter-tag Filter-tag--removable"
-                                onClick={() =>
-                                  setFieldValue(
-                                    "tags",
-                                    values.tags.filter((t) => t !== tag)
-                                  )
-                                }
-                              >
-                                {tag} ✕
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </Form>
-                    )}
-                  </Formik>
-                  {filteredWorkshops.map((item) => (
-                    <div className="col-lg-4" key={item._id}>
-                      <FolderCard
-                        name={item.name}
-                        description={item.description}
-                        imageUrl={imageUrls[item.coverImageS3id]}
-                        onClick={() => handleClickWorkshop(item._id)}
-                      />
-                    </div>
-                  ))}
-                </div>
+              {activeTab === "Folders" && (
+                <FolderUI
+                  folders={workshops}
+                  allTags={["Finance", "Wellness", "Education", "Tech"]}
+                  imageUrls={imageUrls}
+                />
               )}
             </div>
           </div>

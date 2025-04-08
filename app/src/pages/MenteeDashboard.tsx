@@ -1,84 +1,82 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Modal from "../components/Modal";
-import { useNavigate } from "react-router-dom";
-import { api } from "../api";
-import { useUser } from "../contexts/UserContext";
-import { useAuth0 } from "@auth0/auth0-react";
-import FolderCard from "../components/FolderCard";
+import React, { useState, useEffect } from "react"
+import Navbar from "../components/Navbar"
+import Modal from "../components/Modal"
+import { useNavigate } from "react-router-dom"
+import { api } from "../api"
+import { useUser } from "../contexts/UserContext"
+import { useAuth0 } from "@auth0/auth0-react"
+import FolderCard from "../components/FolderCard"
 import Event, {
   EventData,
   parseEvents,
   groupEventsByMonth,
   formatEventSubheader,
-} from "../components/Event";
+} from "../components/Event"
+import FolderUI from "../components/FolderUI"
 
-interface Workshop {
-  _id: string;
-  name: string;
-  description: string;
+interface Folder {
+  _id: string
+  name: string
+  description: string
+  s3id: string
+  coverImageS3id?: string
+  tags?: string[]
 }
 
 const MenteeDashboard = () => {
-  const navigate = useNavigate();
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [workshops, setWorkshops] = useState<Workshop[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const { user } = useUser();
-  const userId = user?._id;
-  const [loading, setLoading] = useState(true);
-  const start = selectedEvent ? new Date(selectedEvent.startTime) : null;
-  const end = selectedEvent ? new Date(selectedEvent.endTime) : null;
-  const eventDate = selectedEvent ? new Date(selectedEvent.date) : null;
+  const navigate = useNavigate()
+  const [events, setEvents] = useState<EventData[]>([])
+  const [folders, setFolders] = useState<Folder[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+  const { user } = useUser()
+  const userId = user?._id
+  const [loading, setLoading] = useState(true)
+  const start = selectedEvent ? new Date(selectedEvent.startTime) : null
+  const end = selectedEvent ? new Date(selectedEvent.endTime) : null
+  const eventDate = selectedEvent ? new Date(selectedEvent.date) : null
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) return
 
     const fetchData = async () => {
       try {
         const [eventsResponse, workshopsResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
           api.get(`/api/mentee/${userId}/workshops`),
-        ]);
+        ])
 
-        const parsed = parseEvents(eventsResponse.data);
-        setEvents(parsed);
+        const parsed = parseEvents(eventsResponse.data)
+        setEvents(parsed)
 
-        setWorkshops(workshopsResponse.data);
+        setFolders(workshopsResponse.data)
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, [userId]);
+    fetchData()
+  }, [userId])
 
-  const eventsByMonth = groupEventsByMonth(events);
+  const eventsByMonth = groupEventsByMonth(events)
   const formattedSubheader = selectedEvent
     ? formatEventSubheader(selectedEvent)
-    : "";
+    : ""
 
   const monthsWithEvents = Object.entries(eventsByMonth).filter(
-    ([_, events]) => events.length > 0,
-  );
+    ([_, events]) => events.length > 0
+  )
 
-  const handleWorkshopClick = (workshopId: string) => {
-    navigate(`/volunteer/workshop-information`, {
-      state: { workshopId },
-    });
-  };
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   const handleEventClick = (event: EventData) => {
-    setSelectedEvent(event);
-  };
+    setSelectedEvent(event)
+  }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   return (
@@ -115,22 +113,14 @@ const MenteeDashboard = () => {
         <div className="row g-3">
           <div className="col-lg-8">
             <div className="Block">
-              <div className="Block-header">My Files</div>
+              <div className="Block-header">My Folders</div>
               <div className="Block-subtitle">
-                Select a course to access materials.
+                Select a folder to access materials.
               </div>
-              <div className="row gx-3 gy-3">
-                {workshops.map((item) => (
-                  <div className="col-lg-4" key={item._id}>
-                    <FolderCard
-                      name={item.name}
-                      description={item.description}
-                      imageUrl={null} // or replace with imageUrls[item.coverImageS3id] if you have it
-                      onClick={() => handleWorkshopClick(item._id)}
-                    />
-                  </div>
-                ))}
-              </div>
+              <FolderUI
+                folders={folders}
+                allTags={[]} // if you don’t have tags, keep it empty for now
+              />
             </div>
           </div>
           <div className="col-lg-4">
@@ -162,7 +152,7 @@ const MenteeDashboard = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MenteeDashboard;
+export default MenteeDashboard
