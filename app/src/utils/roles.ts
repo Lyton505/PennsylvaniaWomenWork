@@ -3,4 +3,4 @@ export const roles = {
   staff: "staff",
   volunteer: "mentor",
   participant: "mentee",
-}
+};

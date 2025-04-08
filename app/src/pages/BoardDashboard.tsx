@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from "react"
-import Navbar from "../components/Navbar"
-import Modal from "../components/Modal"
-import { useNavigate } from "react-router-dom"
-import { api } from "../api"
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Modal from "../components/Modal";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api";
 import Event, {
   EventData,
   parseEvents,
   groupEventsByMonth,
   formatEventSubheader,
-} from "../components/Event"
-import { useUser } from "../contexts/UserContext"
-import { useAuth0 } from "@auth0/auth0-react"
-import Icon from "../components/Icon" // Adjust the path based on your project structure
-import TagDropdown from "../components/MultiSelectDropdown"
-import { Formik, Form, Field } from "formik"
+} from "../components/Event";
+import { useUser } from "../contexts/UserContext";
+import { useAuth0 } from "@auth0/auth0-react";
+import Icon from "../components/Icon"; // Adjust the path based on your project structure
+import TagDropdown from "../components/MultiSelectDropdown";
+import { Formik, Form, Field } from "formik";
 
-import FolderCard from "../components/FolderCard"
+import FolderCard from "../components/FolderCard";
 
 interface File {
-  _id: string
-  name: string
-  description: string
-  tags: string[]
-  s3id: string
+  _id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  s3id: string;
 }
 
 const BoardDashboard = () => {
-  const navigate = useNavigate()
-  const [events, setEvents] = useState<EventData[]>([])
-  const [files, setFiles] = useState<File[]>([])
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
-  const { user } = useUser()
-  const userId = user?._id
-  const [loading, setLoading] = useState(true)
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const possibleTags = ["planning", "governance", "strategy"]
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
+  const navigate = useNavigate();
+  const [events, setEvents] = useState<EventData[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const { user } = useUser();
+  const userId = user?._id;
+  const [loading, setLoading] = useState(true);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const possibleTags = ["planning", "governance", "strategy"];
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // const filteredFiles = files.filter(file =>
   //   selectedTags.length === 0 ||
@@ -45,30 +45,30 @@ const BoardDashboard = () => {
   const filteredFiles = files.filter((file) => {
     const matchesTags =
       selectedTags.length === 0 ||
-      selectedTags.some((tag) => file.tags.includes(tag))
+      selectedTags.some((tag) => file.tags.includes(tag));
 
     const matchesSearch =
       file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      file.description.toLowerCase().includes(searchQuery.toLowerCase())
+      file.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesTags && matchesSearch
-  })
+    return matchesTags && matchesSearch;
+  });
 
   const formattedSubheader = selectedEvent
     ? formatEventSubheader(selectedEvent)
-    : ""
+    : "";
 
-  const eventsByMonth = groupEventsByMonth(events)
+  const eventsByMonth = groupEventsByMonth(events);
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId) return;
 
     const fetchData = async () => {
       try {
         const [eventsResponse, filesResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
           api.get(`/api/boardFile/get-board-files`),
-        ])
+        ]);
 
         setFiles(
           filesResponse.data.map((file: any) => ({
@@ -76,33 +76,33 @@ const BoardDashboard = () => {
             description: file.description,
             s3id: file.s3id,
             tags: file.tags || [],
-          }))
-        )
+          })),
+        );
 
-        const parsedEvents = parseEvents(eventsResponse.data)
-        setEvents(parsedEvents)
+        const parsedEvents = parseEvents(eventsResponse.data);
+        setEvents(parsedEvents);
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("Error fetching data:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [userId])
+    fetchData();
+  }, [userId]);
 
   const handleFileClick = (workshopId: string) => {
     navigate(`/volunteer/workshop-information`, {
       state: { workshopId },
-    })
-  }
+    });
+  };
 
   const handleEventClick = (event: EventData) => {
-    setSelectedEvent(event)
-  }
+    setSelectedEvent(event);
+  };
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -178,7 +178,7 @@ const BoardDashboard = () => {
                             onClick={() =>
                               setFieldValue(
                                 "tags",
-                                values.tags.filter((t) => t !== tag)
+                                values.tags.filter((t) => t !== tag),
                               )
                             }
                           >
@@ -221,7 +221,7 @@ const BoardDashboard = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BoardDashboard
+export default BoardDashboard;
