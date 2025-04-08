@@ -3,7 +3,12 @@ import Navbar from "../components/Navbar"
 import Modal from "../components/Modal"
 import { useNavigate } from "react-router-dom"
 import { api } from "../api"
-import Event, { EventData } from "../components/Event"
+import Event, {
+  EventData,
+  parseEvents,
+  groupEventsByMonth,
+  formatEventSubheader,
+} from "../components/Event"
 import { useUser } from "../contexts/UserContext"
 import { useAuth0 } from "@auth0/auth0-react"
 import Icon from "../components/Icon" // Adjust the path based on your project structure
@@ -28,9 +33,6 @@ const BoardDashboard = () => {
   const { user } = useUser()
   const userId = user?._id
   const [loading, setLoading] = useState(true)
-  const start = selectedEvent ? new Date(selectedEvent.startTime) : null
-  const end = selectedEvent ? new Date(selectedEvent.endTime) : null
-  const eventDate = selectedEvent ? new Date(selectedEvent.date) : null
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const possibleTags = ["planning", "governance", "strategy"]
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -52,23 +54,11 @@ const BoardDashboard = () => {
     return matchesTags && matchesSearch
   })
 
-  const formattedSubheader =
-    eventDate && start && end
-      ? `${eventDate.toLocaleString("default", {
-          month: "long",
-        })} ${eventDate.getDate()}, ${eventDate.getFullYear()} ${start.toLocaleTimeString(
-          "en-US",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          }
-        )} - ${end.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })}`
-      : ""
+  const formattedSubheader = selectedEvent
+    ? formatEventSubheader(selectedEvent)
+    : ""
+
+  const eventsByMonth = groupEventsByMonth(events)
 
   useEffect(() => {
     if (!userId) return
@@ -89,19 +79,8 @@ const BoardDashboard = () => {
           }))
         )
 
-        setEvents(
-          eventsResponse.data.map((event: any) => ({
-            name: event.name,
-            startTime: event.startTime,
-            endTime: event.endTime,
-            description: event.description,
-            date: event.date,
-            userIds: event.users || [],
-            calendarLink: event.calendarLink || "",
-          }))
-        )
-
-        setEvents(eventsResponse.data)
+        const parsedEvents = parseEvents(eventsResponse.data)
+        setEvents(parsedEvents)
       } catch (error) {
         console.error("Error fetching data:", error)
       } finally {
@@ -117,33 +96,6 @@ const BoardDashboard = () => {
       state: { workshopId },
     })
   }
-
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  const eventsByMonth: { [key: string]: EventData[] } = events
-    .filter((event) => new Date(event.date) >= today)
-    .sort(
-      (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-    ) // Sort events chronologically
-    .reduce(
-      (acc, event) => {
-        const eventDate = new Date(event.startTime)
-        const month = eventDate.toLocaleString("default", { month: "long" })
-
-        if (!acc[month]) {
-          acc[month] = []
-        }
-        acc[month].push({
-          ...event,
-          formattedDate: eventDate.toDateString(),
-        })
-
-        return acc
-      },
-      {} as { [key: string]: EventData[] }
-    )
 
   const handleEventClick = (event: EventData) => {
     setSelectedEvent(event)
@@ -175,7 +127,7 @@ const BoardDashboard = () => {
                     textDecoration: "none",
                   }}
                 >
-                  Add to Calendar
+                  Go to Link
                 </a>
               )}
             </div>

@@ -2,12 +2,17 @@ import React, { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom"
 import Modal from "../components/Modal"
-import Event, { EventData } from "../components/Event"
 import { useUser } from "../contexts/UserContext"
 import { api } from "../api"
 import ParticipantCard from "../components/ParticipantCard"
 import FolderCard from "../components/FolderCard"
 import { toast } from "react-hot-toast"
+import Event, {
+  EventData,
+  parseEvents,
+  groupEventsByMonth,
+  formatEventSubheader,
+} from "../components/Event"
 
 interface Mentee {
   _id: string
@@ -61,7 +66,9 @@ const StaffDashboard = () => {
     const fetchUserEvents = async () => {
       try {
         const response = await api.get(`/api/event/${userId}`)
-        setEvents(response.data)
+        const parsed = parseEvents(response.data)
+        setEvents(parsed)
+        console.log("Fetched events:", parsed)
       } catch (err) {
         console.log("Failed to load events.")
       }
@@ -75,7 +82,6 @@ const StaffDashboard = () => {
       setLoading(false)
       return
     }
-    console.log("userId", userId)
 
     const fetchMentees = async () => {
       try {
@@ -101,21 +107,6 @@ const StaffDashboard = () => {
     fetchUserEvents()
     fetchMentees()
   }, [user, userId])
-
-  useEffect(() => {
-    if (!user) return
-
-    const fetchUserEvents = async () => {
-      try {
-        const response = await api.get(`/api/event/${user._id}`)
-        setEvents(response.data)
-      } catch (err) {
-        console.error("Failed to load events.")
-      }
-    }
-
-    fetchUserEvents()
-  }, [user])
 
   // call endpoint to get all workshops
   useEffect(() => {
@@ -174,29 +165,22 @@ const StaffDashboard = () => {
     setImageUrls(urls)
   }
 
-  const eventsByMonth: { [key: string]: EventData[] } = events
-    .filter((event) => new Date(event.date) >= today)
-    .sort(
-      (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-    ) // Sort events chronologically
-    .reduce(
-      (acc, event) => {
-        const eventDate = new Date(event.date)
-        const month = eventDate.toLocaleString("default", { month: "long" })
+  const currentMonthIndex = today.getMonth()
 
-        if (!acc[month]) {
-          acc[month] = []
-        }
-        acc[month].push({
-          ...event,
-          formattedDate: eventDate.toDateString(),
-        })
+  const allUpcomingMonths = Array.from(
+    { length: 12 - currentMonthIndex },
+    (_, i) =>
+      new Date(today.getFullYear(), currentMonthIndex + i, 1).toLocaleString(
+        "default",
+        { month: "long" }
+      )
+  )
 
-        return acc
-      },
-      {} as { [key: string]: EventData[] }
-    )
+  const eventsByMonth = groupEventsByMonth(events)
+
+  const monthsWithEvents = Object.entries(eventsByMonth).filter(
+    ([_, events]) => events.length > 0
+  )
 
   const handleClick = (menteeId: string) => {
     navigate("/volunteer/participant-information", { state: { menteeId } })
@@ -251,7 +235,7 @@ const StaffDashboard = () => {
       {selectedEvent && (
         <Modal
           header={selectedEvent.name}
-          subheader={`${new Date(selectedEvent.date).toLocaleString("default", { month: "long" })} ${new Date(selectedEvent.date).getDate()}, ${new Date(selectedEvent.date).getFullYear()} ${new Date(selectedEvent.startTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })} - ${new Date(selectedEvent.endTime).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true })}`}
+          subheader={selectedEvent ? formatEventSubheader(selectedEvent) : ""}
           body={
             <div className="Flex-column">
               {selectedEvent.description}
@@ -273,7 +257,7 @@ const StaffDashboard = () => {
                     textDecoration: "none",
                   }}
                 >
-                  Add to Calendar
+                  Go to Link
                 </a>
               )}
             </div>
@@ -382,17 +366,19 @@ const StaffDashboard = () => {
           <div className="col-lg-4">
             <div className="Block p-3">
               <div className="Block-header">Upcoming Events</div>
-              <div className="Block-subtitle">
-                Scheduled meetings and events.
-              </div>
-              {Object.entries(eventsByMonth).map(([month, monthEvents]) => (
-                <Event
-                  key={month}
-                  month={month}
-                  events={monthEvents}
-                  onEventClick={handleEventClick}
-                />
-              ))}
+              <div className="Block-subtitle">Select an event for details.</div>
+              {monthsWithEvents.length === 0 ? (
+                <div className="Text--center">No upcoming events</div>
+              ) : (
+                monthsWithEvents.map(([month, monthEvents]) => (
+                  <Event
+                    key={month}
+                    month={month}
+                    events={monthEvents}
+                    onEventClick={handleEventClick}
+                  />
+                ))
+              )}
 
               <div
                 className="Flex-row Align-items--center Width--100 Margin-top--10"
@@ -410,7 +396,7 @@ const StaffDashboard = () => {
                   </div>
                 )}
 
-                {user && user.role === "mentor" && (
+                {user && (user.role === "staff" || user.role === "mentor") && (
                   <div
                     className="Button Button-color--blue-1000 "
                     onClick={() => navigate("/create-meeting")}

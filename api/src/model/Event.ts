@@ -1,14 +1,14 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose"
 
 interface IEvent extends Document {
-  name: string;
-  description: string;
-  date: Date;
-  startTime: Date;
-  endTime: Date;
-  expirationDate?: Date; // Optional expiration date
-  users: Schema.Types.ObjectId[];
-  calendarLink?: string; // Make calendar link optional
+  name: string
+  description: string
+  date: Date
+  startTime: Date
+  endTime: Date
+  expirationDate?: Date
+  users: Schema.Types.ObjectId[]
+  calendarLink?: string
 }
 
 const EventSchema: Schema<IEvent> = new Schema({
@@ -20,8 +20,10 @@ const EventSchema: Schema<IEvent> = new Schema({
   expirationDate: { type: Date, required: false },
   users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
   calendarLink: { type: String, required: false },
-});
+})
 
-const Event = mongoose.model<IEvent>("Event", EventSchema);
+EventSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 })
 
-export { Event, IEvent };
+const Event = mongoose.model<IEvent>("Event", EventSchema)
+
+export { Event, IEvent }
