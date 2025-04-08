@@ -343,7 +343,7 @@ const StaffDashboard = () => {
                     {mentors.length > 0 ? (
                       <div className="row gx-3 gy-3">
                         {mentors.map((mentor) => (
-                          <div className="col-lg-4" key={mentor._id}>
+                          <div className="col-lg-6" key={mentor._id}>
                             <ParticipantCard
                               firstName={mentor.first_name}
                               lastName={mentor.last_name}
