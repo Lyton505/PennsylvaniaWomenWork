@@ -1,5 +1,5 @@
-import express from "express"
-import User from "../model/User"
+import express from "express";
+import User from "../model/User";
 // import { validateAccessToken } from "../controllers/auth0-middleware";
 import {
   createUser,
@@ -9,27 +9,27 @@ import {
   updateUser,
   getCurrentUserById,
   deleteUser,
-} from "../controllers/userController"
+} from "../controllers/userController";
 
-const router = express.Router()
+const router = express.Router();
 
 // Route to create a new user
-router.post("/create-user", createUser)
+router.post("/create-user", createUser);
 
 // Route to send an email
-router.post("/send-email", sendEmail)
+router.post("/send-email", sendEmail);
 
 // Route to add a meeting
-router.post("/add-meeting", addMeeting)
+router.post("/add-meeting", addMeeting);
 
 // Route to get current user information
-router.get("/current-user", getCurrentUser)
+router.get("/current-user", getCurrentUser);
 
-router.get("/current-userid/:auth_id", getCurrentUserById)
+router.get("/current-userid/:auth_id", getCurrentUserById);
 
-router.put("/:userId", updateUser)
+router.put("/:userId", updateUser);
 
 // delete user from auth0 and mongo by id
-router.delete("/:userId", deleteUser)
+router.delete("/:userId", deleteUser);
 
-export default router
+export default router;

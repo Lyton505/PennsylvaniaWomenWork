@@ -1,6 +1,6 @@
-import { ManagementClient } from "auth0"
-import axios from "axios"
-import generatePassword from "generate-password"
+import { ManagementClient } from "auth0";
+import axios from "axios";
+import generatePassword from "generate-password";
 
 const {
   AUTH0_TOKEN,
@@ -8,24 +8,24 @@ const {
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
   AUTH0_AUDIENCE,
-} = process.env
+} = process.env;
 
-if (!AUTH0_TOKEN) throw new Error("Auth0 API token is missing")
-if (!AUTH0_DOMAIN) throw new Error("Auth0 domain is missing")
-if (!AUTH0_CLIENT_ID) throw new Error("Auth0 client ID is missing")
-if (!AUTH0_CLIENT_SECRET) throw new Error("Auth0 client secret is missing")
-if (!AUTH0_AUDIENCE) throw new Error("Auth0 client audience is missing")
+if (!AUTH0_TOKEN) throw new Error("Auth0 API token is missing");
+if (!AUTH0_DOMAIN) throw new Error("Auth0 domain is missing");
+if (!AUTH0_CLIENT_ID) throw new Error("Auth0 client ID is missing");
+if (!AUTH0_CLIENT_SECRET) throw new Error("Auth0 client secret is missing");
+if (!AUTH0_AUDIENCE) throw new Error("Auth0 client audience is missing");
 
 interface Auth0TokenResponse {
-  access_token: string
-  token_type: string
-  expires_in: number
+  access_token: string;
+  token_type: string;
+  expires_in: number;
 }
 
 let Auth0ManagementClient = new ManagementClient({
   domain: AUTH0_DOMAIN!,
   token: AUTH0_TOKEN!,
-})
+});
 
 /**
  * Gets a new token for auth0 - Our tokens expire every 30 days so this refreshes it if the one in .env
@@ -45,19 +45,19 @@ const getToken = async (): Promise<Auth0TokenResponse> => {
       audience: AUTH0_AUDIENCE!,
       grant_type: "client_credentials",
     },
-  }
+  };
 
   try {
-    const response = await axios.request<Auth0TokenResponse>(options)
+    const response = await axios.request<Auth0TokenResponse>(options);
 
     if (response.status !== 200) {
-      throw new Error("Failed to fetch token")
+      throw new Error("Failed to fetch token");
     }
-    return response.data
+    return response.data;
   } catch (error: any) {
-    throw new Error("Failed to fetch token")
+    throw new Error("Failed to fetch token");
   }
-}
+};
 
 /**
  * Retrieves an auth0 management client. Uses a fresh token if renewToken is set
@@ -66,20 +66,20 @@ const getToken = async (): Promise<Auth0TokenResponse> => {
  */
 const getManagementClient = async (
   renewToken: boolean = false,
-  token: string = AUTH0_TOKEN!
+  token: string = AUTH0_TOKEN!,
 ) => {
   if (renewToken) {
-    const newToken = await getToken()
-    token = newToken.access_token
+    const newToken = await getToken();
+    token = newToken.access_token;
   }
 
   const options = {
     domain: AUTH0_DOMAIN!,
     token: token,
-  }
+  };
 
-  Auth0ManagementClient = new ManagementClient(options)
-}
+  Auth0ManagementClient = new ManagementClient(options);
+};
 
 /**
  * Creates the password reset link
@@ -91,17 +91,17 @@ export const createUserLink = async (userId: string) => {
     const response = await Auth0ManagementClient.tickets.changePassword({
       user_id: userId,
       client_id: AUTH0_CLIENT_ID,
-    })
+    });
 
     if (response.status !== 201) {
-      throw new Error("Failed to create user link")
+      throw new Error("Failed to create user link");
     }
 
-    return response.data.ticket
+    return response.data.ticket;
   } catch (error: any) {
-    throw new Error("Failed to create user link")
+    throw new Error("Failed to create user link");
   }
-}
+};
 
 /**
  * Creates an Auth0 user
@@ -111,7 +111,7 @@ export const createUserLink = async (userId: string) => {
  */
 export const createAuthUser = async (
   email: string,
-  managementClient: ManagementClient = Auth0ManagementClient
+  managementClient: ManagementClient = Auth0ManagementClient,
 ): Promise<{ [key: string]: any }> => {
   const dummy_password = generatePassword.generate({
     length: 15,
@@ -120,7 +120,7 @@ export const createAuthUser = async (
     uppercase: true,
     lowercase: true,
     strict: true,
-  })
+  });
 
   try {
     const newUser = await managementClient.users.create({
@@ -128,23 +128,23 @@ export const createAuthUser = async (
       connection: "Username-Password-Authentication",
       password: dummy_password,
       email_verified: true,
-    })
+    });
 
-    return newUser
+    return newUser;
   } catch (error: any) {
-    console.error("Error occurred while creating user:", error.message)
+    console.error("Error occurred while creating user:", error.message);
     if (error.statusCode === 409) {
-      console.warn(`User with email ${email} already exists`)
-      throw new Error("User already exists")
+      console.warn(`User with email ${email} already exists`);
+      throw new Error("User already exists");
     } else if (error.statusCode === 401) {
-      console.info("Token expired or unauthorized. Refreshing token...")
-      await getManagementClient(true)
-      return await createAuthUser(email)
+      console.info("Token expired or unauthorized. Refreshing token...");
+      await getManagementClient(true);
+      return await createAuthUser(email);
     } else {
-      throw new Error(`Failed to create new user: ${error.message}`)
+      throw new Error(`Failed to create new user: ${error.message}`);
     }
   }
-}
+};
 
 /**
  * Deletes an Auth0 user
@@ -155,24 +155,24 @@ export const createAuthUser = async (
 
 export const deleteAuthUser = async (
   userId: string,
-  managementClient: ManagementClient = Auth0ManagementClient
+  managementClient: ManagementClient = Auth0ManagementClient,
 ): Promise<{ [key: string]: any }> => {
   try {
-    const deletedUser = await managementClient.users.delete({ id: userId })
+    const deletedUser = await managementClient.users.delete({ id: userId });
 
     if (deletedUser.status !== 204) {
-      throw new Error("Failed to delete auth user")
+      throw new Error("Failed to delete auth user");
     }
 
-    return deletedUser
+    return deletedUser;
   } catch (error: any) {
-    console.error("Error occurred while deleting user:", error.message)
+    console.error("Error occurred while deleting user:", error.message);
     if (error.statusCode === 401) {
-      console.info("Token expired or unauthorized. Refreshing token...")
-      await getManagementClient(true)
-      return await deleteAuthUser(userId)
+      console.info("Token expired or unauthorized. Refreshing token...");
+      await getManagementClient(true);
+      return await deleteAuthUser(userId);
     } else {
-      throw new Error(`Failed to delete user: ${error.message}`)
+      throw new Error(`Failed to delete user: ${error.message}`);
     }
   }
-}
+};
