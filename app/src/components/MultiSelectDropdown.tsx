@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from "react"
-import { useField, useFormikContext } from "formik"
-import Icon from "./Icon"
+import React, { useState, useRef, useEffect } from "react";
+import { useField, useFormikContext } from "formik";
+import Icon from "./Icon";
 
 interface TagDropdownProps {
-  name: string
-  options: string[]
-  selected: string[]
-  label: string
-  onChange: (newTags: string[]) => void
+  name: string;
+  options: string[];
+  selected: string[];
+  label: string;
+  onChange: (newTags: string[]) => void;
 }
 
 const TagDropdown: React.FC<TagDropdownProps> = ({ name, options, label }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const [field, helpers] = useField<string[]>({ name })
-  const { setFieldValue } = useFormikContext()
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [field, helpers] = useField<string[]>({ name });
+  const { setFieldValue } = useFormikContext();
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -23,21 +23,21 @@ const TagDropdown: React.FC<TagDropdownProps> = ({ name, options, label }) => {
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
+    };
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const toggleTag = (tag: string) => {
     const newTags = field.value.includes(tag)
       ? field.value.filter((t) => t !== tag)
-      : [...field.value, tag]
-    setFieldValue(name, newTags)
-  }
+      : [...field.value, tag];
+    setFieldValue(name, newTags);
+  };
 
   return (
     <div
@@ -71,7 +71,7 @@ const TagDropdown: React.FC<TagDropdownProps> = ({ name, options, label }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TagDropdown
+export default TagDropdown;

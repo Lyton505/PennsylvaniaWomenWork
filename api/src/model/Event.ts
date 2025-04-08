@@ -6,9 +6,9 @@ interface IEvent extends Document {
   date: Date;
   startTime: Date;
   endTime: Date;
-  expirationDate?: Date; // Optional expiration date
+  expirationDate?: Date;
   users: Schema.Types.ObjectId[];
-  calendarLink?: string; // Make calendar link optional
+  calendarLink?: string;
 }
 
 const EventSchema: Schema<IEvent> = new Schema({
@@ -21,6 +21,8 @@ const EventSchema: Schema<IEvent> = new Schema({
   users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
   calendarLink: { type: String, required: false },
 });
+
+EventSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 });
 
 const Event = mongoose.model<IEvent>("Event", EventSchema);
 
