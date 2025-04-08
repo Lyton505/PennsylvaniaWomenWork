@@ -14,6 +14,6 @@ router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
 router.post("/create-board-file", createBoardFile);
 
 // Route to get all board files
-router.get("/get-board-files", getBoardFiles);
+router.get("/get-files", getBoardFiles);
 
 export default router;
