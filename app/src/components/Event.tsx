@@ -1,14 +1,15 @@
 import React from "react";
 
 export interface EventData {
-  userIds: string[];
+  _id: string;
+  name: string;
+  description: string;
   date: string;
   startTime: string;
   endTime: string;
-  name: string;
-  description: string;
-  formattedDate?: string;
   calendarLink?: string;
+  userIds?: string[];
+  formattedDate?: string;
 }
 
 interface EventProps {
@@ -29,15 +30,21 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
           weekday: "short",
         });
 
-        const formattedStart = new Date(event.startTime).toLocaleTimeString(
-          "en-US",
-          { hour: "2-digit", minute: "2-digit", hour12: true },
-        );
-        const formattedEnd = new Date(event.endTime).toLocaleTimeString(
-          "en-US",
-          { hour: "2-digit", minute: "2-digit", hour12: true },
-        );
-        const timeRange = `${formattedStart} – ${formattedEnd}`;
+        // Only show time if it's not an expiration-based event
+        const isExpirationEvent = event.startTime === event.date;
+
+        let timeRange = "";
+        if (!isExpirationEvent) {
+          const formattedStart = new Date(event.startTime).toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit", hour12: true },
+          );
+          const formattedEnd = new Date(event.endTime).toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit", hour12: true },
+          );
+          timeRange = `${formattedStart} – ${formattedEnd}`;
+        }
 
         return (
           <div
@@ -51,8 +58,7 @@ const Event = ({ month, events, onEventClick }: EventProps) => {
             </div>
             <div className="Event-item-details">
               <div className="title">{event.name}</div>
-              {/* <div className="desc">{event.description}</div> */}
-              <div className="time">{timeRange}</div>
+              {!isExpirationEvent && <div className="time">{timeRange}</div>}
             </div>
           </div>
         );
