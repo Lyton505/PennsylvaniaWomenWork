@@ -32,7 +32,6 @@ const BoardDashboard = () => {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
   const { user } = useUser()
   const userId = user?._id
-  const [loading, setLoading] = useState(true)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const possibleTags = ["planning", "governance", "strategy"]
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -59,37 +58,6 @@ const BoardDashboard = () => {
     : ""
 
   const eventsByMonth = groupEventsByMonth(events)
-
-  // useEffect(() => {
-  //   if (!userId) return
-
-  //   const fetchData = async () => {
-  //     try {
-  //       const [eventsResponse, filesResponse] = await Promise.all([
-  //         api.get(`/api/event/${userId}`),
-  //         api.get(`/api/boardFile/get-board-files`),
-  //       ])
-
-  //       setFiles(
-  //         filesResponse.data.map((file: any) => ({
-  //           name: file.name,
-  //           description: file.description,
-  //           s3id: file.s3id,
-  //           tags: file.tags || [],
-  //         }))
-  //       )
-
-  //       const parsedEvents = parseEvents(eventsResponse.data)
-  //       setEvents(parsedEvents)
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error)
-  //     } finally {
-  //       setLoading(false)
-  //     }
-  //   }
-
-  //   fetchData()
-  // }, [userId])
 
   useEffect(() => {
     if (!userId) return
@@ -135,10 +103,6 @@ const BoardDashboard = () => {
 
   const handleEventClick = (event: EventData) => {
     setSelectedEvent(event)
-  }
-
-  if (loading) {
-    return <div>Loading...</div>
   }
 
   return (

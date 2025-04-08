@@ -5,7 +5,7 @@ import mentor from "./mentor" // mentor routes
 import mentee from "./mentee" // mentee routes
 import event from "./event" // event routes
 import resource from "./resource" // resource routes
-import board from "./board" // boardFile routes
+import board from "./board" // board routes
 
 const router = express.Router()
 
