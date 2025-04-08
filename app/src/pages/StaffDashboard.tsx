@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import { useUser } from "../contexts/UserContext";
+import { User as AppUser } from "../contexts/UserContext";
 import { api } from "../api";
 import ParticipantCard from "../components/ParticipantCard";
 import FolderCard from "../components/FolderCard";
@@ -28,6 +29,13 @@ interface Mentor {
   email: string;
 }
 
+interface User {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
 interface CourseInformationElements {
   _id: string;
   name: string;
@@ -45,6 +53,8 @@ const StaffDashboard = () => {
   const navigate = useNavigate();
   const [mentees, setMentees] = useState<Mentee[]>([]);
   const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [staffMembers, setStaffMembers] = useState<AppUser[]>([]);
+  const [boardMembers, setBoardMembers] = useState<AppUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
@@ -135,6 +145,23 @@ const StaffDashboard = () => {
     };
 
     fetchMentors();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchStaffAndBoard = async () => {
+      try {
+        const staffResponse = await api.get("/api/user/all-staff");
+        setStaffMembers(staffResponse.data);
+        const boardResponse = await api.get("/api/user/all-board");
+        setBoardMembers(boardResponse.data);
+      } catch (err) {
+        console.error("Error fetching staff or board members:", err);
+      }
+    };
+
+    if (user?.role === "staff" || user?.role === "board") {
+      fetchStaffAndBoard();
+    }
   }, [user]);
 
   const today = new Date();
@@ -275,7 +302,12 @@ const StaffDashboard = () => {
                   {[
                     "Files",
                     ...(user?.role === "staff"
-                      ? ["My Participants", "All Volunteers"]
+                      ? [
+                          "My Participants",
+                          "All Volunteers",
+                          "All Staff Members",
+                          "All Board Members",
+                        ]
                       : []),
                     ...(user?.role === "mentor" ? ["My Participants"] : []),
                   ].map((tab) => (
@@ -345,6 +377,50 @@ const StaffDashboard = () => {
                     )}
                   </div>
                 )}
+
+              {activeTab === "All Staff Members" && (
+                <div>
+                  {staffMembers.length > 0 ? (
+                    <div className="row gx-3 gy-3">
+                      {staffMembers.map((staff) => (
+                        <div className="col-lg-6" key={staff._id}>
+                          <ParticipantCard
+                            firstName={staff.first_name}
+                            lastName={staff.last_name}
+                            email={staff.email}
+                            profilePictureId={(staff as any).profile_picture_id}
+                            onClick={() => handleMentorClick(staff._id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No staff members found.</p>
+                  )}
+                </div>
+              )}
+
+              {activeTab === "All Board Members" && (
+                <div>
+                  {boardMembers.length > 0 ? (
+                    <div className="row gx-3 gy-3">
+                      {boardMembers.map((board) => (
+                        <div className="col-lg-6" key={board._id}>
+                          <ParticipantCard
+                            firstName={board.first_name}
+                            lastName={board.last_name}
+                            email={board.email}
+                            profilePictureId={(board as any).profile_picture_id}
+                            onClick={() => handleMentorClick(board._id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No board members found.</p>
+                  )}
+                </div>
+              )}
 
               {activeTab === "Files" && (
                 <div className="row gx-3 gy-3">
