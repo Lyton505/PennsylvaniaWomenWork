@@ -302,3 +302,29 @@
     }
   }
 }
+
+.TagDropdown {
+  position: relative;
+
+  &-menu {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid var(--pww-color-gray-300);
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    cursor: pointer;
+  }
+
+
+  &-item {
+    margin: 4px 0;
+    border-radius: var(--pww-border-radius-8);
+    cursor: pointer;
+  }
+
+}

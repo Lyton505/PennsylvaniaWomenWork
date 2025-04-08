@@ -1,32 +1,56 @@
-import React, { useState, useEffect } from "react";
-import Navbar from "../components/Navbar";
-import Modal from "../components/Modal";
-import { useNavigate } from "react-router-dom";
-import { api } from "../api";
-import Event, { EventData } from "../components/Event";
-import { useUser } from "../contexts/UserContext";
-import { useAuth0 } from "@auth0/auth0-react";
-import FolderCard from "../components/FolderCard";
+import React, { useState, useEffect } from "react"
+import Navbar from "../components/Navbar"
+import Modal from "../components/Modal"
+import { useNavigate } from "react-router-dom"
+import { api } from "../api"
+import Event, { EventData } from "../components/Event"
+import { useUser } from "../contexts/UserContext"
+import { useAuth0 } from "@auth0/auth0-react"
+import Icon from "../components/Icon" // Adjust the path based on your project structure
+import TagDropdown from "../components/MultiSelectDropdown"
+import { Formik, Form, Field } from "formik"
+
+import FolderCard from "../components/FolderCard"
 
 interface File {
-  _id: string;
-  name: string;
-  description: string;
-  tags: string[];
-  s3id: string;
+  _id: string
+  name: string
+  description: string
+  tags: string[]
+  s3id: string
 }
 
 const BoardDashboard = () => {
-  const navigate = useNavigate();
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [files, setFiles] = useState<File[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const { user } = useUser();
-  const userId = user?._id;
-  const [loading, setLoading] = useState(true);
-  const start = selectedEvent ? new Date(selectedEvent.startTime) : null;
-  const end = selectedEvent ? new Date(selectedEvent.endTime) : null;
-  const eventDate = selectedEvent ? new Date(selectedEvent.date) : null;
+  const navigate = useNavigate()
+  const [events, setEvents] = useState<EventData[]>([])
+  const [files, setFiles] = useState<File[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
+  const { user } = useUser()
+  const userId = user?._id
+  const [loading, setLoading] = useState(true)
+  const start = selectedEvent ? new Date(selectedEvent.startTime) : null
+  const end = selectedEvent ? new Date(selectedEvent.endTime) : null
+  const eventDate = selectedEvent ? new Date(selectedEvent.date) : null
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const possibleTags = ["planning", "governance", "strategy"]
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+
+  // const filteredFiles = files.filter(file =>
+  //   selectedTags.length === 0 ||
+  //   selectedTags.some(tag => file.tags.includes(tag))
+  // );
+  const filteredFiles = files.filter((file) => {
+    const matchesTags =
+      selectedTags.length === 0 ||
+      selectedTags.some((tag) => file.tags.includes(tag))
+
+    const matchesSearch =
+      file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      file.description.toLowerCase().includes(searchQuery.toLowerCase())
+
+    return matchesTags && matchesSearch
+  })
 
   const formattedSubheader =
     eventDate && start && end
@@ -38,23 +62,23 @@ const BoardDashboard = () => {
             hour: "2-digit",
             minute: "2-digit",
             hour12: true,
-          },
+          }
         )} - ${end.toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true,
         })}`
-      : "";
+      : ""
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) return
 
     const fetchData = async () => {
       try {
         const [eventsResponse, filesResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
           api.get(`/api/boardFile/get-board-files`),
-        ]);
+        ])
 
         setFiles(
           filesResponse.data.map((file: any) => ({
@@ -62,8 +86,8 @@ const BoardDashboard = () => {
             description: file.description,
             s3id: file.s3id,
             tags: file.tags || [],
-          })),
-        );
+          }))
+        )
 
         setEvents(
           eventsResponse.data.map((event: any) => ({
@@ -74,59 +98,59 @@ const BoardDashboard = () => {
             date: event.date,
             userIds: event.users || [],
             calendarLink: event.calendarLink || "",
-          })),
-        );
+          }))
+        )
 
-        setEvents(eventsResponse.data);
+        setEvents(eventsResponse.data)
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, [userId]);
+    fetchData()
+  }, [userId])
 
   const handleFileClick = (workshopId: string) => {
     navigate(`/volunteer/workshop-information`, {
       state: { workshopId },
-    });
-  };
+    })
+  }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   const eventsByMonth: { [key: string]: EventData[] } = events
     .filter((event) => new Date(event.date) >= today)
     .sort(
       (a, b) =>
-        new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
     ) // Sort events chronologically
     .reduce(
       (acc, event) => {
-        const eventDate = new Date(event.startTime);
-        const month = eventDate.toLocaleString("default", { month: "long" });
+        const eventDate = new Date(event.startTime)
+        const month = eventDate.toLocaleString("default", { month: "long" })
 
         if (!acc[month]) {
-          acc[month] = [];
+          acc[month] = []
         }
         acc[month].push({
           ...event,
           formattedDate: eventDate.toDateString(),
-        });
+        })
 
-        return acc;
+        return acc
       },
-      {} as { [key: string]: EventData[] },
-    );
+      {} as { [key: string]: EventData[] }
+    )
 
   const handleEventClick = (event: EventData) => {
-    setSelectedEvent(event);
-  };
+    setSelectedEvent(event)
+  }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   return (
@@ -167,13 +191,56 @@ const BoardDashboard = () => {
               <div className="Block-subtitle">
                 Select a file to access materials.
               </div>
+              <Formik initialValues={{ tags: [] }} onSubmit={() => {}}>
+                {({ values, setFieldValue }) => (
+                  <Form>
+                    {/* filter + search row */}
+                    <div className="Flex-row">
+                      <TagDropdown
+                        name="tags"
+                        label="Filter"
+                        options={["Finance", "Wellness", "Education", "Tech"]}
+                        selected={values.tags}
+                        onChange={(tags: string[]) =>
+                          setFieldValue("tags", tags)
+                        }
+                      />
+
+                      <div className="Form-group">
+                        <Field
+                          type="text"
+                          name="search"
+                          placeholder="Search files..."
+                          className="Form-input-box"
+                        />
+                      </div>
+                    </div>
+
+                    {/* selected tags row */}
+                    {values.tags.length > 0 && (
+                      <div className="Flex-row Flex-wrap Gap--10 Margin-top--10 Margin-bottom--20">
+                        {values.tags.map((tag) => (
+                          <div
+                            key={tag}
+                            className="Filter-tag Filter-tag--removable"
+                            onClick={() =>
+                              setFieldValue(
+                                "tags",
+                                values.tags.filter((t) => t !== tag)
+                              )
+                            }
+                          >
+                            {tag} ✕
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </Form>
+                )}
+              </Formik>
               <div className="row gx-3 gy-3">
-                {files.map((item) => (
-                  <div
-                    className="col-lg-4"
-                    key={item._id}
-                    onClick={() => handleFileClick(item._id)}
-                  >
+                {filteredFiles.map((item) => (
+                  <div className="col-lg-4" key={item._id}>
                     <FolderCard
                       name={item.name}
                       description={item.description}
@@ -202,7 +269,7 @@ const BoardDashboard = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default BoardDashboard;
+export default BoardDashboard
