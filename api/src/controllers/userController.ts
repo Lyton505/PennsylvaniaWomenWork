@@ -271,3 +271,33 @@ export const deleteUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error deleting user", error });
   }
 };
+
+export const getAllStaff = async (req: Request, res: Response) => {
+  try {
+    const staff = await User.find({ role: "staff" });
+
+    if (!staff || staff.length === 0) {
+      return res.status(404).json({ message: "No staff found" });
+    }
+
+    res.status(200).json(staff);
+  } catch (error) {
+    console.error("Error getting all staff:", error);
+    res.status(500).json({ message: "Error retrieving staff", error });
+  }
+};
+
+export const getAllBoard = async (req: Request, res: Response) => {
+  try {
+    const board = await User.find({ role: "board" });
+
+    if (!board || board.length === 0) {
+      return res.status(404).json({ message: "No board members found" });
+    }
+
+    res.status(200).json(board);
+  } catch (error) {
+    console.error("Error getting all board members:", error);
+    res.status(500).json({ message: "Error retrieving board", error });
+  }
+};
