@@ -309,9 +309,9 @@ const StaffDashboard = () => {
                     ...(user?.role === "staff"
                       ? [
                           "My Participants",
-                          "All Volunteers",
-                          "All Staff Members",
-                          "All Board Members",
+                          "Volunteers",
+                          "Staff Members",
+                          "Board Members",
                         ]
                       : []),
                     ...(user?.role === "mentor" ? ["My Participants"] : []),
@@ -322,7 +322,7 @@ const StaffDashboard = () => {
                       className={`tab ${activeTab === tab ? "active" : ""}`}
                     >
                       {tab === "My Participants" && user?.role === "staff"
-                        ? "All Participants"
+                        ? "Participants"
                         : tab}
                     </div>
                   ))}
