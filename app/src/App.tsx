@@ -1,28 +1,28 @@
-import React, { type ReactElement } from "react"
-import { Routes, Route, Navigate } from "react-router-dom"
-import StaffDashboard from "./pages/StaffDashboard"
-import MenteeDashboard from "./pages/MenteeDashboard"
-import ConfirmLogout from "./pages/ConfirmLogout"
-import CreateWorkshop from "./pages/CreateWorkshop"
-import CreateMeeting from "./pages/CreateMeeting"
-import CreateEvent from "./pages/CreateEvent"
-import UserInformation from "./pages/UserInformation"
-import WorkshopInformation from "./pages/WorkshopInformation"
-import AuthCallback from "./pages/auth-callback"
-import LoginRedirect from "./pages/LoginRedirect"
-import Logout from "./pages/Logout"
-import Profile from "./pages/Profile"
-import SampleMenteeInvite from "./pages/MenteeInvite"
-import ProtectedRoute from "./components/ProtectedRoute"
-import BoardDashboard from "./pages/BoardDashboard"
-import MentorInformation from "./pages/MentorInformation"
-import { useAuth0 } from "@auth0/auth0-react"
-import { useUser } from "./contexts/UserContext"
-import { roles } from "./utils/roles"
+import React, { type ReactElement } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import StaffDashboard from "./pages/StaffDashboard";
+import MenteeDashboard from "./pages/MenteeDashboard";
+import ConfirmLogout from "./pages/ConfirmLogout";
+import CreateWorkshop from "./pages/CreateWorkshop";
+import CreateMeeting from "./pages/CreateMeeting";
+import CreateEvent from "./pages/CreateEvent";
+import UserInformation from "./pages/UserInformation";
+import WorkshopInformation from "./pages/WorkshopInformation";
+import AuthCallback from "./pages/auth-callback";
+import LoginRedirect from "./pages/LoginRedirect";
+import Logout from "./pages/Logout";
+import Profile from "./pages/Profile";
+import SampleMenteeInvite from "./pages/MenteeInvite";
+import ProtectedRoute from "./components/ProtectedRoute";
+import BoardDashboard from "./pages/BoardDashboard";
+import MentorInformation from "./pages/MentorInformation";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from "./contexts/UserContext";
+import { roles } from "./utils/roles";
 
 function App(): ReactElement {
-  const { isAuthenticated } = useAuth0()
-  const { user } = useUser()
+  const { isAuthenticated } = useAuth0();
+  const { user } = useUser();
 
   if (!isAuthenticated) {
     return (
@@ -33,7 +33,7 @@ function App(): ReactElement {
         <Route path="/" element={<LoginRedirect />} />
         <Route path="*" element={<LoginRedirect />} />
       </Routes>
-    )
+    );
   }
 
   return (
@@ -158,7 +158,7 @@ function App(): ReactElement {
         }
       />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
