@@ -6,7 +6,7 @@ import ConfirmLogout from "./pages/ConfirmLogout"
 import CreateWorkshop from "./pages/CreateWorkshop"
 import CreateMeeting from "./pages/CreateMeeting"
 import CreateEvent from "./pages/CreateEvent"
-import MenteeInformation from "./pages/MenteeInformation"
+import UserInformation from "./pages/UserInformation"
 import WorkshopInformation from "./pages/WorkshopInformation"
 import AuthCallback from "./pages/auth-callback"
 import LoginRedirect from "./pages/LoginRedirect"
@@ -117,7 +117,7 @@ function App(): ReactElement {
         path="/participant/participant-information"
         element={
           <ProtectedRoute
-            element={<MenteeInformation />}
+            element={<UserInformation />}
             allowedRoles={[roles.volunteer, roles.staff]}
           />
         }

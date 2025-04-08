@@ -17,19 +17,14 @@ import Event, {
 import { Formik, Form, Field } from "formik"
 import TagDropdown from "../components/MultiSelectDropdown"
 import FolderUI from "../components/FolderUI"
+import PeopleGrid from "../components/PeopleGrid"
 
-interface Mentee {
+interface User {
   _id: string
   first_name: string
   last_name: string
   email: string
-}
-
-interface Mentor {
-  _id: string
-  first_name: string
-  last_name: string
-  email: string
+  role: string
 }
 
 // interface User {
@@ -55,10 +50,10 @@ type ImageUrlMap = Record<string, string | null>
 
 const StaffDashboard = () => {
   const navigate = useNavigate()
-  const [mentees, setMentees] = useState<Mentee[]>([])
-  const [mentors, setMentors] = useState<Mentor[]>([])
-  const [staffMembers, setStaffMembers] = useState<AppUser[]>([])
-  const [boardMembers, setBoardMembers] = useState<AppUser[]>([])
+  const [mentees, setMentees] = useState<User[]>([])
+  const [mentors, setMentors] = useState<User[]>([])
+  const [staffMembers, setStaffMembers] = useState<User[]>([])
+  const [boardMembers, setBoardMembers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null)
@@ -203,10 +198,6 @@ const StaffDashboard = () => {
     ([_, events]) => events.length > 0
   )
 
-  const handleClick = (menteeId: string) => {
-    navigate("/participant/participant-information", { state: { menteeId } })
-  }
-
   const handleEventClick = (event: EventData) => {
     setSelectedEvent(event)
   }
@@ -245,19 +236,6 @@ const StaffDashboard = () => {
       toast.error("Failed to delete event")
     }
   }
-
-  const filteredWorkshops = workshops.filter((item) => {
-    const matchesTags =
-      searchQuery.length === 0 ||
-      searchQuery.split(" ").some((tag: string) => item.tags?.includes(tag))
-
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase())
-
-    return matchesTags && matchesSearch
-  })
-
   return (
     <>
       <Navbar />
@@ -328,100 +306,41 @@ const StaffDashboard = () => {
               <div className="Block-subtitle" />
 
               {activeTab === "My Participants" && (
-                <div>
-                  {loading ? (
-                    <p>Loading mentees...</p>
-                  ) : error ? (
-                    <p style={{ color: "red" }}>{error}</p>
-                  ) : mentees.length === 0 ? (
-                    <p>No participants found.</p>
-                  ) : (
-                    <div className="row gx-3 gy-3">
-                      {mentees.map((mentee) => (
-                        <div className="col-lg-6" key={mentee._id}>
-                          <ParticipantCard
-                            firstName={mentee.first_name}
-                            lastName={mentee.last_name}
-                            email={mentee.email}
-                            profilePictureId={
-                              (mentee as any).profile_picture_id
-                            } // cast if type doesn't include it
-                            onClick={() => handleClick(mentee._id)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <PeopleGrid users={mentees} />
               )}
 
               {(user?.role === "staff" || user?.role === "board") &&
                 activeTab === "Volunteers" && (
-                  <div>
-                    {mentors.length > 0 ? (
-                      <div className="row gx-3 gy-3">
-                        {mentors.map((mentor) => (
-                          <div className="col-lg-6" key={mentor._id}>
-                            <ParticipantCard
-                              firstName={mentor.first_name}
-                              lastName={mentor.last_name}
-                              email={mentor.email}
-                              profilePictureId={
-                                (mentor as any).profile_picture_id
-                              }
-                              onClick={() => handleMentorClick(mentor._id)}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p>No mentors found.</p>
-                    )}
-                  </div>
+                  // <div>
+                  //   {mentors.length > 0 ? (
+                  //     <div className="row gx-3 gy-3">
+                  //       {mentors.map((mentor) => (
+                  //         <div className="col-lg-6" key={mentor._id}>
+                  //           <ParticipantCard
+                  //             firstName={mentor.first_name}
+                  //             lastName={mentor.last_name}
+                  //             email={mentor.email}
+                  //             profilePictureId={
+                  //               (mentor as any).profile_picture_id
+                  //             }
+                  //             onClick={() => handleMentorClick(mentor._id)}
+                  //           />
+                  //         </div>
+                  //       ))}
+                  //     </div>
+                  //   ) : (
+                  //     <p>No mentors found.</p>
+                  //   )}
+                  // </div>
+                  <PeopleGrid users={mentors} />
                 )}
 
               {activeTab === "Staff Members" && (
-                <div>
-                  {staffMembers.length > 0 ? (
-                    <div className="row gx-3 gy-3">
-                      {staffMembers.map((staff) => (
-                        <div className="col-lg-6" key={staff._id}>
-                          <ParticipantCard
-                            firstName={staff.first_name}
-                            lastName={staff.last_name}
-                            email={staff.email}
-                            profilePictureId={(staff as any).profile_picture_id}
-                            onClick={() => handleMentorClick(staff._id)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No staff members found.</p>
-                  )}
-                </div>
+                <PeopleGrid users={staffMembers} />
               )}
 
               {activeTab === "Board Members" && (
-                <div>
-                  {boardMembers.length > 0 ? (
-                    <div className="row gx-3 gy-3">
-                      {boardMembers.map((board) => (
-                        <div className="col-lg-6" key={board._id}>
-                          <ParticipantCard
-                            firstName={board.first_name}
-                            lastName={board.last_name}
-                            email={board.email}
-                            profilePictureId={(board as any).profile_picture_id}
-                            onClick={() => handleMentorClick(board._id)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No board members found.</p>
-                  )}
-                </div>
+                <PeopleGrid users={boardMembers} />
               )}
 
               {activeTab === "Folders" && (
