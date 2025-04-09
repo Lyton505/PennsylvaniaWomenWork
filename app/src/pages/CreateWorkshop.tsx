@@ -56,7 +56,7 @@ const validationSchema = Yup.object().shape({
     .test("fileSize", "File size is too large", (value) => {
       if (!value) return true;
 
-      const maxSize = 2 * 1024 * 1024; // 2 MB
+      const maxSize = 100 * 1024 * 1024; // 100 MB
       return (value as File).size <= maxSize;
     })
     .test(
