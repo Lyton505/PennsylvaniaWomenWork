@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from "react"
 import Navbar from "../components/Navbar"
-import Modal from "../components/Modal"
-import pdf from "../assets/pdf.jpg"
-import docx from "../assets/docx.png"
-import video from "../assets/video.png"
 import Icon from "../components/Icon"
 import { useNavigate, useLocation } from "react-router-dom"
 import { api } from "../api"
 import { useUser } from "../contexts/UserContext"
-import { Formik, Form, Field } from "formik"
-import * as Yup from "yup"
-import AsyncSubmit from "../components/AsyncSubmit"
-import CreatableSelect from "react-select/creatable"
-import makeAnimated from "react-select/animated"
 import { toast } from "react-hot-toast"
 import ConfirmActionModal from "../components/ConfirmActionModal"
 import { Spinner } from "react-bootstrap"
 import FileCard from "../components/FileCard"
 import AddFileModal from "../components/AddFileModal"
 import EditFolderModal from "../components/EditFolderModal"
-
-const animatedComponents = makeAnimated()
 
 interface Workshop {
   _id: string
