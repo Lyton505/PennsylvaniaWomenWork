@@ -109,7 +109,7 @@ export const getWorkshopsByUserId = async (req: Request, res: Response) => {
 export const updateWorkshop = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, tags, role } = req.body;
 
     if (!name || !description) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -117,7 +117,7 @@ export const updateWorkshop = async (req: Request, res: Response) => {
 
     const updatedWorkshop = await Workshop.findByIdAndUpdate(
       id,
-      { name, description },
+      { name, description, tags, role },
       { new: true },
     );
 
