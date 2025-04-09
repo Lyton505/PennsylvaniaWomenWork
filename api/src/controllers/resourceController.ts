@@ -21,13 +21,8 @@ export const createResource = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  if (
-    (!workshopIDs || !Array.isArray(workshopIDs) || workshopIDs.length === 0) &&
-    !boardFileID
-  ) {
-    return res
-      .status(400)
-      .json({ message: "Must provide either workshopIDs or boardFileID." });
+  if ((!workshopIDs || !Array.isArray(workshopIDs) || workshopIDs.length === 0) && !boardFileID) {
+    return res.status(400).json({ message: "Must provide either workshopIDs or boardFileID." });
   }
 
   try {
@@ -56,6 +51,17 @@ export const getResourcesByWorkshopId = async (req: Request, res: Response) => {
   try {
     const { workshopId } = req.params;
     const resources = await Resource.find({ workshopIDs: workshopId });
+    res.status(200).json(resources);
+  } catch (error) {
+    console.error("Error retrieving resources:", error);
+    res.status(500).json({ message: "Error retrieving resources", error });
+  }
+};
+
+export const getResourcesByBoardFileId = async (req: Request, res: Response) => {
+  try {
+    const { boardFileID } = req.params;
+    const resources = await Resource.find({ boardFileID: boardFileID });
     res.status(200).json(resources);
   } catch (error) {
     console.error("Error retrieving resources:", error);
@@ -125,10 +131,7 @@ export const deleteResourcesForWorkshop = async (workshopId: string) => {
   await Resource.deleteMany({ workshopIDs: workshopId });
 };
 
-export const deleteResourcesByWorkshopId = async (
-  req: Request,
-  res: Response
-) => {
+export const deleteResourcesByWorkshopId = async (req: Request, res: Response) => {
   try {
     const { workshopId } = req.params;
 
