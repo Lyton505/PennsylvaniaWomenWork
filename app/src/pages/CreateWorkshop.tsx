@@ -66,7 +66,7 @@ const validationSchema = Yup.object().shape({
 
         const supportedFormats = ["image/jpeg", "image/png"];
         return supportedFormats.includes((value as File).type);
-      },
+      }
     ),
 });
 
@@ -120,7 +120,7 @@ const CreateWorkshop = () => {
 
   const handleSubmit = async (
     values: any,
-    { setSubmitting, resetForm }: any,
+    { setSubmitting, resetForm }: any
   ) => {
     setSubmitting(true);
     try {
@@ -129,7 +129,7 @@ const CreateWorkshop = () => {
 
       if (values.imageUpload) {
         const coverImageResponse = await api.get(
-          `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`,
+          `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`
         );
 
         const { url: coverImageUrl, objectKey: coverImageObjectKey } =
@@ -162,7 +162,7 @@ const CreateWorkshop = () => {
               description: values.description,
               s3id: coverImageS3id || `placeholder-${Date.now()}`, // Provide a placeholder if no image
               tags: values.tags,
-            },
+            }
           );
 
           if (status === 201) {
@@ -176,7 +176,7 @@ const CreateWorkshop = () => {
       } else {
         const { data: workshopData, status } = await api.post(
           "/api/workshop/create-workshop",
-          payload,
+          payload
         );
 
         if (status === 201) {
@@ -200,7 +200,7 @@ const CreateWorkshop = () => {
             s3id: file.s3id,
             tags: file.tags,
             ...(values.role === "board"
-              ? { boardFileId: createdId }
+              ? { boardFileID: createdId }
               : { workshopIDs: [createdId] }),
           };
 
@@ -235,7 +235,7 @@ const CreateWorkshop = () => {
 
   const handleFileSumbit = async (
     values: any,
-    { resetForm, setFieldValue }: any,
+    { resetForm, setFieldValue }: any
   ) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -253,7 +253,7 @@ const CreateWorkshop = () => {
       ]);
 
       const response = await api.get(
-        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`,
+        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`
       );
 
       const { url, objectKey } = response.data;
@@ -470,7 +470,7 @@ const CreateWorkshop = () => {
                           "tags",
                           selectedOptions
                             ? selectedOptions.map((opt: any) => opt.value)
-                            : [],
+                            : []
                         )
                       }
                       onCreateOption={(inputValue: string) => {

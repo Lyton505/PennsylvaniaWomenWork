@@ -15,16 +15,19 @@ const s3 = new AWS.S3();
 const bucketName = process.env.S3_BUCKET_NAME;
 
 export const createResource = async (req: Request, res: Response) => {
-  const { name, description, s3id, workshopIDs, tags } = req.body;
+  const { name, description, s3id, workshopIDs, boardFileID, tags } = req.body;
+
+  if (!name || !description || !s3id) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
 
   if (
-    !name ||
-    !description ||
-    !s3id ||
-    !workshopIDs ||
-    !Array.isArray(workshopIDs)
+    (!workshopIDs || !Array.isArray(workshopIDs) || workshopIDs.length === 0) &&
+    !boardFileID
   ) {
-    return res.status(400).json({ message: "Missing required fields" });
+    return res
+      .status(400)
+      .json({ message: "Must provide either workshopIDs or boardFileID." });
   }
 
   try {
@@ -32,9 +35,11 @@ export const createResource = async (req: Request, res: Response) => {
       name,
       description,
       s3id,
-      workshopIDs,
+      workshopIDs: workshopIDs || [],
+      boardFileID: boardFileID || null,
       tags,
     });
+
     const savedResource = await newResource.save();
 
     res.status(201).json({
@@ -122,7 +127,7 @@ export const deleteResourcesForWorkshop = async (workshopId: string) => {
 
 export const deleteResourcesByWorkshopId = async (
   req: Request,
-  res: Response,
+  res: Response
 ) => {
   try {
     const { workshopId } = req.params;
