@@ -6,14 +6,12 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  height: 200px;
+  height: 240px;
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: scale(1.02);
-    transition:
-      box-shadow 0.3s ease,
-      transform 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
   }
 
   &-icon {
@@ -25,7 +23,7 @@
     background-color: var(--pww-color-blue-100);
 
     img {
-      height: 75px; // ⬆️ made it bigger
+      height: 75px;
       width: 75px;
       object-fit: contain;
     }
@@ -36,18 +34,38 @@
   }
 
   &-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--pww-color-gray-400);
     color: var(--pww-color-blue-1000);
     font-size: var(--pww-font-size-20);
     font-weight: 800;
-    border-bottom: 1px solid var(--pww-color-gray-400);
-    height: 40px;
-    display: flex;
-    flex-direction: row;
+    min-height: 48px;
     align-items: center;
+  }
+
+  &-titleText {
+    flex: 1;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 4px 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; // ✅ limit to two lines
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+    line-height: 1.2em;
+    max-height: 2.4em;
+  }
+
+  &-deleteIcon {
+    flex-shrink: 0;
+    cursor: pointer;
+    color: var(--pww-color-gray-1000);
+
+    &:hover {
+      color: var(--pww-color-red-800);
+    }
   }
 
   &-description {

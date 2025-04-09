@@ -236,12 +236,13 @@
     padding: 4px 5px;
     border-bottom: 1px solid var(--pww-color-gray-200);
     margin-bottom: 10px;
-    height: 50px;
-    display: flex;
-    align-items: center;
+    min-height: 48px;
+    -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.2em;
+    max-height: 2.4em;
+    word-break: break-word;
   }
 
   &-description {

@@ -1,29 +1,30 @@
-import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import Modal from "./Modal";
-import AsyncSubmit from "./AsyncSubmit";
+import React from "react"
+import { Formik, Form, Field } from "formik"
+import * as Yup from "yup"
+import Modal from "./Modal"
+import AsyncSubmit from "./AsyncSubmit"
+import { toast } from "react-hot-toast"
 
 interface AddFileModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (values: any, helpers: any) => void;
-  isLoading: boolean;
-  errorMessage: string;
-  fileAdded: boolean;
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (values: any, helpers: any) => Promise<void>
+  isLoading: boolean
+  errorMessage: string
+  fileAdded: boolean
 }
 
 const fileUploadInitialValues = {
   title: "",
   desc: "",
   file: null,
-};
+}
 
 const fileValidation = Yup.object().shape({
   title: Yup.string().required("Title is required"),
   desc: Yup.string().required("Description is required"),
   file: Yup.mixed().required("Please select a file"),
-});
+})
 
 const AddFileModal = ({
   isOpen,
@@ -42,7 +43,14 @@ const AddFileModal = ({
         <Formik
           initialValues={fileUploadInitialValues}
           validationSchema={fileValidation}
-          onSubmit={onSubmit}
+          onSubmit={async (values, helpers) => {
+            await onSubmit(values, helpers)
+            helpers.resetForm() // ✅ reset Formik fields
+            const fileInput =
+              document.querySelector<HTMLInputElement>('input[name="file"]')
+            if (fileInput) fileInput.value = "" // ✅ manually clear file input
+            toast.success("File added successfully!")
+          }}
         >
           {({ setFieldValue, errors, touched, isSubmitting }) => (
             <Form>
@@ -73,8 +81,8 @@ const AddFileModal = ({
                   name="file"
                   onChange={(event) => {
                     if (event.currentTarget.files) {
-                      const file = event.currentTarget.files[0];
-                      setFieldValue("file", file);
+                      const file = event.currentTarget.files[0]
+                      setFieldValue("file", file)
                     }
                   }}
                 />
@@ -99,15 +107,12 @@ const AddFileModal = ({
               </button>
 
               {errorMessage && <div className="Form-error">{errorMessage}</div>}
-              {fileAdded && (
-                <div className="Form-success">File added successfully!</div>
-              )}
             </Form>
           )}
         </Formik>
       }
     />
-  );
-};
+  )
+}
 
-export default AddFileModal;
+export default AddFileModal
