@@ -31,6 +31,6 @@ router.delete("/delete-resources/:workshopId", deleteResourcesByWorkshopId)
 
 router.get("/all-tags", getAllTags)
 
-router.delete("/file", deleteFile)
+router.delete("/delete-file/:id", deleteFile)
 
 export default router

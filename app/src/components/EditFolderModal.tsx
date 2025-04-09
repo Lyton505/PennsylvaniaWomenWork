@@ -23,7 +23,6 @@ interface EditFolderModalProps {
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-  role: Yup.string().required("Audience is required"),
   tags: Yup.array().of(Yup.string()),
 })
 
@@ -52,7 +51,14 @@ const EditFolderModal = ({
           validationSchema={validationSchema}
           onSubmit={(values) => onSubmit(values)}
         >
-          {({ setFieldValue, values, errors, touched }) => (
+          {({
+            setFieldValue,
+            values,
+            errors,
+            touched,
+            dirty,
+            isSubmitting,
+          }) => (
             <Form>
               <div className="Form-group">
                 <label htmlFor="name">Folder Name:</label>
@@ -137,6 +143,7 @@ const EditFolderModal = ({
               <button
                 type="submit"
                 className="Button Button-color--blue-1000 Width--100"
+                disabled={!dirty || isSubmitting} // ✅ only enable if modified
               >
                 Save Changes
               </button>

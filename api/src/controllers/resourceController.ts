@@ -167,16 +167,15 @@ export const getAllTags = async (req: Request, res: Response) => {
 
 export const deleteFile = async (req: Request, res: Response) => {
   try {
-    const { resourceId } = req.params
+    const { id } = req.params
+    console.log("Deleting resource with ID:", id)
 
-    // Find and delete resource from DB
-    const deletedResource = await Resource.findByIdAndDelete(resourceId)
+    const deletedResource = await Resource.findByIdAndDelete(id)
 
     if (!deletedResource) {
       return res.status(404).json({ message: "Resource not found" })
     }
 
-    // Delete associated file from S3
     const params = {
       Bucket: bucketName as string,
       Key: deletedResource.s3id,

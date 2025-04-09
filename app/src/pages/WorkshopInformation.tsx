@@ -50,13 +50,13 @@ const WorkshopInformation = () => {
   const [isModal, setIsModal] = useState(false)
   const [availableTags, setAvailableTags] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-  const [newTagInput, setNewTagInput] = useState("")
   const [fileAdded, setFileAdded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showDeleteFileModal, setShowDeleteFileModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [fileToDelete, setFileToDelete] = useState<string | null>(null)
 
   // get workshop information by id
   const getFolder = async () => {
@@ -120,6 +120,7 @@ const WorkshopInformation = () => {
     }
 
     fetchResources()
+    console.log("Resources:", resources)
   }, [workshopId, boardFileId])
 
   if (loading) {
@@ -208,9 +209,18 @@ const WorkshopInformation = () => {
 
   // TODO api call to delete file
   const handleDeleteFile = async (fileId: string) => {
+    const remainingFiles = resources.filter((file) => file._id !== fileId)
+
+    if (remainingFiles.length === 0) {
+      toast.error("A folder must contain at least one file.")
+      return
+    }
+
+    console.log("Deleting file with ID:", fileId)
+
     try {
-      await api.delete(`/api/resource/delete-resource/${fileId}`)
-      setResources((prev) => prev.filter((file) => file._id !== fileId))
+      await api.delete(`/api/resource/delete-file/${fileId}`)
+      setResources(remainingFiles)
       toast.success("File deleted successfully!")
     } catch (error) {
       console.error("Error deleting file:", error)
@@ -241,17 +251,21 @@ const WorkshopInformation = () => {
           fileAdded={fileAdded}
         />
       )}
-      {showDeleteFileModal && (
+      {showDeleteFileModal && fileToDelete && (
         <ConfirmActionModal
           isOpen={showDeleteFileModal}
           title="Delete File"
           message="Are you sure you want to delete this file?"
           confirmLabel="Delete"
           onConfirm={() => {
-            handleDeleteFile(workshop?._id || "")
+            handleDeleteFile(fileToDelete)
             setShowDeleteFileModal(false)
+            setFileToDelete(null)
           }}
-          onCancel={() => setShowDeleteFileModal(false)}
+          onCancel={() => {
+            setShowDeleteFileModal(false)
+            setFileToDelete(null)
+          }}
           isDanger
         />
       )}
@@ -344,7 +358,10 @@ const WorkshopInformation = () => {
                     >
                       <FileCard
                         file={file}
-                        onDelete={() => setShowDeleteFileModal(true)}
+                        onDelete={() => {
+                          setFileToDelete(file._id)
+                          setShowDeleteFileModal(true)
+                        }}
                       />
                     </div>
                   ))
