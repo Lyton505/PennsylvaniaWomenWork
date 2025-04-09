@@ -30,23 +30,20 @@ export interface Resource {
   url: string;
 }
 
-interface WorkshopCardProps {
-  file: Resource;
-  onDelete: () => void;
+interface FileCardProps {
+  file: Resource
+  onDelete: () => void
 }
 
-const WorkshopCard: React.FC<WorkshopCardProps> = ({ file, onDelete }) => {
+const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
   return (
-    <div
-      className="WorkshopCard"
-      onClick={() => window.open(file.url, "_blank")}
-    >
-      <div className="WorkshopCard-icon">
+    <div className="FileCard" onClick={() => window.open(file.url, "_blank")}>
+      <div className="FileCard-icon">
         <img src={getIconForFile(file.s3id)} alt={file.type} />
       </div>
 
-      <div className="WorkshopCard-text">
-        <div className="WorkshopCard-title" title={file.name}>
+      <div className="FileCard-text">
+        <div className="FileCard-title" title={file.name}>
           {file.name}
           <div
             className="Margin-left--auto Text-colorHover--red-1000"
@@ -58,7 +55,7 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({ file, onDelete }) => {
             <Icon glyph="trash" />
           </div>
         </div>
-        <div className="WorkshopCard-description">
+        <div className="FileCard-description">
           {file.description || "No description"}
         </div>
       </div>
@@ -66,4 +63,4 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({ file, onDelete }) => {
   );
 };
 
-export default WorkshopCard;
+export default FileCard
