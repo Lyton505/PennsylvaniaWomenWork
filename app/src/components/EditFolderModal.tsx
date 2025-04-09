@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Modal from "./Modal";
@@ -40,6 +40,27 @@ const EditFolderModal = ({
   initialValues,
   allTags,
 }: EditFolderModalProps) => {
+  // State to manage all possible tags (including newly created ones)
+  const [allPossibleTags, setAllPossibleTags] = useState<string[]>(
+    allTags || [],
+  );
+  // State to track current form values for debugging
+  const [currentTags, setCurrentTags] = useState<string[]>(
+    initialValues.tags || [],
+  );
+
+  // Initialize allPossibleTags when allTags changes
+  useEffect(() => {
+    setAllPossibleTags(allTags || []);
+    console.log("All possible tags:", allTags);
+    console.log("Initial values:", initialValues);
+  }, [allTags, initialValues]);
+
+  // Log current tags whenever they change
+  useEffect(() => {
+    console.log("Current tags in form:", currentTags);
+  }, [currentTags]);
+
   return (
     <Modal
       header="Edit Folder"
@@ -115,35 +136,68 @@ const EditFolderModal = ({
               </div>
 
               <div className="Form-group">
-                <label>Tags:</label>
+                <label htmlFor="tags">Tags (select or create new)</label>
                 <CreatableSelect
                   components={animatedComponents}
                   isMulti
-                  options={allTags.map((tag) => ({ label: tag, value: tag }))}
-                  value={values.tags.map((tag) => ({ label: tag, value: tag }))}
-                  onChange={(selectedOptions: any) =>
-                    setFieldValue(
-                      "tags",
-                      selectedOptions.map((opt: any) => opt.value),
-                    )
-                  }
+                  options={allPossibleTags.map((tag) => ({
+                    label: tag,
+                    value: tag,
+                  }))}
+                  value={(values.tags || []).map((tag) => {
+                    console.log("Mapping tag to option:", tag);
+                    return { label: tag, value: tag };
+                  })}
+                  onChange={(selectedOptions: any) => {
+                    console.log("Selected options:", selectedOptions);
+                    const newTags = selectedOptions
+                      ? selectedOptions.map((opt: any) => opt.value)
+                      : [];
+                    setFieldValue("tags", newTags);
+                    setCurrentTags(newTags); // Update our state for debugging
+                  }}
                   onCreateOption={(inputValue: string) => {
                     const trimmed = inputValue.trim();
                     if (!trimmed) return;
-                    if (!values.tags.includes(trimmed)) {
-                      setFieldValue("tags", [...values.tags, trimmed]);
+                    if (!allPossibleTags.includes(trimmed)) {
+                      setAllPossibleTags((prev) => [...prev, trimmed]);
                     }
+                    const newTags = [...(values.tags || []), trimmed];
+                    setFieldValue("tags", newTags);
+                    setCurrentTags(newTags); // Update our state for debugging
                   }}
                   placeholder="Edit tags..."
                   isClearable
                   isSearchable
+                  className="Margin-bottom--10"
+                  styles={{
+                    control: (base: any) => ({
+                      ...base,
+                      borderColor: "#ccc",
+                      boxShadow: "none",
+                    }),
+                    menu: (base: any) => ({
+                      ...base,
+                      zIndex: 9999, // Very high z-index
+                    }),
+                    menuPortal: (base: any) => ({
+                      ...base,
+                      zIndex: 9999, // Very high z-index for the portal
+                    }),
+                  }}
+                  formatCreateLabel={(inputValue: string) =>
+                    `Create new tag: "${inputValue}"`
+                  }
+                  createOptionPosition="first"
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
                 />
               </div>
 
               <button
                 type="submit"
                 className="Button Button-color--blue-1000 Width--100"
-                disabled={!dirty || isSubmitting} // ✅ only enable if modified
+                disabled={!dirty || isSubmitting}
               >
                 Save Changes
               </button>
