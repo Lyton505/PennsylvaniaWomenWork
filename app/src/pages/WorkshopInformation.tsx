@@ -122,6 +122,28 @@ const WorkshopInformation = () => {
     fetchResources();
   }, [workshopId, boardFileId]);
 
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const [workshopResponse, boardResponse] = await Promise.all([
+          api.get("/api/workshop/get-tags"),
+          api.get("/api/board/get-tags"),
+        ]);
+
+        const workshopTags = workshopResponse.data;
+        const boardTags = boardResponse.data;
+
+        // Combine and deduplicate tags
+        const allTags = Array.from(new Set([...workshopTags, ...boardTags]));
+        setAvailableTags(allTags);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -221,8 +243,19 @@ const WorkshopInformation = () => {
   // TODO api call to edit folder
   const handleEditFolder = async (values: any) => {
     try {
-      await api.put(`/api/workshop/edit-workshop/${workshop?._id}`, values);
-      toast.success("Folder edited successfully!");
+      if (isWorkshop) {
+        await api.put(`/api/workshop/update-workshop/${workshop?._id}`, values);
+        toast.success("Folder updated successfully!");
+        // Refresh the workshop data
+        getFolder();
+        setShowEditModal(false);
+      } else {
+        // Handle board file update if needed
+        await api.put(`/api/board/update-board-file/${workshop?._id}`, values);
+        toast.success("Board file updated successfully!");
+        getFolder();
+        setShowEditModal(false);
+      }
     } catch (error) {
       console.error("Error editing folder:", error);
       toast.error("Failed to edit folder. Please try again.");
@@ -264,7 +297,7 @@ const WorkshopInformation = () => {
           initialValues={{
             name: workshop.name,
             description: workshop.description,
-            role: workshop.role,
+            role: workshop.role || "",
             tags: workshop.tags || [],
           }}
           allTags={availableTags}
@@ -292,14 +325,12 @@ const WorkshopInformation = () => {
                     {user?.role === "staff" && (
                       <div className="Flex-row">
                         <div
-                          // className="Button Button-color--red-1000"
                           className="Text-color--gray-1000 Text-colorHover--red-1000 Margin-right--10"
                           onClick={() => setShowDeleteModal(true)}
                         >
                           <Icon glyph="trash" />
                         </div>
                         <div
-                          // className="Button Button-color--red-1000"
                           className="Text-color--gray-1000 Text-colorHover--green-1000 Margin-right--10"
                           onClick={() => setShowEditModal(true)}
                         >
