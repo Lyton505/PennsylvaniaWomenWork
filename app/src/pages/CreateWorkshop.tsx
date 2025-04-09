@@ -160,7 +160,7 @@ const CreateWorkshop = () => {
             {
               name: values.name,
               description: values.description,
-              s3id: coverImageS3id || `placeholder-${Date.now()}`, // Provide a placeholder if no image
+              coverImageS3id: coverImageS3id || `placeholder-${Date.now()}`, // Provide a placeholder if no image
               tags: values.tags,
             },
           );
@@ -200,11 +200,15 @@ const CreateWorkshop = () => {
             s3id: file.s3id,
             tags: file.tags,
             ...(values.role === "board"
-              ? { boardFileId: createdId }
+              ? { boardFileID: createdId }
               : { workshopIDs: [createdId] }),
           };
-
-          await api.post("/api/resource/create-resource", resourcePayload);
+          try {
+            await api.post("/api/resource/create-resource", resourcePayload);
+          } catch (error) {
+            console.error("Error creating resource:", error);
+            toast.error("Failed to create resource. Please try again.");
+          }
         }
       }
 

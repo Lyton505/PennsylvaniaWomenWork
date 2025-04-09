@@ -15,7 +15,7 @@ interface Folder {
   _id: string;
   name: string;
   description: string;
-  s3id: string;
+  s3id?: string;
   coverImageS3id?: string;
   tags?: string[];
 }
@@ -59,7 +59,7 @@ const BoardDashboard = () => {
             _id: file._id, // <-- this was missing!
             name: file.name,
             description: file.description,
-            s3id: file.s3id,
+            coverImageS3id: file.coverImageS3id,
             tags: file.tags || [],
           })),
         );
@@ -130,6 +130,7 @@ const BoardDashboard = () => {
                 folders={folders}
                 allTags={possibleTags}
                 imageUrls={{}}
+                linkTo="boardfile"
               />
             </div>
           </div>

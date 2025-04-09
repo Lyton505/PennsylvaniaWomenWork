@@ -9,7 +9,7 @@ interface Folder {
   _id: string;
   name: string;
   description: string;
-  s3id: string;
+  s3id?: string;
   coverImageS3id?: string;
   tags?: string[];
 }
@@ -18,13 +18,23 @@ interface Props {
   folders: Folder[];
   allTags: string[];
   imageUrls?: Record<string, string | null>;
+  linkTo?: "workshop" | "boardfile";
 }
 
-const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
+const FolderUI: React.FC<Props> = ({
+  folders,
+  allTags,
+  imageUrls,
+  linkTo = "workshop",
+}) => {
   const navigate = useNavigate();
 
   const handleClick = (id: string) => {
-    navigate("/volunteer/workshop-information", { state: { workshopId: id } });
+    if (linkTo === "boardfile") {
+      navigate("/folder-information", { state: { boardFileId: id } });
+    } else {
+      navigate("/folder-information", { state: { workshopId: id } });
+    }
   };
 
   const [folderImageUrls, setFolderImageUrls] = useState<

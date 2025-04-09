@@ -40,9 +40,9 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
 };
 
 export const createBoardFile = async (req: Request, res: Response) => {
-  const { name, description, s3id, tags } = req.body;
+  const { name, description, coverImageS3id, tags } = req.body;
 
-  if (!name || !description || !s3id) {
+  if (!name || !description) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -50,8 +50,8 @@ export const createBoardFile = async (req: Request, res: Response) => {
     const newBoardFile = new BoardFile({
       name,
       description,
-      s3id,
-      tags,
+      coverImageS3id,
+      tags: tags || [],
     });
 
     const savedBoardFile = await newBoardFile.save();
@@ -88,5 +88,21 @@ export const getAllTags = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error retrieving tags:", error);
     res.status(500).json({ message: "Error retrieving tags", error });
+  }
+};
+
+export const getBoardFileById = async (req: Request, res: Response) => {
+  try {
+    const { BoardFileId } = req.params;
+    const boardFile = await BoardFile.findById(BoardFileId);
+
+    if (!boardFile) {
+      return res.status(404).json({ message: "Board file not found" });
+    }
+
+    res.status(200).json(boardFile);
+  } catch (error) {
+    console.error("Error retrieving board file:", error);
+    res.status(500).json({ message: "Error retrieving board file", error });
   }
 };

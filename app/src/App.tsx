@@ -123,7 +123,7 @@ function App(): ReactElement {
       />
 
       <Route
-        path="/volunteer/workshop-information"
+        path="/folder-information"
         element={
           <ProtectedRoute
             element={<WorkshopInformation />}

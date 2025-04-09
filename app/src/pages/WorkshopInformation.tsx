@@ -49,6 +49,9 @@ const WorkshopInformation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const workshopId = location.state?.workshopId;
+  const boardFileId = location.state?.boardFileId;
+
+  const isWorkshop = Boolean(workshopId);
   const [resources, setResources] = useState<any[]>([]);
   const [workshop, setWorkshop] = React.useState<Workshop | null>(null);
   const [loading, setLoading] = useState(true);
@@ -64,14 +67,16 @@ const WorkshopInformation = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // get workshop information by id
-  const getWorkshop = async () => {
+  const getFolder = async () => {
     try {
-      if (!workshopId) {
-        console.error("No workshop ID provided");
+      if (!workshopId && !boardFileId) {
+        console.error("No ID provided");
         return;
       }
 
-      const response = await api.get(`/api/workshop/${workshopId}`);
+      const response = isWorkshop
+        ? await api.get(`/api/workshop/${workshopId}`)
+        : await api.get(`/api/board/${boardFileId}`);
       setWorkshop(response.data);
     } catch (error) {
       console.error("Error fetching folder:", error);
@@ -81,16 +86,26 @@ const WorkshopInformation = () => {
   };
 
   useEffect(() => {
-    getWorkshop();
-  }, [workshopId]);
+    getFolder();
+  }, [workshopId, boardFileId]);
 
   useEffect(() => {
     // call endpoint to get all resources for a workshop
     const fetchResources = async () => {
       try {
-        const { data: resourceList } = await api.get(
-          `/api/resource/get-resource-by-workshop/${workshopId}`,
-        );
+        let resourceList: any[] = [];
+
+        if (isWorkshop) {
+          const res = await api.get(
+            `/api/resource/get-resource-by-workshop/${workshopId}`,
+          );
+          resourceList = res.data;
+        } else {
+          const res = await api.get(
+            `/api/resource/get-resource-by-board-file/${boardFileId}`,
+          );
+          resourceList = res.data;
+        }
 
         if (!resourceList || resourceList.length === 0) {
           setResources([]);
@@ -113,7 +128,7 @@ const WorkshopInformation = () => {
     };
 
     fetchResources();
-  }, []);
+  }, [workshopId, boardFileId]);
 
   if (loading) {
     return <div>Loading...</div>;
