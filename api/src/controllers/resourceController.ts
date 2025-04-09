@@ -21,8 +21,13 @@ export const createResource = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  if ((!workshopIDs || !Array.isArray(workshopIDs) || workshopIDs.length === 0) && !boardFileID) {
-    return res.status(400).json({ message: "Must provide either workshopIDs or boardFileID." });
+  if (
+    (!workshopIDs || !Array.isArray(workshopIDs) || workshopIDs.length === 0) &&
+    !boardFileID
+  ) {
+    return res
+      .status(400)
+      .json({ message: "Must provide either workshopIDs or boardFileID." });
   }
 
   try {
@@ -58,7 +63,10 @@ export const getResourcesByWorkshopId = async (req: Request, res: Response) => {
   }
 };
 
-export const getResourcesByBoardFileId = async (req: Request, res: Response) => {
+export const getResourcesByBoardFileId = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { boardFileID } = req.params;
     const resources = await Resource.find({ boardFileID: boardFileID });
@@ -131,7 +139,10 @@ export const deleteResourcesForWorkshop = async (workshopId: string) => {
   await Resource.deleteMany({ workshopIDs: workshopId });
 };
 
-export const deleteResourcesByWorkshopId = async (req: Request, res: Response) => {
+export const deleteResourcesByWorkshopId = async (
+  req: Request,
+  res: Response,
+) => {
   try {
     const { workshopId } = req.params;
 

@@ -50,7 +50,10 @@ function App(): ReactElement {
               allowedRoles={[roles.volunteer, roles.participant]}
             />
           ) : user?.role === "board" ? (
-            <ProtectedRoute element={<BoardDashboard />} allowedRoles={[roles.board]} />
+            <ProtectedRoute
+              element={<BoardDashboard />}
+              allowedRoles={[roles.board]}
+            />
           ) : (
             <ProtectedRoute
               element={<StaffDashboard />}
@@ -62,7 +65,12 @@ function App(): ReactElement {
 
       <Route
         path="/volunteer"
-        element={<ProtectedRoute element={<StaffDashboard />} allowedRoles={[roles.staff]} />}
+        element={
+          <ProtectedRoute
+            element={<StaffDashboard />}
+            allowedRoles={[roles.staff]}
+          />
+        }
       />
 
       <Route path="/confirmLogout" element={<ConfirmLogout />} />
@@ -70,7 +78,10 @@ function App(): ReactElement {
       <Route
         path="/create-workshop"
         element={
-          <ProtectedRoute element={<CreateWorkshop />} allowedRoles={[roles.staff, roles.board]} />
+          <ProtectedRoute
+            element={<CreateWorkshop />}
+            allowedRoles={[roles.staff, roles.board]}
+          />
         }
       />
 
@@ -79,7 +90,12 @@ function App(): ReactElement {
         element={
           <ProtectedRoute
             element={<CreateMeeting />}
-            allowedRoles={[roles.volunteer, roles.staff, roles.board, roles.participant]}
+            allowedRoles={[
+              roles.volunteer,
+              roles.staff,
+              roles.board,
+              roles.participant,
+            ]}
           />
         }
       />
@@ -87,7 +103,10 @@ function App(): ReactElement {
       <Route
         path="/create-event"
         element={
-          <ProtectedRoute element={<CreateEvent />} allowedRoles={[roles.staff, roles.board]} />
+          <ProtectedRoute
+            element={<CreateEvent />}
+            allowedRoles={[roles.staff, roles.board]}
+          />
         }
       />
 
@@ -108,7 +127,12 @@ function App(): ReactElement {
         element={
           <ProtectedRoute
             element={<WorkshopInformation />}
-            allowedRoles={[roles.volunteer, roles.staff, roles.participant, roles.board]}
+            allowedRoles={[
+              roles.volunteer,
+              roles.staff,
+              roles.participant,
+              roles.board,
+            ]}
           />
         }
       />

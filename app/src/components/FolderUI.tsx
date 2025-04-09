@@ -21,7 +21,12 @@ interface Props {
   linkTo?: "workshop" | "boardfile";
 }
 
-const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls, linkTo = "workshop" }) => {
+const FolderUI: React.FC<Props> = ({
+  folders,
+  allTags,
+  imageUrls,
+  linkTo = "workshop",
+}) => {
   const navigate = useNavigate();
 
   const handleClick = (id: string) => {
@@ -32,7 +37,9 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls, linkTo = "work
     }
   };
 
-  const [folderImageUrls, setFolderImageUrls] = useState<Record<string, string | null>>({});
+  const [folderImageUrls, setFolderImageUrls] = useState<
+    Record<string, string | null>
+  >({});
 
   useEffect(() => {
     const fetchImageUrls = async () => {
@@ -42,14 +49,19 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls, linkTo = "work
         folders.map(async (folder) => {
           if (folder.coverImageS3id) {
             try {
-              const res = await api.get(`/api/resource/getURL/${folder.coverImageS3id}`);
+              const res = await api.get(
+                `/api/resource/getURL/${folder.coverImageS3id}`,
+              );
               newUrls[folder.coverImageS3id] = res.data?.signedUrl || null;
             } catch (error) {
-              console.error(`Failed to fetch URL for ${folder.coverImageS3id}:`, error);
+              console.error(
+                `Failed to fetch URL for ${folder.coverImageS3id}:`,
+                error,
+              );
               newUrls[folder.coverImageS3id] = null;
             }
           }
-        })
+        }),
       );
 
       setFolderImageUrls(newUrls);
@@ -67,11 +79,14 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls, linkTo = "work
       {({ values, setFieldValue }) => {
         const filtered = folders.filter((folder) => {
           const matchesTags =
-            values.tags.length === 0 || values.tags.some((tag) => folder.tags?.includes(tag));
+            values.tags.length === 0 ||
+            values.tags.some((tag) => folder.tags?.includes(tag));
 
           const matchesSearch =
             folder.name.toLowerCase().includes(values.search.toLowerCase()) ||
-            folder.description.toLowerCase().includes(values.search.toLowerCase());
+            folder.description
+              .toLowerCase()
+              .includes(values.search.toLowerCase());
 
           return matchesTags && matchesSearch;
         });
@@ -110,7 +125,7 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls, linkTo = "work
                     onClick={() =>
                       setFieldValue(
                         "tags",
-                        values.tags.filter((t) => t !== tag)
+                        values.tags.filter((t) => t !== tag),
                       )
                     }
                   >

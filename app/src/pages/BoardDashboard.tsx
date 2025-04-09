@@ -28,7 +28,9 @@ const BoardDashboard = () => {
   const userId = user?._id;
   const [possibleTags, setPossibleTags] = useState<string[]>([]);
 
-  const formattedSubheader = selectedEvent ? formatEventSubheader(selectedEvent) : "";
+  const formattedSubheader = selectedEvent
+    ? formatEventSubheader(selectedEvent)
+    : "";
 
   const eventsByMonth = groupEventsByMonth(events);
 
@@ -59,7 +61,7 @@ const BoardDashboard = () => {
             description: file.description,
             coverImageS3id: file.coverImageS3id,
             tags: file.tags || [],
-          }))
+          })),
         );
       } catch (error) {
         console.error("Error fetching board files:", error);
@@ -121,7 +123,9 @@ const BoardDashboard = () => {
           <div className="col-lg-8">
             <div className="Block">
               <div className="Block-header">All Files</div>
-              <div className="Block-subtitle">Select a file to access materials.</div>
+              <div className="Block-subtitle">
+                Select a file to access materials.
+              </div>
               <FolderUI
                 folders={folders}
                 allTags={possibleTags}

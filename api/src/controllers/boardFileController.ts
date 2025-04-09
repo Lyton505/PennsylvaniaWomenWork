@@ -33,7 +33,9 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
     res.json({ url, objectKey });
   } catch (error) {
     console.error("Error generating pre-signed URL:", error);
-    res.status(500).json({ message: "Failed to generate pre-signed URL", error });
+    res
+      .status(500)
+      .json({ message: "Failed to generate pre-signed URL", error });
   }
 };
 

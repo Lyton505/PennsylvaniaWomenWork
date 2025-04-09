@@ -17,7 +17,10 @@ router.post("/create-resource", createResource);
 // Route to get resources by workshop ID -- not wired
 router.get("/get-resource-by-workshop/:workshopId", getResourcesByWorkshopId);
 
-router.get("/get-resource-by-board-file/:boardFileID", getResourcesByBoardFileId);
+router.get(
+  "/get-resource-by-board-file/:boardFileID",
+  getResourcesByBoardFileId,
+);
 
 router.get("/getURL/:objectId", generateRetrievalURL);
 

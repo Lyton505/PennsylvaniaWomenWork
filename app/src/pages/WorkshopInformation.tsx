@@ -96,10 +96,14 @@ const WorkshopInformation = () => {
         let resourceList: any[] = [];
 
         if (isWorkshop) {
-          const res = await api.get(`/api/resource/get-resource-by-workshop/${workshopId}`);
+          const res = await api.get(
+            `/api/resource/get-resource-by-workshop/${workshopId}`,
+          );
           resourceList = res.data;
         } else {
-          const res = await api.get(`/api/resource/get-resource-by-board-file/${boardFileId}`);
+          const res = await api.get(
+            `/api/resource/get-resource-by-board-file/${boardFileId}`,
+          );
           resourceList = res.data;
         }
 
@@ -113,7 +117,7 @@ const WorkshopInformation = () => {
           resourceList.map(async (res: any) => {
             const { data } = await api.get(`/api/resource/getURL/${res.s3id}`);
             return { ...res, url: data.signedUrl };
-          })
+          }),
         );
         setResources(resourcesWithURL);
       } catch (error) {
@@ -158,7 +162,10 @@ const WorkshopInformation = () => {
     file: Yup.mixed().required("Please select a file"),
   });
 
-  const handleFileSumbit = async (values: any, { resetForm, setFieldValue }: any) => {
+  const handleFileSumbit = async (
+    values: any,
+    { resetForm, setFieldValue }: any,
+  ) => {
     setIsLoading(true);
     setErrorMessage("");
     try {
@@ -170,7 +177,7 @@ const WorkshopInformation = () => {
       }
 
       const response = await api.get(
-        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`
+        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`,
       );
 
       const { url, objectKey } = response.data;
@@ -251,7 +258,9 @@ const WorkshopInformation = () => {
                         value: tag,
                       }))}
                       onChange={(selectedOptions: any) =>
-                        setSelectedTags(selectedOptions.map((opt: any) => opt.value))
+                        setSelectedTags(
+                          selectedOptions.map((opt: any) => opt.value),
+                        )
                       }
                       onCreateOption={(inputValue: any) => {
                         const trimmed = inputValue.trim();
@@ -274,14 +283,21 @@ const WorkshopInformation = () => {
                           boxShadow: "none",
                         }),
                       }}
-                      formatCreateLabel={(inputValue: any) => `Create new tag: "${inputValue}"`}
+                      formatCreateLabel={(inputValue: any) =>
+                        `Create new tag: "${inputValue}"`
+                      }
                       createOptionPosition="first"
                     />
                   </div>
 
                   <div className="Form-group">
                     <label htmlFor="title">Title</label>
-                    <Field className="Form-input-box" type="text" id="title" name="title" />
+                    <Field
+                      className="Form-input-box"
+                      type="text"
+                      id="title"
+                      name="title"
+                    />
                     {errors.title && touched.title && (
                       <div className="Form-error">{errors.title}</div>
                     )}
@@ -295,7 +311,9 @@ const WorkshopInformation = () => {
                       name="desc"
                       rows="4"
                     />
-                    {errors.desc && touched.desc && <div className="Form-error">{errors.desc}</div>}
+                    {errors.desc && touched.desc && (
+                      <div className="Form-error">{errors.desc}</div>
+                    )}
                   </div>
                   <div className="Form-group">
                     <label htmlFor="file">Files</label>
@@ -311,20 +329,32 @@ const WorkshopInformation = () => {
                         }
                       }}
                     />
-                    {errors.file && touched.file && <div className="Form-error">{errors.file}</div>}
+                    {errors.file && touched.file && (
+                      <div className="Form-error">{errors.file}</div>
+                    )}
                   </div>
                   <button
                     type="submit"
                     className="Button Margin-top--10 Button-color--teal-1000 Width--100"
                     disabled={
-                      Object.keys(errors).length > 0 || !Object.keys(touched).length || isSubmitting
+                      Object.keys(errors).length > 0 ||
+                      !Object.keys(touched).length ||
+                      isSubmitting
                     }
                   >
-                    {isSubmitting ? <AsyncSubmit loading={isLoading} /> : "Upload Files"}
+                    {isSubmitting ? (
+                      <AsyncSubmit loading={isLoading} />
+                    ) : (
+                      "Upload Files"
+                    )}
                   </button>
-                  {errorMessage && <div className="Form-error">{errorMessage}</div>}
+                  {errorMessage && (
+                    <div className="Form-error">{errorMessage}</div>
+                  )}
 
-                  {fileAdded && <div className="Form-success">File added successfully!</div>}
+                  {fileAdded && (
+                    <div className="Form-success">File added successfully!</div>
+                  )}
                 </Form>
               )}
             </Formik>
@@ -388,7 +418,10 @@ const WorkshopInformation = () => {
               ) : (
                 resources.map((file) => (
                   <div key={file._id} className="col-lg-2">
-                    <div className="Card" onClick={() => window.open(file.url, "_blank")}>
+                    <div
+                      className="Card"
+                      onClick={() => window.open(file.url, "_blank")}
+                    >
                       {" "}
                       {/* Ensure Card is inside col-lg-2 */}
                       <div className="WorkshopInfo-image">

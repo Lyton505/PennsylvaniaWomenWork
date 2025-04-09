@@ -58,12 +58,16 @@ const validationSchema = Yup.object().shape({
       const maxSize = 2 * 1024 * 1024; // 2 MB
       return (value as File).size <= maxSize;
     })
-    .test("fileType", "Unsupported file format. Only JPEG and PNG are allowed.", (value) => {
-      if (!value) return true;
+    .test(
+      "fileType",
+      "Unsupported file format. Only JPEG and PNG are allowed.",
+      (value) => {
+        if (!value) return true;
 
-      const supportedFormats = ["image/jpeg", "image/png"];
-      return supportedFormats.includes((value as File).type);
-    }),
+        const supportedFormats = ["image/jpeg", "image/png"];
+        return supportedFormats.includes((value as File).type);
+      },
+    ),
 });
 
 const CreateWorkshop = () => {
@@ -114,7 +118,10 @@ const CreateWorkshop = () => {
     fetchAllTags();
   }, []);
 
-  const handleSubmit = async (values: any, { setSubmitting, resetForm }: any) => {
+  const handleSubmit = async (
+    values: any,
+    { setSubmitting, resetForm }: any,
+  ) => {
     setSubmitting(true);
     try {
       let coverImageS3id = null;
@@ -122,10 +129,11 @@ const CreateWorkshop = () => {
 
       if (values.imageUpload) {
         const coverImageResponse = await api.get(
-          `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`
+          `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`,
         );
 
-        const { url: coverImageUrl, objectKey: coverImageObjectKey } = coverImageResponse.data;
+        const { url: coverImageUrl, objectKey: coverImageObjectKey } =
+          coverImageResponse.data;
 
         await fetch(coverImageUrl, {
           method: "PUT",
@@ -147,12 +155,15 @@ const CreateWorkshop = () => {
       if (values.role === "board") {
         console.log("Board file payload:", payload);
         try {
-          const { data, status } = await api.post("/api/board/create-board-file", {
-            name: values.name,
-            description: values.description,
-            coverImageS3id: coverImageS3id || `placeholder-${Date.now()}`, // Provide a placeholder if no image
-            tags: values.tags,
-          });
+          const { data, status } = await api.post(
+            "/api/board/create-board-file",
+            {
+              name: values.name,
+              description: values.description,
+              coverImageS3id: coverImageS3id || `placeholder-${Date.now()}`, // Provide a placeholder if no image
+              tags: values.tags,
+            },
+          );
 
           if (status === 201) {
             toast.success("Board file created successfully!");
@@ -165,7 +176,7 @@ const CreateWorkshop = () => {
       } else {
         const { data: workshopData, status } = await api.post(
           "/api/workshop/create-workshop",
-          payload
+          payload,
         );
 
         if (status === 201) {
@@ -226,7 +237,10 @@ const CreateWorkshop = () => {
     file: Yup.mixed().required("Please select a file"),
   });
 
-  const handleFileSumbit = async (values: any, { resetForm, setFieldValue }: any) => {
+  const handleFileSumbit = async (
+    values: any,
+    { resetForm, setFieldValue }: any,
+  ) => {
     setIsLoading(true);
     setErrorMessage("");
     try {
@@ -237,10 +251,13 @@ const CreateWorkshop = () => {
         return;
       }
 
-      setSelectedFiles((prevFiles) => [...prevFiles, { title, description: desc, file }]);
+      setSelectedFiles((prevFiles) => [
+        ...prevFiles,
+        { title, description: desc, file },
+      ]);
 
       const response = await api.get(
-        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`
+        `/api/workshop/generate-presigned-url/${encodeURIComponent(file.name)}`,
       );
 
       const { url, objectKey } = response.data;
@@ -282,7 +299,12 @@ const CreateWorkshop = () => {
                 <Form>
                   <div className="Form-group">
                     <label htmlFor="title">Title</label>
-                    <Field className="Form-input-box" type="text" id="title" name="title" />
+                    <Field
+                      className="Form-input-box"
+                      type="text"
+                      id="title"
+                      name="title"
+                    />
                     {errors.title && touched.title && (
                       <div className="Form-error">{errors.title}</div>
                     )}
@@ -296,7 +318,9 @@ const CreateWorkshop = () => {
                       name="desc"
                       rows="4"
                     />
-                    {errors.desc && touched.desc && <div className="Form-error">{errors.desc}</div>}
+                    {errors.desc && touched.desc && (
+                      <div className="Form-error">{errors.desc}</div>
+                    )}
                   </div>
                   <div className="Form-group">
                     <label htmlFor="file">Files</label>
@@ -312,20 +336,32 @@ const CreateWorkshop = () => {
                         }
                       }}
                     />
-                    {errors.file && touched.file && <div className="Form-error">{errors.file}</div>}
+                    {errors.file && touched.file && (
+                      <div className="Form-error">{errors.file}</div>
+                    )}
                   </div>
                   <button
                     type="submit"
                     className="Button Margin-top--10 Button-color--teal-1000 Width--100"
                     disabled={
-                      Object.keys(errors).length > 0 || !Object.keys(touched).length || isSubmitting
+                      Object.keys(errors).length > 0 ||
+                      !Object.keys(touched).length ||
+                      isSubmitting
                     }
                   >
-                    {isSubmitting ? <AsyncSubmit loading={isLoading} /> : "Upload Files"}
+                    {isSubmitting ? (
+                      <AsyncSubmit loading={isLoading} />
+                    ) : (
+                      "Upload Files"
+                    )}
                   </button>
-                  {errorMessage && <div className="Form-error">{errorMessage}</div>}
+                  {errorMessage && (
+                    <div className="Form-error">{errorMessage}</div>
+                  )}
 
-                  {fileAdded && <div className="Form-success">File added successfully!</div>}
+                  {fileAdded && (
+                    <div className="Form-success">File added successfully!</div>
+                  )}
                 </Form>
               )}
             </Formik>
@@ -348,8 +384,15 @@ const CreateWorkshop = () => {
                 <Form>
                   <div className="Form-group">
                     <label htmlFor="name">Workshop Name:</label>
-                    <Field type="text" name="name" placeholder="Name" className="Form-input-box" />
-                    {errors.name && touched.name && <div className="Form-error">{errors.name}</div>}
+                    <Field
+                      type="text"
+                      name="name"
+                      placeholder="Name"
+                      className="Form-input-box"
+                    />
+                    {errors.name && touched.name && (
+                      <div className="Form-error">{errors.name}</div>
+                    )}
                   </div>
                   <div className="Form-group">
                     <label htmlFor="description">Folder Description:</label>
@@ -364,7 +407,9 @@ const CreateWorkshop = () => {
                     )}
                   </div>
                   <div className="Form-group">
-                    <label htmlFor="imageUpload">Workshop cover Image (optional):</label>
+                    <label htmlFor="imageUpload">
+                      Workshop cover Image (optional):
+                    </label>
                     <input
                       type="file"
                       id="imageUpload"
@@ -398,7 +443,10 @@ const CreateWorkshop = () => {
                             checked={values.role === role.id}
                             onChange={() => setFieldValue("role", role.id)}
                           />
-                          <label htmlFor={`role-${role.id}`} className="Role-tag-label">
+                          <label
+                            htmlFor={`role-${role.id}`}
+                            className="Role-tag-label"
+                          >
                             {role.label}
                           </label>
                         </div>
@@ -424,7 +472,9 @@ const CreateWorkshop = () => {
                       onChange={(selectedOptions: any) =>
                         setFieldValue(
                           "tags",
-                          selectedOptions ? selectedOptions.map((opt: any) => opt.value) : []
+                          selectedOptions
+                            ? selectedOptions.map((opt: any) => opt.value)
+                            : [],
                         )
                       }
                       onCreateOption={(inputValue: string) => {
@@ -446,7 +496,9 @@ const CreateWorkshop = () => {
                           boxShadow: "none",
                         }),
                       }}
-                      formatCreateLabel={(inputValue: string) => `Create new tag: "${inputValue}"`}
+                      formatCreateLabel={(inputValue: string) =>
+                        `Create new tag: "${inputValue}"`
+                      }
                       createOptionPosition="first"
                     />
                   </div>
@@ -473,7 +525,11 @@ const CreateWorkshop = () => {
                       className="Button Button-color--blue-1000 Width--50 Button--hollow"
                       disabled={isSubmitting}
                     >
-                      {isSubmitting ? <AsyncSubmit loading={isSubmitting} /> : "Create Folder"}
+                      {isSubmitting ? (
+                        <AsyncSubmit loading={isSubmitting} />
+                      ) : (
+                        "Create Folder"
+                      )}
                     </button>
                   </div>
                 </Form>
