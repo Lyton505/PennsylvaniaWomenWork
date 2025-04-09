@@ -20,6 +20,8 @@ router.get("/get-workshops", getAllWorkshops);
 
 router.get("/generate-presigned-url/:file_name", generatePresignedUrl);
 
+router.post("/create-workshop", createWorkshop);
+
 // Parameter routes after specific routes
 router.get("/user/:userId", getWorkshopsByUserId);
 
@@ -29,6 +31,6 @@ router.put("/update-workshop/:id", updateWorkshop);
 
 router.delete("/delete-workshop/:id", deleteWorkshop);
 
-router.post("/create-workshop", createWorkshop);
+router.get("/all", getAllWorkshops);
 
 export default router;

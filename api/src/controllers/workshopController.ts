@@ -42,7 +42,7 @@ export const generatePresignedUrl = async (req: Request, res: Response) => {
 };
 
 export const createWorkshop = async (req: Request, res: Response) => {
-  const { name, description, s3id, coverImageS3id, tags } = req.body;
+  const { name, description, s3id, coverImageS3id, tags, role } = req.body;
 
   if (!name || !description) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -55,6 +55,7 @@ export const createWorkshop = async (req: Request, res: Response) => {
       s3id,
       coverImageS3id,
       tags: tags || [],
+      role,
     });
     const savedWorkshop = await newWorkshop.save();
 
@@ -157,7 +158,26 @@ export const deleteWorkshop = async (req: Request, res: Response) => {
 
 export const getAllWorkshops = async (req: Request, res: Response) => {
   try {
-    const workshops = await Workshop.find();
+    const { role } = req.query;
+    let query = {};
+
+    // If role is specified, filter workshops by role
+    if (role) {
+      // For mentors, show both mentee and mentor workshops
+      if (role === "mentor") {
+        query = { role: { $in: ["mentee", "mentor"] } };
+      }
+      // For staff show all workshops
+      else if (role === "staff") {
+        query = {}; // No filter, show all
+      }
+      // For mentees, show only mentee workshops
+      else {
+        query = { role };
+      }
+    }
+
+    const workshops = await Workshop.find(query);
 
     if (workshops.length === 0) {
       return res.status(404).json({ message: "No workshops found" });

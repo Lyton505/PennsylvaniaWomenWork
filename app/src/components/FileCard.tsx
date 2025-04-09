@@ -1,38 +1,38 @@
-import React from "react"
-import Icon from "../components/Icon" // adjust path if needed
-import pdf from "../assets/pdf.png"
-import docx from "../assets/docx.png"
-import video from "../assets/video.png"
+import React from "react";
+import Icon from "../components/Icon"; // adjust path if needed
+import pdf from "../assets/pdf.png";
+import docx from "../assets/docx.png";
+import video from "../assets/video.png";
 
 const getIconForFile = (filename: string) => {
-  const extension = filename.split(".").pop()?.toLowerCase()
+  const extension = filename.split(".").pop()?.toLowerCase();
   switch (extension) {
     case "pdf":
-      return pdf
+      return pdf;
     case "doc":
     case "docx":
-      return docx
+      return docx;
     case "mp4":
     case "mov":
     case "avi":
-      return video
+      return video;
     default:
-      return docx
+      return docx;
   }
-}
+};
 
 export interface Resource {
-  _id: string
-  name: string
-  s3id: string
-  type: string
-  description?: string
-  url: string
+  _id: string;
+  name: string;
+  s3id: string;
+  type: string;
+  description?: string;
+  url: string;
 }
 
 interface WorkshopCardProps {
-  file: Resource
-  onDelete: () => void
+  file: Resource;
+  onDelete: () => void;
 }
 
 const WorkshopCard: React.FC<WorkshopCardProps> = ({ file, onDelete }) => {
@@ -51,8 +51,8 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({ file, onDelete }) => {
           <div
             className="Margin-left--auto Text-colorHover--red-1000"
             onClick={(e) => {
-              e.stopPropagation()
-              onDelete()
+              e.stopPropagation();
+              onDelete();
             }}
           >
             <Icon glyph="trash" />
@@ -63,7 +63,7 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({ file, onDelete }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default WorkshopCard
+export default WorkshopCard;

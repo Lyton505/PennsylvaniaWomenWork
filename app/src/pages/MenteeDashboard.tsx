@@ -42,13 +42,31 @@ const MenteeDashboard = () => {
       try {
         const [eventsResponse, workshopsResponse] = await Promise.all([
           api.get(`/api/event/${userId}`),
-          api.get(`/api/mentee/${userId}/workshops`),
+          api.get(`/api/workshop/all?role=${user?.role || "mentee"}`),
         ]);
 
         const parsed = parseEvents(eventsResponse.data);
         setEvents(parsed);
 
-        setFolders(workshopsResponse.data);
+        // Get workshops assigned to the user and merge with role-based workshops
+        const userWorkshopsResponse = await api.get(
+          `/api/mentee/${userId}/workshops`,
+        );
+
+        // Combine and deduplicate workshops
+        const allWorkshops = [...workshopsResponse.data];
+        const userWorkshops = userWorkshopsResponse.data;
+
+        // Add user-specific workshops if they're not already included
+        userWorkshops.forEach((userWorkshop: Folder) => {
+          if (
+            !allWorkshops.some((workshop) => workshop._id === userWorkshop._id)
+          ) {
+            allWorkshops.push(userWorkshop);
+          }
+        });
+
+        setFolders(allWorkshops);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -57,7 +75,7 @@ const MenteeDashboard = () => {
     };
 
     fetchData();
-  }, [userId]);
+  }, [userId, user?.role]);
 
   const eventsByMonth = groupEventsByMonth(events);
   const formattedSubheader = selectedEvent
@@ -119,7 +137,7 @@ const MenteeDashboard = () => {
               </div>
               <FolderUI
                 folders={folders}
-                allTags={[]} // if you don’t have tags, keep it empty for now
+                allTags={[]} // if you don't have tags, keep it empty for now
               />
             </div>
           </div>
