@@ -208,10 +208,9 @@
       transform 0.3s ease;
   }
 
-  &-image {
-    position: relative;
-    background-size: cover;
-    background-position: center;
+  &-image,
+  &-color {
+    position: relative; // ✨ allows absolute tags to anchor properly
     height: 120px;
     width: 100%;
     border-top-left-radius: var(--pww-border-radius-8);
@@ -219,8 +218,12 @@
     flex-shrink: 0;
   }
 
+  &-image {
+    background-size: cover;
+    background-position: center;
+  }
+
   &-color {
-    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -234,10 +237,8 @@
     border-bottom: 1px solid var(--pww-color-gray-200);
     margin-bottom: 10px;
     height: 50px;
-    // align the text vertically in the center
     display: flex;
     align-items: center;
-    // wrap the text on two lines and scroll if overflow
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -256,14 +257,20 @@
     bottom: 8px;
     left: 8px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    background-color: var(--pww-color-light-700);
+    flex-wrap: nowrap; // prevent wrapping so it scrolls
+    overflow-x: auto; // allow horizontal scroll
+    max-width: calc(100% - 16px); // prevent overflow beyond card
     border-radius: 4px;
-    padding: 4px 6px;
-    color: var(--pww-color-dark-1000);
+    gap: 4px;
+  }
 
+  &-tag {
+    background-color: var(--pww-color-light-600);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--pww-color-dark-1000);
     font-size: var(--pww-font-size-12);
+
   }
 }
 
