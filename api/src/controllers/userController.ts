@@ -7,8 +7,7 @@ import {
   deleteAuthUser,
 } from "../config/auth0-user-management";
 import { GetUsers200ResponseOneOfInner } from "auth0";
-import {ObjectId} from "mongoose";
-
+import { ObjectId } from "mongoose";
 
 interface AuthUserInfo {
   first_name: string;
@@ -18,8 +17,9 @@ interface AuthUserInfo {
   workshops?: ObjectId[];
 }
 
-// user information from custom interface and auth0 response 
-type dbUserInfo = AuthUserInfo & Pick<GetUsers200ResponseOneOfInner, 'email' | 'user_id' >;
+// user information from custom interface and auth0 response
+type dbUserInfo = AuthUserInfo &
+  Pick<GetUsers200ResponseOneOfInner, "email" | "user_id">;
 
 export const createUser = async (userInfo: dbUserInfo) => {
   const {
@@ -28,7 +28,7 @@ export const createUser = async (userInfo: dbUserInfo) => {
     first_name,
     last_name,
     role,
-    username = email, 
+    username = email,
     workshops = [],
   } = userInfo;
 
@@ -71,14 +71,22 @@ export const sendEmail = async (req: Request, res: Response) => {
 
     const { email, firstName, lastName, role } = req.body;
 
-    if (!SENDGRID_API_KEY || !SEND_GRID_TEST_EMAIL || !PUBLIC_APP_URL || !email || !firstName || !lastName || !role) {
+    if (
+      !SENDGRID_API_KEY ||
+      !SEND_GRID_TEST_EMAIL ||
+      !PUBLIC_APP_URL ||
+      !email ||
+      !firstName ||
+      !lastName ||
+      !role
+    ) {
       throw new Error(
-        "Missing required environment variables or user information"
+        "Missing required environment variables or user information",
       );
     }
-    
+
     sgMail.setApiKey(SENDGRID_API_KEY);
-    
+
     let templateId: string;
     const cleanedEmail = email.toLowerCase().trim();
     const cleanedUserRole = role.toLowerCase().trim();
@@ -113,12 +121,12 @@ export const sendEmail = async (req: Request, res: Response) => {
     console.log("User created successfully in Auth0:", newUser);
 
     const dbUser: dbUserInfo = {
-      user_id: newUser.data.user_id, 
-      email: newUser.data.email,      
-      username: newUser.data.email,      
-      first_name: firstName,          
-      last_name: lastName,            
-      role: cleanedUserRole,          
+      user_id: newUser.data.user_id,
+      email: newUser.data.email,
+      username: newUser.data.email,
+      first_name: firstName,
+      last_name: lastName,
+      role: cleanedUserRole,
     };
 
     // create the user in the database
