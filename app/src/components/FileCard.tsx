@@ -1,6 +1,6 @@
 import React from "react"
 import Icon from "../components/Icon" // adjust path if needed
-import pdf from "../assets/pdf.jpg"
+import pdf from "../assets/pdf.png"
 import docx from "../assets/docx.png"
 import video from "../assets/video.png"
 

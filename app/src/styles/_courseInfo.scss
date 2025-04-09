@@ -1,6 +1,7 @@
 .WorkshopCard {
-  background-color: var(--pww-color-blue-1000);
+  background-color: var(--pww-color-light-1000);
   border-radius: var(--pww-border-radius-8);
+  border: 2px solid var(--pww-color-blue-400);
   box-shadow: var(--pww-shadow-dark);
   overflow: hidden;
   cursor: pointer;
@@ -23,9 +24,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--pww-color-light-1000);
-    border-top-left-radius: var(--pww-border-radius-8);
-    border-top-right-radius: var(--pww-border-radius-8);
+    background-color: var(--pww-color-gray-200);
+    // border: 1.5px solid var(--pww-color-blue-1000);
+    /* Set a separate border-radius that's slightly smaller than the card's */
+    // border-top-left-radius: calc(var(--pww-border-radius-8) - 1px);
+    // border-top-right-radius: calc(var(--pww-border-radius-8) - 1px);
+    // /* Make sure border is inside to prevent overflow */
+    // box-sizing: border-box;
+    // /* Ensure the box doesn't extend beyond card edges */
+    // margin: 0;
+    border-bottom: 2px solid var(--pww-color-blue-400);
 
     img {
       height: 75px; // ⬆️ made it bigger
@@ -39,10 +47,10 @@
   }
 
   &-title {
-    color: var(--pww-color-light-1000);
+    color: var(--pww-color-blue-1000);
     font-size: var(--pww-font-size-20);
     font-weight: 800;
-    border-bottom: 1px solid var(--pww-color-light-200);
+    border-bottom: 1px solid var(--pww-color-gray-400);
     height: 40px;
     display: flex;
     flex-direction: row;
@@ -56,7 +64,6 @@
 
   &-description {
     color: var(--pww-color-gray-700);
-    color: var(--pww-color-light-800);
     font-size: var(--pww-font-size-16);
     height: 60px;
     overflow-y: auto;
