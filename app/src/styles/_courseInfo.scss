@@ -1,5 +1,5 @@
 .WorkshopCard {
-  background-color: var(--pww-color-blue-1000);
+  background-color: var(--pww-color-light-1000);
   border-radius: var(--pww-border-radius-8);
   box-shadow: var(--pww-shadow-dark);
   overflow: hidden;
@@ -23,9 +23,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--pww-color-light-1000);
-    border-top-left-radius: var(--pww-border-radius-8);
-    border-top-right-radius: var(--pww-border-radius-8);
+    background-color: var(--pww-color-blue-100);
 
     img {
       height: 75px; // ⬆️ made it bigger
@@ -39,10 +37,10 @@
   }
 
   &-title {
-    color: var(--pww-color-light-1000);
+    color: var(--pww-color-blue-1000);
     font-size: var(--pww-font-size-20);
     font-weight: 800;
-    border-bottom: 1px solid var(--pww-color-light-200);
+    border-bottom: 1px solid var(--pww-color-gray-400);
     height: 40px;
     display: flex;
     flex-direction: row;
@@ -56,7 +54,6 @@
 
   &-description {
     color: var(--pww-color-gray-700);
-    color: var(--pww-color-light-800);
     font-size: var(--pww-font-size-16);
     height: 60px;
     overflow-y: auto;
