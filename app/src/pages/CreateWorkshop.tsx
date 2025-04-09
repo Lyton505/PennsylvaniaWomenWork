@@ -397,7 +397,7 @@ const CreateWorkshop = () => {
                   </div>
                   <div className="Form-group">
                     <label className="Form-label">
-                      Select a Group to Give Access to This File:
+                      Select group(s) to give bulk access (optional):
                     </label>
                     <div className="Role-tags">
                       {roles.map((role) => (

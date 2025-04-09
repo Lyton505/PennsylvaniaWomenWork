@@ -18,6 +18,7 @@ import ConfirmActionModal from "../components/ConfirmActionModal"
 import { Spinner } from "react-bootstrap"
 import FileCard from "../components/FileCard"
 import AddFileModal from "../components/AddFileModal"
+import EditFolderModal from "../components/EditFolderModal"
 
 const animatedComponents = makeAnimated()
 
@@ -29,6 +30,9 @@ interface Workshop {
   createdAt: string
   mentor: string
   mentee: string
+  role: string
+  tags: string[]
+  coverImageS3id: string
 }
 
 const WorkshopInformation = () => {
@@ -52,6 +56,7 @@ const WorkshopInformation = () => {
   const [errorMessage, setErrorMessage] = useState("")
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showDeleteFileModal, setShowDeleteFileModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
 
   // get workshop information by id
   const getFolder = async () => {
@@ -134,18 +139,6 @@ const WorkshopInformation = () => {
     }
   }
 
-  const fileUploadInitialValues = {
-    title: "",
-    desc: "",
-    file: null, // This will not be used until s3 integration
-  }
-
-  const fileValidation = Yup.object().shape({
-    title: Yup.string().required("Title is required"),
-    desc: Yup.string().required("Description is required"),
-    file: Yup.mixed().required("Please select a file"),
-  })
-
   const handleFileSumbit = async (
     values: any,
     { resetForm, setFieldValue }: any
@@ -225,6 +218,17 @@ const WorkshopInformation = () => {
     }
   }
 
+  // TODO api call to edit folder
+  const handleEditFolder = async (values: any) => {
+    try {
+      await api.put(`/api/workshop/edit-workshop/${workshop?._id}`, values)
+      toast.success("Folder edited successfully!")
+    } catch (error) {
+      console.error("Error editing folder:", error)
+      toast.error("Failed to edit folder. Please try again.")
+    }
+  }
+
   return (
     <>
       {isModal && (
@@ -237,7 +241,6 @@ const WorkshopInformation = () => {
           fileAdded={fileAdded}
         />
       )}
-
       {showDeleteFileModal && (
         <ConfirmActionModal
           isOpen={showDeleteFileModal}
@@ -250,6 +253,21 @@ const WorkshopInformation = () => {
           }}
           onCancel={() => setShowDeleteFileModal(false)}
           isDanger
+        />
+      )}
+
+      {showEditModal && workshop && (
+        <EditFolderModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleEditFolder}
+          initialValues={{
+            name: workshop.name,
+            description: workshop.description,
+            role: workshop.role,
+            tags: workshop.tags || [],
+          }}
+          allTags={availableTags}
         />
       )}
       <Navbar />
@@ -283,7 +301,7 @@ const WorkshopInformation = () => {
                         <div
                           // className="Button Button-color--red-1000"
                           className="Text-color--gray-1000 Text-colorHover--green-1000 Margin-right--10"
-                          onClick={() => setShowDeleteModal(true)}
+                          onClick={() => setShowEditModal(true)}
                         >
                           <Icon glyph="edit" />
                         </div>
