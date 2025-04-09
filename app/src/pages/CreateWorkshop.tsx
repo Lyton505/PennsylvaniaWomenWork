@@ -10,6 +10,7 @@ import { url } from "inspector"
 import { toast } from "react-hot-toast"
 import CreatableSelect from "react-select/creatable"
 import makeAnimated from "react-select/animated"
+import AddFileModal from "../components/AddFileModal"
 
 const animatedComponents = makeAnimated()
 
@@ -127,6 +128,12 @@ const CreateWorkshop = () => {
       let coverImageS3id = null
       let createdId = null
 
+      if (fileDetails.length === 0) {
+        toast.error("Please upload at least one file.")
+        setSubmitting(false)
+        return
+      }
+
       if (values.imageUpload) {
         const coverImageResponse = await api.get(
           `/api/workshop/generate-presigned-url/${encodeURIComponent(values.imageUpload.name)}`
@@ -180,7 +187,7 @@ const CreateWorkshop = () => {
         )
 
         if (status === 201) {
-          toast.success("Workshop created successfully!")
+          toast.success("Folder created successfully!")
           createdId = workshopData.workshop._id
         }
       }
@@ -224,18 +231,6 @@ const CreateWorkshop = () => {
       setSubmitting(false)
     }
   }
-
-  const fileUploadInitialValues = {
-    title: "",
-    desc: "",
-    file: null, // This will not be used until s3 integration
-  }
-
-  const fileValidation = Yup.object().shape({
-    title: Yup.string().required("Title is required"),
-    desc: Yup.string().required("Description is required"),
-    file: Yup.mixed().required("Please select a file"),
-  })
 
   const handleFileSumbit = async (
     values: any,
@@ -285,87 +280,13 @@ const CreateWorkshop = () => {
   return (
     <>
       {isModal && (
-        <Modal
-          header="Add New Files"
-          subheader="Select Files to Upload"
-          action={() => setIsModal(false)}
-          body={
-            <Formik
-              initialValues={fileUploadInitialValues}
-              validationSchema={fileValidation}
-              onSubmit={handleFileSumbit}
-            >
-              {({ setFieldValue, errors, touched, isSubmitting }) => (
-                <Form>
-                  <div className="Form-group">
-                    <label htmlFor="title">Title</label>
-                    <Field
-                      className="Form-input-box"
-                      type="text"
-                      id="title"
-                      name="title"
-                    />
-                    {errors.title && touched.title && (
-                      <div className="Form-error">{errors.title}</div>
-                    )}
-                  </div>
-                  <div className="Form-group">
-                    <label htmlFor="desc">Description</label>
-                    <Field
-                      as="textarea"
-                      className="Form-input-box text-area"
-                      id="desc"
-                      name="desc"
-                      rows="4"
-                    />
-                    {errors.desc && touched.desc && (
-                      <div className="Form-error">{errors.desc}</div>
-                    )}
-                  </div>
-                  <div className="Form-group">
-                    <label htmlFor="file">Files</label>
-                    <input
-                      className="Form-input-box"
-                      type="file"
-                      id="file"
-                      name="file"
-                      onChange={(event) => {
-                        if (event.currentTarget.files) {
-                          const file = event.currentTarget.files[0]
-                          setFieldValue("file", file)
-                        }
-                      }}
-                    />
-                    {errors.file && touched.file && (
-                      <div className="Form-error">{errors.file}</div>
-                    )}
-                  </div>
-                  <button
-                    type="submit"
-                    className="Button Margin-top--10 Button-color--teal-1000 Width--100"
-                    disabled={
-                      Object.keys(errors).length > 0 ||
-                      !Object.keys(touched).length ||
-                      isSubmitting
-                    }
-                  >
-                    {isSubmitting ? (
-                      <AsyncSubmit loading={isLoading} />
-                    ) : (
-                      "Upload Files"
-                    )}
-                  </button>
-                  {errorMessage && (
-                    <div className="Form-error">{errorMessage}</div>
-                  )}
-
-                  {fileAdded && (
-                    <div className="Form-success">File added successfully!</div>
-                  )}
-                </Form>
-              )}
-            </Formik>
-          }
+        <AddFileModal
+          isOpen={isModal}
+          onClose={() => setIsModal(false)}
+          onSubmit={handleFileSumbit}
+          isLoading={isLoading}
+          errorMessage={errorMessage}
+          fileAdded={fileAdded}
         />
       )}
       <Navbar />

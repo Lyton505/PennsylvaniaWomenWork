@@ -20,21 +20,27 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({
       {imageUrl ? (
         <div
           className="FolderCard-image"
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-          }}
-        />
+          style={{ backgroundImage: `url(${imageUrl})` }}
+        >
+          {tags.length > 0 && (
+            <div className="FolderCard-tags">
+              {tags.map((tag) => (
+                <span key={tag} className="FolderCard-tag">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
       ) : (
         <div className="FolderCard-color Background-color--teal-1000">
           {tags.length > 0 && (
-            <div className="File-tags-container">
-              <div className="File-tags">
-                {tags.map((tag, index) => (
-                  <span key={index} className="Tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
+            <div className="FolderCard-tags FolderCard-tags--static">
+              {tags.map((tag, index) => (
+                <span key={index} className="FolderCard-tag">
+                  {tag}
+                </span>
+              ))}
             </div>
           )}
         </div>

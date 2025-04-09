@@ -209,6 +209,7 @@
   }
 
   &-image {
+    position: relative;
     background-size: cover;
     background-position: center;
     height: 100px;
@@ -248,6 +249,21 @@
     height: 60px;
     padding: 0 5px;
 
+  }
+
+  &-tags {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background-color: var(--pww-color-light-700);
+    border-radius: 4px;
+    padding: 4px 6px;
+    color: var(--pww-color-dark-1000);
+
+    font-size: var(--pww-font-size-12);
   }
 }
 
