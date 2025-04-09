@@ -9,7 +9,7 @@ interface Folder {
   _id: string;
   name: string;
   description: string;
-  s3id: string;
+  s3id?: string;
   coverImageS3id?: string;
   tags?: string[];
 }
@@ -18,18 +18,21 @@ interface Props {
   folders: Folder[];
   allTags: string[];
   imageUrls?: Record<string, string | null>;
+  linkTo?: "workshop" | "boardfile";
 }
 
-const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
+const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls, linkTo = "workshop" }) => {
   const navigate = useNavigate();
 
   const handleClick = (id: string) => {
-    navigate("/volunteer/workshop-information", { state: { workshopId: id } });
+    if (linkTo === "boardfile") {
+      navigate("/folder-information", { state: { boardFileId: id } });
+    } else {
+      navigate("/folder-information", { state: { workshopId: id } });
+    }
   };
 
-  const [folderImageUrls, setFolderImageUrls] = useState<
-    Record<string, string | null>
-  >({});
+  const [folderImageUrls, setFolderImageUrls] = useState<Record<string, string | null>>({});
 
   useEffect(() => {
     const fetchImageUrls = async () => {
@@ -39,19 +42,14 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
         folders.map(async (folder) => {
           if (folder.coverImageS3id) {
             try {
-              const res = await api.get(
-                `/api/resource/getURL/${folder.coverImageS3id}`,
-              );
+              const res = await api.get(`/api/resource/getURL/${folder.coverImageS3id}`);
               newUrls[folder.coverImageS3id] = res.data?.signedUrl || null;
             } catch (error) {
-              console.error(
-                `Failed to fetch URL for ${folder.coverImageS3id}:`,
-                error,
-              );
+              console.error(`Failed to fetch URL for ${folder.coverImageS3id}:`, error);
               newUrls[folder.coverImageS3id] = null;
             }
           }
-        }),
+        })
       );
 
       setFolderImageUrls(newUrls);
@@ -69,14 +67,11 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
       {({ values, setFieldValue }) => {
         const filtered = folders.filter((folder) => {
           const matchesTags =
-            values.tags.length === 0 ||
-            values.tags.some((tag) => folder.tags?.includes(tag));
+            values.tags.length === 0 || values.tags.some((tag) => folder.tags?.includes(tag));
 
           const matchesSearch =
             folder.name.toLowerCase().includes(values.search.toLowerCase()) ||
-            folder.description
-              .toLowerCase()
-              .includes(values.search.toLowerCase());
+            folder.description.toLowerCase().includes(values.search.toLowerCase());
 
           return matchesTags && matchesSearch;
         });
@@ -115,7 +110,7 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
                     onClick={() =>
                       setFieldValue(
                         "tags",
-                        values.tags.filter((t) => t !== tag),
+                        values.tags.filter((t) => t !== tag)
                       )
                     }
                   >
