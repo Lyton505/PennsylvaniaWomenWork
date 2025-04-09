@@ -120,7 +120,6 @@ const WorkshopInformation = () => {
     }
 
     fetchResources()
-    console.log("Resources:", resources)
   }, [workshopId, boardFileId])
 
   if (loading) {

@@ -1,11 +1,11 @@
-import React from "react"
+import React from "react";
 
 interface FolderCardProps {
-  name: string
-  description: string
-  imageUrl?: string | null
-  onClick?: () => void
-  tags?: string[]
+  name: string;
+  description: string;
+  imageUrl?: string | null;
+  onClick?: () => void;
+  tags?: string[];
 }
 
 const FolderCard: React.FC<FolderCardProps> = ({
@@ -50,7 +50,7 @@ const FolderCard: React.FC<FolderCardProps> = ({
         <div className="FolderCard-description">{description}</div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FolderCard
+export default FolderCard;

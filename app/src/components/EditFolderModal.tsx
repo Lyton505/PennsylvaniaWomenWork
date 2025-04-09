@@ -1,37 +1,37 @@
-import React from "react"
-import { Formik, Form, Field } from "formik"
-import * as Yup from "yup"
-import Modal from "./Modal"
-import CreatableSelect from "react-select/creatable"
-import makeAnimated from "react-select/animated"
+import React from "react";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import Modal from "./Modal";
+import CreatableSelect from "react-select/creatable";
+import makeAnimated from "react-select/animated";
 
-const animatedComponents = makeAnimated()
+const animatedComponents = makeAnimated();
 
 interface EditFolderModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (values: any) => void
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (values: any) => void;
   initialValues: {
-    name: string
-    description: string
-    role: string
-    tags: string[]
-  }
-  allTags: string[]
+    name: string;
+    description: string;
+    role: string;
+    tags: string[];
+  };
+  allTags: string[];
 }
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
   tags: Yup.array().of(Yup.string()),
-})
+});
 
 const roles = [
   { id: "mentee", label: "Participant" },
   { id: "mentor", label: "Volunteer" },
   { id: "staff", label: "Staff" },
   { id: "board", label: "Board" },
-]
+];
 
 const EditFolderModal = ({
   isOpen,
@@ -124,14 +124,14 @@ const EditFolderModal = ({
                   onChange={(selectedOptions: any) =>
                     setFieldValue(
                       "tags",
-                      selectedOptions.map((opt: any) => opt.value)
+                      selectedOptions.map((opt: any) => opt.value),
                     )
                   }
                   onCreateOption={(inputValue: string) => {
-                    const trimmed = inputValue.trim()
-                    if (!trimmed) return
+                    const trimmed = inputValue.trim();
+                    if (!trimmed) return;
                     if (!values.tags.includes(trimmed)) {
-                      setFieldValue("tags", [...values.tags, trimmed])
+                      setFieldValue("tags", [...values.tags, trimmed]);
                     }
                   }}
                   placeholder="Edit tags..."
@@ -152,7 +152,7 @@ const EditFolderModal = ({
         </Formik>
       }
     />
-  )
-}
+  );
+};
 
-export default EditFolderModal
+export default EditFolderModal;
