@@ -5,8 +5,6 @@ import Modal from "../components/Modal"
 import { useUser } from "../contexts/UserContext"
 import { User as AppUser } from "../contexts/UserContext"
 import { api } from "../api"
-import ParticipantCard from "../components/ParticipantCard"
-import FolderCard from "../components/FolderCard"
 import { toast } from "react-hot-toast"
 import Event, {
   EventData,
@@ -14,8 +12,6 @@ import Event, {
   groupEventsByMonth,
   formatEventSubheader,
 } from "../components/Event"
-import { Formik, Form, Field } from "formik"
-import TagDropdown from "../components/MultiSelectDropdown"
 import FolderUI from "../components/FolderUI"
 import PeopleGrid from "../components/PeopleGrid"
 

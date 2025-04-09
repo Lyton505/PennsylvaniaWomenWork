@@ -1,6 +1,6 @@
 import React from "react"
 
-interface WorkshopCardProps {
+interface FolderCardProps {
   name: string
   description: string
   imageUrl?: string | null
@@ -8,7 +8,7 @@ interface WorkshopCardProps {
   tags?: string[]
 }
 
-const WorkshopCard: React.FC<WorkshopCardProps> = ({
+const FolderCard: React.FC<FolderCardProps> = ({
   name,
   description,
   imageUrl,
@@ -33,7 +33,7 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({
           )}
         </div>
       ) : (
-        <div className="FolderCard-color Background-color--teal-1000">
+        <div className="FolderCard-color">
           {tags.length > 0 && (
             <div className="FolderCard-tags FolderCard-tags--static">
               {tags.map((tag, index) => (
@@ -53,4 +53,4 @@ const WorkshopCard: React.FC<WorkshopCardProps> = ({
   )
 }
 
-export default WorkshopCard
+export default FolderCard
