@@ -1,46 +1,46 @@
-import React from "react"
-import { Formik, Form, Field } from "formik"
-import ParticipantCard from "./ParticipantCard"
-import { useNavigate } from "react-router-dom"
+import React from "react";
+import { Formik, Form, Field } from "formik";
+import ParticipantCard from "./ParticipantCard";
+import { useNavigate } from "react-router-dom";
 
 interface User {
-  _id: string
-  first_name: string
-  last_name: string
-  email: string
-  profile_picture_id?: string
-  role: string
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  profile_picture_id?: string;
+  role: string;
 }
 
 interface ParticipantGridProps {
-  users: User[]
-  emptyMessage?: string
+  users: User[];
+  emptyMessage?: string;
 }
 
 const PeopleGrid: React.FC<ParticipantGridProps> = ({
   users,
   emptyMessage = "No Users Found",
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleCardClick = (p: User) => {
     if (p) {
       navigate("/participant/participant-information", {
         state: { _id: p._id, role: p.role },
-      })
+      });
     }
-  }
+  };
   return (
     <Formik initialValues={{ search: "" }} onSubmit={() => {}}>
       {({ values, setFieldValue }) => {
-        const search = values.search.toLowerCase()
+        const search = values.search.toLowerCase();
         const filtered = users.filter((p) => {
           return (
             p.first_name.toLowerCase().includes(search) ||
             p.last_name.toLowerCase().includes(search) ||
             p.email.toLowerCase().includes(search)
-          )
-        })
+          );
+        });
 
         return (
           <Form>
@@ -74,10 +74,10 @@ const PeopleGrid: React.FC<ParticipantGridProps> = ({
               </div>
             )}
           </Form>
-        )
+        );
       }}
     </Formik>
-  )
-}
+  );
+};
 
-export default PeopleGrid
+export default PeopleGrid;

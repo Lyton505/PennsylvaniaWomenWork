@@ -67,6 +67,8 @@ const StaffDashboard = () => {
   });
   const [deleteEventId, setDeleteEventId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [workshopTags, setWorkshopTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -236,6 +238,20 @@ const StaffDashboard = () => {
       toast.error("Failed to delete event");
     }
   };
+
+  useEffect(() => {
+    const fetchWorkshopTags = async () => {
+      try {
+        const response = await api.get("/api/workshop/get-tags");
+        setWorkshopTags(response.data);
+      } catch (error) {
+        console.error("Error fetching workshop tags:", error);
+      }
+    };
+
+    fetchWorkshopTags();
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -344,11 +360,13 @@ const StaffDashboard = () => {
               )}
 
               {activeTab === "Folders" && (
-                <FolderUI
-                  folders={workshops}
-                  allTags={["Finance", "Wellness", "Education", "Tech"]}
-                  imageUrls={imageUrls}
-                />
+                <div>
+                  <FolderUI
+                    folders={workshops}
+                    allTags={workshopTags}
+                    imageUrls={imageUrls}
+                  />
+                </div>
               )}
             </div>
           </div>

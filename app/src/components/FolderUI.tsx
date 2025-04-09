@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 import FolderCard from "./FolderCard";
@@ -27,7 +27,9 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
     navigate("/volunteer/workshop-information", { state: { workshopId: id } });
   };
 
-  const [folderImageUrls, setFolderImageUrls] = useState<Record<string, string | null>>({});
+  const [folderImageUrls, setFolderImageUrls] = useState<
+    Record<string, string | null>
+  >({});
 
   useEffect(() => {
     const fetchImageUrls = async () => {
@@ -37,14 +39,19 @@ const FolderUI: React.FC<Props> = ({ folders, allTags, imageUrls }) => {
         folders.map(async (folder) => {
           if (folder.coverImageS3id) {
             try {
-              const res = await api.get(`/api/resource/getURL/${folder.coverImageS3id}`);
+              const res = await api.get(
+                `/api/resource/getURL/${folder.coverImageS3id}`,
+              );
               newUrls[folder.coverImageS3id] = res.data?.signedUrl || null;
             } catch (error) {
-              console.error(`Failed to fetch URL for ${folder.coverImageS3id}:`, error);
+              console.error(
+                `Failed to fetch URL for ${folder.coverImageS3id}:`,
+                error,
+              );
               newUrls[folder.coverImageS3id] = null;
             }
           }
-        })
+        }),
       );
 
       setFolderImageUrls(newUrls);
