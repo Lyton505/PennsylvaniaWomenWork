@@ -31,8 +31,8 @@ export interface Resource {
 }
 
 interface FileCardProps {
-  file: Resource
-  onDelete: () => void
+  file: Resource;
+  onDelete: () => void;
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
@@ -63,4 +63,4 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
   );
 };
 
-export default FileCard
+export default FileCard;
