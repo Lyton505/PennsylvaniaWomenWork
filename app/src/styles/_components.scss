@@ -235,6 +235,10 @@
     // align the text vertically in the center
     display: flex;
     align-items: center;
+    // wrap the text on two lines and scroll if overflow
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &-description {
