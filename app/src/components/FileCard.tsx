@@ -1,43 +1,43 @@
-import React from "react"
-import Icon from "../components/Icon" // adjust path if needed
-import pdf from "../assets/pdf.png"
-import docx from "../assets/docx.png"
-import video from "../assets/video.png"
-import { useUser } from "../contexts/UserContext"
+import React from "react";
+import Icon from "../components/Icon"; // adjust path if needed
+import pdf from "../assets/pdf.png";
+import docx from "../assets/docx.png";
+import video from "../assets/video.png";
+import { useUser } from "../contexts/UserContext";
 
 const getIconForFile = (filename: string) => {
-  const extension = filename.split(".").pop()?.toLowerCase()
+  const extension = filename.split(".").pop()?.toLowerCase();
   switch (extension) {
     case "pdf":
-      return pdf
+      return pdf;
     case "doc":
     case "docx":
-      return docx
+      return docx;
     case "mp4":
     case "mov":
     case "avi":
-      return video
+      return video;
     default:
-      return docx
+      return docx;
   }
-}
+};
 
 export interface Resource {
-  _id: string
-  name: string
-  s3id: string
-  type: string
-  description?: string
-  url: string
+  _id: string;
+  name: string;
+  s3id: string;
+  type: string;
+  description?: string;
+  url: string;
 }
 
 interface FileCardProps {
-  file: Resource
-  onDelete: () => void
+  file: Resource;
+  onDelete: () => void;
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
-  const { user } = useUser() // ✅ valid here
+  const { user } = useUser(); // ✅ valid here
   return (
     <div className="FileCard" onClick={() => window.open(file.url, "_blank")}>
       <div className="FileCard-icon">
@@ -51,8 +51,8 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
             <div
               className="FileCard-deleteIcon"
               onClick={(e) => {
-                e.stopPropagation()
-                onDelete()
+                e.stopPropagation();
+                onDelete();
               }}
             >
               <Icon glyph="trash" />
@@ -64,7 +64,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default FileCard
+export default FileCard;

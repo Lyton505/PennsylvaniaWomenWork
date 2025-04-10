@@ -163,23 +163,14 @@ export const getAllWorkshops = async (req: Request, res: Response) => {
 
     // If role is specified, filter workshops by role
     if (role) {
-      // For mentors, show both mentee and mentor workshops
-      if (role === "mentor") {
-        query = { role: { $in: ["mentee", "mentor"] } };
-      }
-      // For staff show all workshops
-      else if (role === "staff") {
-        query = {}; // No filter, show all
-      }
-      // For mentees, show only mentee workshops
-      else {
-        query = { role };
-      }
+      query = { role: role };
     }
 
     const workshops = await Workshop.find(query);
 
-    if (workshops.length === 0) {
+    console.log(`Found ${workshops.length} workshops matching query:`, query);
+
+    if (!workshops || workshops.length === 0) {
       return res.status(404).json({ message: "No workshops found" });
     }
 
